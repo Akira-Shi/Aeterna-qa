@@ -1,0 +1,531 @@
+{
+ "planner": "offline",
+ "results": [
+  {
+   "scenario": "C1",
+   "seed": 201,
+   "rate": 0.1,
+   "expected_commit": true,
+   "committed_ops": {},
+   "outcome_as_expected": false,
+   "kind": "miss",
+   "gate_injected": -0.10509042727223473,
+   "gate_final": -0.10509042727223473,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.0,
+   "delta_ci95": [
+    0.0,
+    0.0
+   ],
+   "recovery_fraction": 0.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "occupation": "normalize_categories",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340851,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 2339,
+    "injected_rows_present": 2339,
+    "restored_share": 0.0
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T062211Z.json"
+  },
+  {
+   "scenario": "C1",
+   "seed": 202,
+   "rate": 0.1,
+   "expected_commit": true,
+   "committed_ops": {},
+   "outcome_as_expected": false,
+   "kind": "miss",
+   "gate_injected": -0.10496159895791275,
+   "gate_final": -0.10496159895791275,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.0,
+   "delta_ci95": [
+    0.0,
+    0.0
+   ],
+   "recovery_fraction": 0.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "occupation": "normalize_categories",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340851,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 2344,
+    "injected_rows_present": 2344,
+    "restored_share": 0.0
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T062330Z.json"
+  },
+  {
+   "scenario": "C1",
+   "seed": 203,
+   "rate": 0.1,
+   "expected_commit": true,
+   "committed_ops": {
+    "occupation": "normalize_categories"
+   },
+   "outcome_as_expected": true,
+   "kind": "hit",
+   "gate_injected": -0.10517561859437047,
+   "gate_final": -0.10455160749224612,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.0006240111021243389,
+   "delta_ci95": [
+    0.0002731679027651641,
+    0.0009748543014835137
+   ],
+   "recovery_fraction": 1.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "occupation": "normalize_categories",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340851,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 2337,
+    "injected_rows_present": 2337,
+    "restored_share": 1.0
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T062451Z.json"
+  },
+  {
+   "scenario": "C2",
+   "seed": 201,
+   "rate": 0.3,
+   "expected_commit": false,
+   "committed_ops": {
+    "age": "rescale_units"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.10576579163525432,
+   "gate_final": -0.10455160749224612,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.001214184143008203,
+   "delta_ci95": [
+    0.000608668686436496,
+    0.0018196995995799102
+   ],
+   "recovery_fraction": 1.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "age": "rescale_units",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340851,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 7238,
+    "injected_rows_present": 7238,
+    "restored_share": 1.0
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T062603Z.json"
+  },
+  {
+   "scenario": "C2",
+   "seed": 202,
+   "rate": 0.3,
+   "expected_commit": false,
+   "committed_ops": {
+    "age": "rescale_units"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.10569344376434922,
+   "gate_final": -0.10455160749224612,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.0011418362721031018,
+   "delta_ci95": [
+    0.0005767707802296428,
+    0.0017069017639765607
+   ],
+   "recovery_fraction": 1.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "age": "rescale_units",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340851,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 7238,
+    "injected_rows_present": 7238,
+    "restored_share": 1.0
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T062714Z.json"
+  },
+  {
+   "scenario": "C2",
+   "seed": 203,
+   "rate": 0.3,
+   "expected_commit": false,
+   "committed_ops": {
+    "age": "rescale_units"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.1057797469712781,
+   "gate_final": -0.10455160749224612,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.0012281394790319728,
+   "delta_ci95": [
+    0.0005872142337463197,
+    0.001869064724317626
+   ],
+   "recovery_fraction": 1.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "age": "rescale_units",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340851,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 7238,
+    "injected_rows_present": 7238,
+    "restored_share": 1.0
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T062824Z.json"
+  },
+  {
+   "scenario": "C3",
+   "seed": 201,
+   "rate": 0.15,
+   "expected_commit": false,
+   "committed_ops": {
+    "age": "sentinel_to_median"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.1057823449884965,
+   "gate_final": -0.10459737839601502,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.0011849665924814753,
+   "delta_ci95": [
+    0.0006458383662381231,
+    0.0017240948187248275
+   ],
+   "recovery_fraction": 0.9628101817744713,
+   "blind_clean_ops": {
+    "age": "sentinel_to_median",
+    "capital.gain": "sentinel_to_median",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10541349277139303,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 3619,
+    "injected_rows_present": 3619,
+    "mae": 10.742746615087041,
+    "mae_median_reference": 10.742746615087041,
+    "mae_unrepaired": 960.7919314727825
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T062927Z.json"
+  },
+  {
+   "scenario": "C3",
+   "seed": 202,
+   "rate": 0.15,
+   "expected_commit": false,
+   "committed_ops": {
+    "age": "sentinel_to_median"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.10576318498431557,
+   "gate_final": -0.10468941672315706,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.0010737682611585456,
+   "delta_ci95": [
+    0.0005125424418741369,
+    0.0016349940804429542
+   ],
+   "recovery_fraction": 0.8862563626239494,
+   "blind_clean_ops": {
+    "age": "sentinel_to_median",
+    "capital.gain": "sentinel_to_median",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10549173468974371,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 3619,
+    "injected_rows_present": 3619,
+    "mae": 10.69825918762089,
+    "mae_median_reference": 10.69825918762089,
+    "mae_unrepaired": 960.4871511467256
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T063032Z.json"
+  },
+  {
+   "scenario": "C3",
+   "seed": 203,
+   "rate": 0.15,
+   "expected_commit": false,
+   "committed_ops": {},
+   "outcome_as_expected": true,
+   "kind": "correct_rollback",
+   "gate_injected": -0.1057929610027585,
+   "gate_final": -0.1057929610027585,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.0,
+   "delta_ci95": [
+    0.0,
+    0.0
+   ],
+   "recovery_fraction": 0.0,
+   "blind_clean_ops": {
+    "age": "sentinel_to_median",
+    "capital.gain": "sentinel_to_median",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10556731393406665,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 3619,
+    "injected_rows_present": 3619,
+    "mae": 961.0848300635535,
+    "mae_median_reference": 10.489638021552915,
+    "mae_unrepaired": 961.0848300635535
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T063202Z.json"
+  },
+  {
+   "scenario": "C4",
+   "seed": 201,
+   "rate": 0.3,
+   "expected_commit": false,
+   "committed_ops": {
+    "native.country": "normalize_categories"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.10543079718603024,
+   "gate_final": -0.1045516074922461,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.0008791896937841714,
+   "delta_ci95": [
+    0.00036450926668654443,
+    0.0013938701208817985
+   ],
+   "recovery_fraction": 1.0000000000000315,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "native.country": "normalize_categories",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.1053716894534085,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 7089,
+    "injected_rows_present": 7089,
+    "restored_share": 0.9998589363803075
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T063320Z.json"
+  },
+  {
+   "scenario": "C4",
+   "seed": 202,
+   "rate": 0.3,
+   "expected_commit": false,
+   "committed_ops": {
+    "native.country": "normalize_categories"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.10545100200535885,
+   "gate_final": -0.1045516074922461,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.0008993945131127482,
+   "delta_ci95": [
+    0.0003975351454329147,
+    0.0014012538807925818
+   ],
+   "recovery_fraction": 1.0000000000000309,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "native.country": "normalize_categories",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.1053716894534085,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 7093,
+    "injected_rows_present": 7093,
+    "restored_share": 0.9998590159311997
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T063444Z.json"
+  },
+  {
+   "scenario": "C4",
+   "seed": 203,
+   "rate": 0.3,
+   "expected_commit": false,
+   "committed_ops": {},
+   "outcome_as_expected": true,
+   "kind": "correct_rollback",
+   "gate_injected": -0.10577435278604506,
+   "gate_final": -0.10577435278604506,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.0,
+   "delta_ci95": [
+    0.0,
+    0.0
+   ],
+   "recovery_fraction": 0.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "native.country": "normalize_categories",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340848,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 7090,
+    "injected_rows_present": 7090,
+    "restored_share": 0.0
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T063613Z.json"
+  },
+  {
+   "scenario": "C5",
+   "seed": 201,
+   "rate": 0.01,
+   "expected_commit": true,
+   "committed_ops": {
+    "capital.gain": "sentinel_to_median"
+   },
+   "outcome_as_expected": true,
+   "kind": "hit",
+   "gate_injected": -0.11376647198591255,
+   "gate_final": -0.10462886875414633,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.009137603231766201,
+   "delta_ci95": [
+    0.00793312841918216,
+    0.010342078044350242
+   ],
+   "recovery_fraction": 0.9916155835006246,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.1045017143498114,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 241,
+    "injected_rows_present": 241,
+    "mae": 621.6182572614108,
+    "mae_median_reference": 621.6182572614108,
+    "mae_unrepaired": 9999377.381742738
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T063717Z.json"
+  },
+  {
+   "scenario": "C5",
+   "seed": 202,
+   "rate": 0.01,
+   "expected_commit": true,
+   "committed_ops": {
+    "capital.gain": "sentinel_to_median"
+   },
+   "outcome_as_expected": true,
+   "kind": "hit",
+   "gate_injected": -0.11377081251656103,
+   "gate_final": -0.10460631384129958,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.009164498675261456,
+   "delta_ci95": [
+    0.007923695585651598,
+    0.010405301764871314
+   ],
+   "recovery_fraction": 0.9940660448586217,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10448465520032646,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 241,
+    "injected_rows_present": 241,
+    "mae": 391.24896265560164,
+    "mae_median_reference": 391.24896265560164,
+    "mae_unrepaired": 9999607.751037344
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T063814Z.json"
+  },
+  {
+   "scenario": "C5",
+   "seed": 203,
+   "rate": 0.01,
+   "expected_commit": true,
+   "committed_ops": {
+    "capital.gain": "sentinel_to_median"
+   },
+   "outcome_as_expected": true,
+   "kind": "hit",
+   "gate_injected": -0.11378076428637635,
+   "gate_final": -0.10467718325071777,
+   "gate_clean": -0.10455160749224612,
+   "delta_vs_injected": 0.009103581035658599,
+   "delta_ci95": [
+    0.00793769500034953,
+    0.010269467070967668
+   ],
+   "recovery_fraction": 0.9863935827212822,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10456139644608303,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 241,
+    "injected_rows_present": 241,
+    "mae": 1064.759336099585,
+    "mae_median_reference": 1064.759336099585,
+    "mae_unrepaired": 9998934.240663901
+   },
+   "log_path": "/tmp/claude-0/-home-claude/a645cde0-7d99-59e9-aca8-0682113778ec/scratchpad/S/aeterna_qa/logs/run_20260930T063910Z.json"
+  }
+ ]
+}

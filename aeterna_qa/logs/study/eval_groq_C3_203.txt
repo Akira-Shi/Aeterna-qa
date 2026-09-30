@@ -1,0 +1,58 @@
+Fixed 5-fold x 3-repeat evaluation folds computed from the raw dataset (15 total train/test splits, reused for every comparison in this run). Bonferroni-corrected for up to 16 look-backs in this run (exhaustive_search.py uses a different correction, sized to its own 64 comparisons -- the two scripts' threshold numbers are not meant to match).
+
+Evaluator: LR
+Baseline neg-Brier (SYNTHETIC-injected, as-is), fixed-fold: -0.1058 +/- 0.0027   [F1 0.6579]
+
+--- Iteration 1 ---
+Planner: column='age' operation='sentinel_to_median' reason='The defect in the age column shows 3,619 rows (14.999%) with the sentinel value 999, far outside the realistic range and far more frequent than neighboring values. Replacing these sentinel values with the median directly addresses the missing-value code and will correct the majority of the affected rows.'
+Cumulative neg-Brier (chain=[('age', 'sentinel_to_median')]) before=-0.1058 after=-0.1047 paired_delta=+0.0011 (threshold=0.0011, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> STAGED (improves the chain from +0.0000), continuing to test for a compounding effect
+
+--- Iteration 2 ---
+Planner: column='capital.gain' operation='sentinel_to_median' reason='The defect is a sentinel value 99999 appearing 115 times (0.477% of rows), far outside the real range and 38× the typical count of its neighbours, indicating a missing‑value code. Replacing these with the median directly repairs the defect.'
+Cumulative neg-Brier (chain=[('age', 'sentinel_to_median'), ('capital.gain', 'sentinel_to_median')]) before=-0.1058 after=-0.1057 paired_delta=+0.0001 (threshold=0.0012, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0011); chain stays [('age', 'sentinel_to_median')]
+
+--- Iteration 3 ---
+Planner: column='hours.per.week' operation='clip_outliers' reason='The evidence shows 59 rows (0.245%) contain the value 99, which appears 30× the typical count of its neighbours and is identified as a top‑coded value. Clipping outliers directly addresses this defect by capping the extreme values.'
+Cumulative neg-Brier (chain=[('age', 'sentinel_to_median'), ('hours.per.week', 'clip_outliers')]) before=-0.1058 after=-0.1046 paired_delta=+0.0012 (threshold=0.0013, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0011); chain stays [('age', 'sentinel_to_median')]
+
+--- Iteration 4 ---
+Planner: column='*' operation='dedupe_rows' reason='14 rows are exact copies of an earlier row (5.8% of rows), indicating duplicate records that need removal.'
+Cumulative neg-Brier (chain=[('age', 'sentinel_to_median'), ('*', 'dedupe_rows')]) before=-0.1058 after=-0.1047 paired_delta=+0.0011 (threshold=0.0011, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0011); chain stays [('age', 'sentinel_to_median')]
+
+--- Iteration 5 ---
+Planner: column='age' operation='clip_outliers' reason='The only remaining option for the age column is clip_outliers. The defect is a sentinel value (999) that appears in 3619 rows (14.999% of the dataset) and is far outside the realistic range for age, indicating a missing‑value code. Although sentinel_to_median would be the ideal fix, it has already been tried and rejected, leaving clip_outliers as the available operation to mitigate the outlier impact.'
+Cumulative neg-Brier (chain=[('age', 'clip_outliers')]) before=-0.1058 after=-0.1055 paired_delta=+0.0003 (threshold=0.0003, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0011); chain stays [('age', 'sentinel_to_median')]
+
+--- Iteration 6 ---
+Planner failed or chain exhausted: No untried, dtype-valid (column, operation) combinations remain.
+Discarding chain [('age', 'sentinel_to_median')].
+
+--- Iteration 7 ---
+Planner: column='capital.gain' operation='sentinel_to_median' reason='The defect evidence shows that the value 99999 appears 115 times (0.477% of rows), far outside the real range and clearly a missing‑value sentinel. Replacing these sentinel values with the median of the column directly repairs this defect.'
+Cumulative neg-Brier (chain=[('capital.gain', 'sentinel_to_median')]) before=-0.1058 after=-0.1068 paired_delta=-0.0010 (threshold=0.0006, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0000); chain stays (empty)
+
+--- Iteration 8 ---
+Planner: column='*' operation='dedupe_rows' reason='14 rows are exact copies of an earlier row (5.8% of the dataset), so dedupe_rows will remove these duplicates.'
+Cumulative neg-Brier (chain=[('*', 'dedupe_rows')]) before=-0.1058 after=-0.1058 paired_delta=-0.0000 (threshold=0.0000, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0000); chain stays (empty)
+
+--- Iteration 9 ---
+Planner: column='hours.per.week' operation='clip_outliers' reason='The top_coded defect shows 59 rows (0.245%) with the value 99, which is far above typical values and likely a top‑code. Clipping these outliers will replace them with the nearest valid value, directly addressing the defect.'
+Cumulative neg-Brier (chain=[('hours.per.week', 'clip_outliers')]) before=-0.1058 after=-0.1057 paired_delta=+0.0001 (threshold=0.0005, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> STAGED (improves the chain from +0.0000), continuing to test for a compounding effect
+
+--- Iteration 10 ---
+Planner: column='age' operation='clip_outliers' reason='The age column contains 3,619 rows (14.999% of the dataset) with the sentinel value 999, which is far outside the realistic age range and appears to be a missing‑value code. Clipping these extreme values will replace them with the nearest valid age, preventing distortion of the age distribution and improving downstream modeling.'
+Cumulative neg-Brier (chain=[('hours.per.week', 'clip_outliers'), ('age', 'clip_outliers')]) before=-0.1058 after=-0.1054 paired_delta=+0.0004 (threshold=0.0006, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> STAGED (improves the chain from +0.0001), continuing to test for a compounding effect
+
+--- Iteration 11 ---
+Planner failed or chain exhausted: No untried, dtype-valid (column, operation) combinations remain.
+Discarding chain [('hours.per.week', 'clip_outliers'), ('age', 'clip_outliers')].
+
+--- Iteration 12 ---
+Planner failed or chain exhausted: No untried, dtype-valid (column, operation) combinations remain.
+Final neg-Brier: -0.1058   [F1 0.6579]
+Committed operations: (none)
+Distinct full (column -> operation) states evaluated this run (deduplicated): 9.
+
+Answer key check (SYNTHETIC run -- did the agent commit the fix that undoes each injected defect?)
+  C3: negative control, harmless defect, agent should NOT fix -> CORRECT (left alone)
+Audit log written to: C:\Users\Raghav\Downloads\Capstone\aeterna_qa\logs\run_20260930T093717Z.json

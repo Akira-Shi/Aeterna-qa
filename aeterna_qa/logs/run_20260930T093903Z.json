@@ -1,0 +1,130 @@
+{
+  "started_at": "2026-09-30T09:37:51.893436+00:00",
+  "meta": {
+    "scenario": "synthetic_injection",
+    "label": "STUDY C4 rate 30% seed 201 (SYNTHETIC)",
+    "declared_spec": [
+      {
+        "id": "C4",
+        "kind": "category_variants",
+        "column": "native.country",
+        "rate": 0.3,
+        "expected_fix": null,
+        "expected_commit": false
+      }
+    ],
+    "evaluator": "lr",
+    "metric": "brier",
+    "planner": "openai/gpt-oss-20b"
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "column": "native.country",
+      "operation": "normalize_categories",
+      "reason": "The defect involves 7088 rows (29.377% of the dataset) where 39 categories are split into 119 spellings, indicating significant category variants that will be corrected by normalize_categories.",
+      "f1_before": -0.1054,
+      "f1_after": -0.1046,
+      "delta": 0.0009,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0002,
+      "threshold": 0.0008,
+      "accepted": true,
+      "error": null,
+      "status": "committed",
+      "chain_id": 0,
+      "chain_ops": {
+        "native.country": "normalize_categories"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 2,
+      "column": "capital.gain",
+      "operation": "sentinel_to_median",
+      "reason": "115 rows (0.477%) contain the sentinel value 99999 in capital.gain, far outside the typical range and 38\u00d7 the count of neighboring values, indicating a missing\u2011value code that should be replaced with the median.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1055,
+      "delta": -0.0009,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "native.country": "normalize_categories"
+      }
+    },
+    {
+      "iteration": 3,
+      "column": "hours.per.week",
+      "operation": "clip_outliers",
+      "reason": "The defect in hours.per.week shows 59 rows (0.245%) with the value 99 appearing 30\u00d7 the typical count of its neighbours, indicating a top\u2011coded outlier that should be clipped.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1044,
+      "delta": 0.0001,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "native.country": "normalize_categories"
+      }
+    },
+    {
+      "iteration": 4,
+      "column": "*",
+      "operation": "dedupe_rows",
+      "reason": "The defect report shows 17 rows (0.07% of the dataset) are exact duplicates of earlier rows. Removing these duplicates will clean the data and prevent model overfitting to repeated observations.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1046,
+      "delta": 0.0,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0,
+      "threshold": 0.0,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "native.country": "normalize_categories"
+      }
+    },
+    {
+      "iteration": 5,
+      "column": null,
+      "operation": null,
+      "reason": null,
+      "f1_before": -0.1046,
+      "f1_after": null,
+      "delta": null,
+      "std_before": null,
+      "std_after": null,
+      "se": null,
+      "threshold": null,
+      "accepted": false,
+      "error": "No untried, dtype-valid (column, operation) combinations remain.",
+      "status": "error",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "native.country": "normalize_categories"
+      }
+    }
+  ],
+  "baseline_f1": -0.1054,
+  "final_f1": -0.1046,
+  "finished_at": "2026-09-30T09:39:03.248094+00:00"
+}

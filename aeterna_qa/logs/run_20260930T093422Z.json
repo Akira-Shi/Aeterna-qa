@@ -1,0 +1,131 @@
+{
+  "started_at": "2026-09-30T09:33:56.300459+00:00",
+  "meta": {
+    "scenario": "synthetic_injection",
+    "label": "STUDY C3 rate 15% seed 201 (SYNTHETIC)",
+    "declared_spec": [
+      {
+        "id": "C3",
+        "kind": "sentinel",
+        "column": "age",
+        "rate": 0.15,
+        "expected_fix": "sentinel_to_median",
+        "value": 999,
+        "expected_commit": false
+      }
+    ],
+    "evaluator": "lr",
+    "metric": "brier",
+    "planner": "openai/gpt-oss-20b"
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "column": "age",
+      "operation": "sentinel_to_median",
+      "reason": "The age column has 3,619 rows (15% of the dataset) with the sentinel value 999, far outside the realistic age range and clearly a missing\u2011value code. Replacing these with the median age directly addresses this defect and preserves the age feature for the model.",
+      "f1_before": -0.1058,
+      "f1_after": -0.1046,
+      "delta": 0.0012,
+      "std_before": 0.0027,
+      "std_after": 0.0025,
+      "se": 0.0003,
+      "threshold": 0.0008,
+      "accepted": true,
+      "error": null,
+      "status": "committed",
+      "chain_id": 0,
+      "chain_ops": {
+        "age": "sentinel_to_median"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 2,
+      "column": "capital.gain",
+      "operation": "sentinel_to_median",
+      "reason": "The defect in capital.gain shows 115 rows (47.7% of the dataset) with the sentinel value 99999, far outside the typical range and 38\u00d7 the count of neighboring values, indicating a missing\u2011value code. Replacing these with the median directly repairs the defect.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1055,
+      "delta": -0.0009,
+      "std_before": 0.0025,
+      "std_after": 0.0025,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "age": "sentinel_to_median"
+      }
+    },
+    {
+      "iteration": 3,
+      "column": "hours.per.week",
+      "operation": "clip_outliers",
+      "reason": "The evidence shows 59 rows (0.245%) have the value 99, which appears 30\u00d7 more often than its neighbors and is clearly a top\u2011code. Clipping these outliers will correct the defect.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1045,
+      "delta": 0.0001,
+      "std_before": 0.0025,
+      "std_after": 0.0025,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "age": "sentinel_to_median"
+      }
+    },
+    {
+      "iteration": 4,
+      "column": "*",
+      "operation": "dedupe_rows",
+      "reason": "11 rows (4.6% of the dataset) are exact duplicates of earlier rows, as indicated by the evidence \"11 rows are exact copies of an earlier row\". Removing these duplicates will eliminate redundant data and prevent skewing of model training.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1046,
+      "delta": -0.0,
+      "std_before": 0.0025,
+      "std_after": 0.0025,
+      "se": 0.0,
+      "threshold": 0.0,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "age": "sentinel_to_median"
+      }
+    },
+    {
+      "iteration": 5,
+      "column": null,
+      "operation": null,
+      "reason": null,
+      "f1_before": -0.1046,
+      "f1_after": null,
+      "delta": null,
+      "std_before": null,
+      "std_after": null,
+      "se": null,
+      "threshold": null,
+      "accepted": false,
+      "error": "No untried, dtype-valid (column, operation) combinations remain.",
+      "status": "error",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "age": "sentinel_to_median"
+      }
+    }
+  ],
+  "baseline_f1": -0.1058,
+  "final_f1": -0.1046,
+  "finished_at": "2026-09-30T09:34:22.212653+00:00"
+}

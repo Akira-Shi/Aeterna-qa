@@ -1,0 +1,110 @@
+{
+  "started_at": "2026-09-30T09:46:18.906013+00:00",
+  "meta": {
+    "scenario": "synthetic_injection",
+    "label": "STUDY C5 rate 1% seed 202 (SYNTHETIC)",
+    "declared_spec": [
+      {
+        "id": "C5",
+        "kind": "sentinel",
+        "column": "capital.gain",
+        "rate": 0.01,
+        "expected_fix": "sentinel_to_median",
+        "value": 9999999,
+        "expected_commit": true
+      }
+    ],
+    "evaluator": "lr",
+    "metric": "brier",
+    "planner": "openai/gpt-oss-20b"
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "column": "capital.gain",
+      "operation": "sentinel_to_median",
+      "reason": "241 rows (0.999%) contain the sentinel value 9999999, far outside the typical range and clearly a missing\u2011value code; replacing these with the column median directly repairs the defect.",
+      "f1_before": -0.1138,
+      "f1_after": -0.1046,
+      "delta": 0.0092,
+      "std_before": 0.0022,
+      "std_after": 0.0026,
+      "se": 0.0006,
+      "threshold": 0.0019,
+      "accepted": true,
+      "error": null,
+      "status": "committed",
+      "chain_id": 0,
+      "chain_ops": {
+        "capital.gain": "sentinel_to_median"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 2,
+      "column": "hours.per.week",
+      "operation": "clip_outliers",
+      "reason": "The top_coded defect in hours.per.week affects 59 rows (0.245% of the dataset), with the value 99 appearing 30\u00d7 more often than its neighbors, indicating a cap/top-code. Clipping outliers directly addresses this defect by limiting extreme values to the appropriate range.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1045,
+      "delta": 0.0001,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "capital.gain": "sentinel_to_median"
+      }
+    },
+    {
+      "iteration": 3,
+      "column": "*",
+      "operation": "dedupe_rows",
+      "reason": "17 rows (0.07%) are exact copies of earlier rows, indicating duplicate records that should be removed.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1046,
+      "delta": 0.0,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0,
+      "threshold": 0.0,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "capital.gain": "sentinel_to_median"
+      }
+    },
+    {
+      "iteration": 4,
+      "column": null,
+      "operation": null,
+      "reason": null,
+      "f1_before": -0.1046,
+      "f1_after": null,
+      "delta": null,
+      "std_before": null,
+      "std_after": null,
+      "se": null,
+      "threshold": null,
+      "accepted": false,
+      "error": "No untried, dtype-valid (column, operation) combinations remain.",
+      "status": "error",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "capital.gain": "sentinel_to_median"
+      }
+    }
+  ],
+  "baseline_f1": -0.1138,
+  "final_f1": -0.1046,
+  "finished_at": "2026-09-30T09:47:16.027545+00:00"
+}

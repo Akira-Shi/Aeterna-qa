@@ -1,0 +1,59 @@
+{
+  "started_at": "2026-09-29T04:17:30.099175+00:00",
+  "iterations": [
+    {
+      "iteration": 1,
+      "column": "native.country",
+      "operation": "fill_mode",
+      "reason": "Fill missing values with the most frequent category to preserve the majority of rows while addressing the 1.79% missingness in native.country.",
+      "f1_before": 0.6733,
+      "f1_after": 0.6707,
+      "delta": -0.0026,
+      "std_before": 0.0082,
+      "std_after": 0.0058,
+      "se": 0.0037,
+      "threshold": 0.0074,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 0
+    },
+    {
+      "iteration": 2,
+      "column": "workclass",
+      "operation": "fill_mode",
+      "reason": "The workclass column has a moderate 5.64% missingness. Filling missing values with the mode preserves all rows and is a common strategy for categorical data with low missing rates, avoiding the loss of potentially valuable observations.",
+      "f1_before": 0.6733,
+      "f1_after": 0.673,
+      "delta": -0.0003,
+      "std_before": 0.0082,
+      "std_after": 0.008,
+      "se": 0.0037,
+      "threshold": 0.0074,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 0
+    },
+    {
+      "iteration": 3,
+      "column": "occupation",
+      "operation": "fill_mode",
+      "reason": "Occupation has 5.66% missing values; filling with the mode preserves rows and reduces bias.",
+      "f1_before": 0.6733,
+      "f1_after": 0.6718,
+      "delta": -0.0016,
+      "std_before": 0.0082,
+      "std_after": 0.0061,
+      "se": 0.0037,
+      "threshold": 0.0074,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 0
+    }
+  ],
+  "baseline_f1": 0.6733,
+  "final_f1": 0.6733,
+  "finished_at": "2026-09-29T04:17:44.274805+00:00"
+}

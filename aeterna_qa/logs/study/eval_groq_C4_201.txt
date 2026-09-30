@@ -1,0 +1,30 @@
+Fixed 5-fold x 3-repeat evaluation folds computed from the raw dataset (15 total train/test splits, reused for every comparison in this run). Bonferroni-corrected for up to 16 look-backs in this run (exhaustive_search.py uses a different correction, sized to its own 64 comparisons -- the two scripts' threshold numbers are not meant to match).
+
+Evaluator: LR
+Baseline neg-Brier (SYNTHETIC-injected, as-is), fixed-fold: -0.1054 +/- 0.0026   [F1 0.6640]
+
+--- Iteration 1 ---
+Planner: column='native.country' operation='normalize_categories' reason='The defect involves 7088 rows (29.377% of the dataset) where 39 categories are split into 119 spellings, indicating significant category variants that will be corrected by normalize_categories.'
+Cumulative neg-Brier (chain=[('native.country', 'normalize_categories')]) before=-0.1054 after=-0.1046 paired_delta=+0.0009 (threshold=0.0008, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> COMMITTED
+
+--- Iteration 2 ---
+Planner: column='capital.gain' operation='sentinel_to_median' reason='115 rows (0.477%) contain the sentinel value 99999 in capital.gain, far outside the typical range and 38× the count of neighboring values, indicating a missing‑value code that should be replaced with the median.'
+Cumulative neg-Brier (chain=[('capital.gain', 'sentinel_to_median')]) before=-0.1046 after=-0.1055 paired_delta=-0.0009 (threshold=0.0005, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0000); chain stays (empty)
+
+--- Iteration 3 ---
+Planner: column='hours.per.week' operation='clip_outliers' reason='The defect in hours.per.week shows 59 rows (0.245%) with the value 99 appearing 30× the typical count of its neighbours, indicating a top‑coded outlier that should be clipped.'
+Cumulative neg-Brier (chain=[('hours.per.week', 'clip_outliers')]) before=-0.1046 after=-0.1044 paired_delta=+0.0001 (threshold=0.0005, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0000); chain stays (empty)
+
+--- Iteration 4 ---
+Planner: column='*' operation='dedupe_rows' reason='The defect report shows 17 rows (0.07% of the dataset) are exact duplicates of earlier rows. Removing these duplicates will clean the data and prevent model overfitting to repeated observations.'
+Cumulative neg-Brier (chain=[('*', 'dedupe_rows')]) before=-0.1046 after=-0.1046 paired_delta=+0.0000 (threshold=0.0000, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0000); chain stays (empty)
+
+--- Iteration 5 ---
+Planner failed or chain exhausted: No untried, dtype-valid (column, operation) combinations remain.
+Final neg-Brier: -0.1046   [F1 0.6657]
+Committed operations: {'native.country': 'normalize_categories'}
+Distinct full (column -> operation) states evaluated this run (deduplicated): 4.
+
+Answer key check (SYNTHETIC run -- did the agent commit the fix that undoes each injected defect?)
+  C4: negative control, harmless defect, agent should NOT fix -> WRONG (committed normalize_categories)
+Audit log written to: C:\Users\Raghav\Downloads\Capstone\aeterna_qa\logs\run_20260930T093903Z.json

@@ -1,0 +1,130 @@
+{
+  "started_at": "2026-09-30T09:40:04.787871+00:00",
+  "meta": {
+    "scenario": "synthetic_injection",
+    "label": "STUDY C4 rate 30% seed 202 (SYNTHETIC)",
+    "declared_spec": [
+      {
+        "id": "C4",
+        "kind": "category_variants",
+        "column": "native.country",
+        "rate": 0.3,
+        "expected_fix": null,
+        "expected_commit": false
+      }
+    ],
+    "evaluator": "lr",
+    "metric": "brier",
+    "planner": "openai/gpt-oss-20b"
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "column": "native.country",
+      "operation": "normalize_categories",
+      "reason": "The defect shows 40 categories split into 122 spellings, with 7,092 rows (29.393%) using non-dominant spellings. Normalizing categories will consolidate these variants into a single consistent label, directly repairing the category_variants defect.",
+      "f1_before": -0.1055,
+      "f1_after": -0.1046,
+      "delta": 0.0009,
+      "std_before": 0.0024,
+      "std_after": 0.0026,
+      "se": 0.0002,
+      "threshold": 0.0008,
+      "accepted": true,
+      "error": null,
+      "status": "committed",
+      "chain_id": 0,
+      "chain_ops": {
+        "native.country": "normalize_categories"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 2,
+      "column": "capital.gain",
+      "operation": "sentinel_to_median",
+      "reason": "115 rows (0.477%) contain the sentinel value 99999, far outside the typical range and 38\u00d7 the count of neighboring values, indicating a missing\u2011value code that should be replaced with the median.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1055,
+      "delta": -0.0009,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "native.country": "normalize_categories"
+      }
+    },
+    {
+      "iteration": 3,
+      "column": "*",
+      "operation": "dedupe_rows",
+      "reason": "17 rows are exact copies of an earlier row, affecting 7% of the dataset. Removing these duplicates will eliminate redundant data and improve model reliability.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1046,
+      "delta": 0.0,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0,
+      "threshold": 0.0,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "native.country": "normalize_categories"
+      }
+    },
+    {
+      "iteration": 4,
+      "column": "hours.per.week",
+      "operation": "clip_outliers",
+      "reason": "The evidence shows 59 rows (0.245%) have the value 99, which is 30\u00d7 the typical count of neighboring values and appears to be a top\u2011code. Clipping outliers will replace these extreme values with a more realistic upper bound, directly addressing the top_coded defect.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1044,
+      "delta": 0.0001,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "native.country": "normalize_categories"
+      }
+    },
+    {
+      "iteration": 5,
+      "column": null,
+      "operation": null,
+      "reason": null,
+      "f1_before": -0.1046,
+      "f1_after": null,
+      "delta": null,
+      "std_before": null,
+      "std_after": null,
+      "se": null,
+      "threshold": null,
+      "accepted": false,
+      "error": "No untried, dtype-valid (column, operation) combinations remain.",
+      "status": "error",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "native.country": "normalize_categories"
+      }
+    }
+  ],
+  "baseline_f1": -0.1055,
+  "final_f1": -0.1046,
+  "finished_at": "2026-09-30T09:41:14.457337+00:00"
+}

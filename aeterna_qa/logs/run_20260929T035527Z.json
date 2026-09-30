@@ -1,0 +1,80 @@
+{
+  "started_at": "2026-09-29T03:55:14.712063+00:00",
+  "iterations": [
+    {
+      "iteration": 1,
+      "column": "native.country",
+      "operation": "fill_mode",
+      "reason": "Filling missing native.country values with the mode preserves all rows and addresses the 1.79% missingness without discarding data.",
+      "f1_before": 0.6708,
+      "f1_after": 0.6581,
+      "delta": -0.0127,
+      "threshold": 0.005,
+      "accepted": false,
+      "error": null
+    },
+    {
+      "iteration": 2,
+      "column": "workclass",
+      "operation": "fill_mode",
+      "reason": "Filling missing workclass values with the mode preserves the full dataset size and mitigates the impact of a moderate 5.64% missingness, avoiding the loss of data that would result from dropping rows.",
+      "f1_before": 0.6708,
+      "f1_after": 0.6676,
+      "delta": -0.0032,
+      "threshold": 0.005,
+      "accepted": false,
+      "error": null
+    },
+    {
+      "iteration": 3,
+      "column": "native.country",
+      "operation": "drop_rows",
+      "reason": "Removing rows with missing native.country values will eliminate 1.79% of the dataset, which is the smallest loss among the available options while ensuring that the remaining data is complete for this column.",
+      "f1_before": 0.6708,
+      "f1_after": 0.6775,
+      "delta": 0.0067,
+      "threshold": 0.005,
+      "accepted": true,
+      "error": null
+    },
+    {
+      "iteration": 4,
+      "column": "occupation",
+      "operation": "fill_mode",
+      "reason": "The occupation column has a moderate missing rate (~5.7%) and filling missing values with the most frequent category preserves all rows while providing a reasonable imputation for downstream analysis.",
+      "f1_before": 0.6775,
+      "f1_after": 0.6778,
+      "delta": 0.0003,
+      "threshold": 0.005,
+      "accepted": false,
+      "error": null
+    },
+    {
+      "iteration": 5,
+      "column": "workclass",
+      "operation": "drop_rows",
+      "reason": "High missingness (5.66%) and no viable imputation strategy; dropping rows will reduce noise and preserve data integrity.",
+      "f1_before": 0.6775,
+      "f1_after": 0.6877,
+      "delta": 0.0101,
+      "threshold": 0.005,
+      "accepted": true,
+      "error": null
+    },
+    {
+      "iteration": 6,
+      "column": "occupation",
+      "operation": "drop_rows",
+      "reason": "High outlier count in related numeric columns suggests inconsistent occupation entries; dropping rows with missing occupation reduces noise.",
+      "f1_before": 0.6877,
+      "f1_after": 0.6883,
+      "delta": 0.0007,
+      "threshold": 0.005,
+      "accepted": false,
+      "error": null
+    }
+  ],
+  "baseline_f1": 0.6708,
+  "final_f1": 0.6877,
+  "finished_at": "2026-09-29T03:55:27.522573+00:00"
+}
