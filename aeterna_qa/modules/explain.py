@@ -114,6 +114,9 @@ def build_facts(run: dict) -> dict:
     for ch in chains.values():
         if ch["status"] == "committed" and ch["ops"]:
             committed_ops.update(ch["ops"])
+    # Older logs (before chain_ops was recorded) cannot say WHICH ops a committed
+    # chain held. Flag that instead of presenting an empty set as "(none)".
+    ops_recorded = all(bool(c["ops"]) for c in chains.values() if c["status"] == "committed")
 
     evaluated_all = [i for i in its if i.get("delta") is not None and i.get("ratio") is not None]
     closest = max(evaluated_all, key=lambda i: i["ratio"]) if evaluated_all else None
@@ -128,6 +131,7 @@ def build_facts(run: dict) -> dict:
         "baseline": run.get("baseline_f1"),
         "final": run.get("final_f1"),
         "committed_ops": committed_ops,
+        "committed_ops_recorded": ops_recorded,
         "n_committed": n_committed,
         "n_chains": n_eval_chains,
         "n_evaluations": len(evaluated_all),
@@ -179,8 +183,10 @@ def headline(facts: dict) -> str:
             s += (f" Closest miss: iteration {c['iteration']} at {c['ratio']:.0%} of its bar "
                   f"(delta {c['delta']:+.4f}, bar {c['threshold']:.4f}).")
         return s
+    ops_txt = (_ops_str(facts["committed_ops"]) if facts["committed_ops_recorded"]
+               else "committed operations not recorded in this older log")
     return (f"{facts['n_committed']} of {facts['n_chains']} chain(s) committed "
-            f"({_ops_str(facts['committed_ops'])}). {facts['metric']} {b:.4f} -> {f:.4f} ({f - b:+.4f}).")
+            f"({ops_txt}). {facts['metric']} {b:.4f} -> {f:.4f} ({f - b:+.4f}).")
 
 
 # --------------------------------------------------------------------------

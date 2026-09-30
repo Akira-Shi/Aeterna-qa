@@ -284,6 +284,11 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - Documentation.md restructured: added a "Current state" block, rewrote the module table, rewrote Known issues. Older sections are history.
 - Rule-planner per-run logs for all 15 runs are now in `logs/study/`.
 
+### 2026-09-30 -- T1: `committed_ops: None` resolved (no logging bug; Explain headline fixed for older logs)
+- **Finding (Certain, checked programmatically over `logs/run_*.json`):** `audit.log_iteration` stores `dict(committed_ops)` and every `pipeline.py` call passes it. All 19 logs from `run_20260930T033353Z` onward (30 Sep) have the key on every iteration and never `None`; the 11 logs `run_20260929T035527Z` to `run_20260929T062818Z` (29 Sep) lack the key entirely (and `chain_ops`). `None` only arises in `audit.py` if a caller omits the argument, and no caller does. Semantics to remember: `committed_ops` on an iteration is the set committed BEFORE that evaluation, so the committing iteration itself shows the pre-commit set; later iterations show the new one (e.g. `run_20260930T093200Z.json`: 0,1,1,1,1). Study logs (`logs/study/`) hold no `run_*.json`.
+- **Real defect found in Explain, not in logging:** on older logs the headline read "1 of 2 chain(s) committed ((none))", presenting an unknown as an empty set. `explain.build_facts` now sets `committed_ops_recorded`; `headline` says "committed operations not recorded in this older log" when a committed chain has no recorded ops.
+- New `modules/explain_tests.py` (`python -m modules.explain_tests`). No change to audit schema, evaluator, gate, commit rule, scenarios or models.
+
 <!-- Add new entries above this line, most recent on top. Format:
 ### YYYY-MM-DD
 - What you built/changed
