@@ -1,0 +1,19 @@
+{
+ "scenario": "C4",
+ "seed": 201,
+ "synthetic_corruption": {
+  "id": "C4",
+  "kind": "category_variants",
+  "column": "native.country",
+  "rate": 0.3,
+  "expected_fix": null,
+  "expected_commit": false,
+  "rows": null
+ },
+ "committed_ops": {
+  "native.country": "normalize_categories"
+ },
+ "rows_in": 24128,
+ "rows_out": 24128,
+ "cells_changed_vs_corrupted": 7088
+}

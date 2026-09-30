@@ -1,0 +1,279 @@
+{
+  "started_at": "2026-09-30T03:30:45.382831+00:00",
+  "meta": {
+    "scenario": "real_adult",
+    "label": "REAL DATA (Adult Census, real '?' missingness)"
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "column": "native.country",
+      "operation": "fill_mode",
+      "reason": "Filling missing native.country values with the mode preserves all rows and addresses the 1.79% missingness, which is the lowest among the candidate columns, making it the most efficient choice for maintaining dataset size while reducing missing data.",
+      "f1_before": 0.6716,
+      "f1_after": 0.6701,
+      "delta": -0.0015,
+      "std_before": 0.0086,
+      "std_after": 0.0075,
+      "se": 0.0026,
+      "threshold": 0.008,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 0,
+      "chain_ops": {
+        "native.country": "fill_mode"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 2,
+      "column": "native.country",
+      "operation": "fill_unknown",
+      "reason": "Preserve all rows while handling the small 1.79% missingness by marking them as 'Unknown'.",
+      "f1_before": 0.6716,
+      "f1_after": 0.6717,
+      "delta": 0.0001,
+      "std_before": 0.0086,
+      "std_after": 0.0063,
+      "se": 0.002,
+      "threshold": 0.0062,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 0,
+      "chain_ops": {
+        "native.country": "fill_unknown"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 3,
+      "column": "workclass",
+      "operation": "fill_mode",
+      "reason": "The workclass column has a moderate missing rate (~5.6%) and filling missing values with the most frequent category is a straightforward, low\u2011impact strategy that preserves all rows.",
+      "f1_before": 0.6716,
+      "f1_after": 0.672,
+      "delta": 0.0004,
+      "std_before": 0.0086,
+      "std_after": 0.0081,
+      "se": 0.0026,
+      "threshold": 0.0081,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 0,
+      "chain_ops": {
+        "native.country": "fill_unknown",
+        "workclass": "fill_mode"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 4,
+      "column": "workclass",
+      "operation": "fill_unknown",
+      "reason": "Fill missing workclass values with 'Unknown' to preserve all rows and maintain categorical integrity.",
+      "f1_before": 0.6716,
+      "f1_after": 0.6711,
+      "delta": -0.0005,
+      "std_before": 0.0086,
+      "std_after": 0.0078,
+      "se": 0.0018,
+      "threshold": 0.0055,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 0,
+      "chain_ops": {
+        "native.country": "fill_unknown",
+        "workclass": "fill_unknown"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 5,
+      "column": "occupation",
+      "operation": "fill_unknown",
+      "reason": "Preserve all rows while handling missing occupation values by marking them as 'unknown', which maintains data integrity and allows models to treat missingness as a distinct category.",
+      "f1_before": 0.6716,
+      "f1_after": 0.6728,
+      "delta": 0.0012,
+      "std_before": 0.0086,
+      "std_after": 0.0086,
+      "se": 0.0026,
+      "threshold": 0.0079,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 0,
+      "chain_ops": {
+        "native.country": "fill_unknown",
+        "workclass": "fill_unknown",
+        "occupation": "fill_unknown"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 6,
+      "column": "occupation",
+      "operation": "fill_mode",
+      "reason": "Filling missing occupation values with the mode preserves the dataset size and reduces missingness (5.66%) without discarding rows, which is preferable to dropping rows or attempting other operations that have already been rejected.",
+      "f1_before": 0.6716,
+      "f1_after": 0.6726,
+      "delta": 0.001,
+      "std_before": 0.0086,
+      "std_after": 0.008,
+      "se": 0.0027,
+      "threshold": 0.0082,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 0,
+      "chain_ops": {
+        "native.country": "fill_unknown",
+        "workclass": "fill_unknown",
+        "occupation": "fill_mode"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 7,
+      "column": "native.country",
+      "operation": "drop_rows",
+      "reason": "Removing rows with missing native.country values reduces missingness (1.79%) and avoids potential bias from imputation, especially after prior fill attempts were rejected.",
+      "f1_before": 0.6716,
+      "f1_after": 0.6731,
+      "delta": 0.0015,
+      "std_before": 0.0086,
+      "std_after": 0.0102,
+      "se": 0.0028,
+      "threshold": 0.0085,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 0,
+      "chain_ops": {
+        "native.country": "drop_rows",
+        "workclass": "fill_unknown",
+        "occupation": "fill_mode"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 8,
+      "column": "workclass",
+      "operation": "drop_rows",
+      "reason": "The workclass column has a relatively high missing rate (5.64%) and prior attempts to impute it (mode or unknown) were rejected. Dropping rows with missing workclass values will reduce noise and preserve data quality for downstream analysis.",
+      "f1_before": 0.6716,
+      "f1_after": 0.6731,
+      "delta": 0.0015,
+      "std_before": 0.0086,
+      "std_after": 0.0092,
+      "se": 0.0027,
+      "threshold": 0.0083,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 0,
+      "chain_ops": {
+        "native.country": "drop_rows",
+        "workclass": "drop_rows",
+        "occupation": "fill_mode"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 9,
+      "column": "occupation",
+      "operation": "drop_rows",
+      "reason": "High missingness (5.66%) and prior attempts to impute failed; dropping rows with missing occupation will reduce noise and improve model performance.",
+      "f1_before": 0.6716,
+      "f1_after": 0.6731,
+      "delta": 0.0015,
+      "std_before": 0.0086,
+      "std_after": 0.0079,
+      "se": 0.0028,
+      "threshold": 0.0085,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 0,
+      "chain_ops": {
+        "native.country": "drop_rows",
+        "workclass": "drop_rows",
+        "occupation": "drop_rows"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 10,
+      "column": null,
+      "operation": null,
+      "reason": null,
+      "f1_before": 0.6716,
+      "f1_after": null,
+      "delta": null,
+      "std_before": null,
+      "std_after": null,
+      "se": null,
+      "threshold": null,
+      "accepted": false,
+      "error": "No untried, dtype-valid (column, operation) combinations remain.",
+      "status": "error",
+      "chain_id": 0,
+      "chain_ops": {
+        "native.country": "drop_rows",
+        "workclass": "drop_rows",
+        "occupation": "drop_rows"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 11,
+      "column": "workclass",
+      "operation": "fill_mode",
+      "reason": "Fill missing workclass values with the most frequent category to preserve data integrity and avoid discarding rows, while handling the 5.64% missingness efficiently.",
+      "f1_before": 0.6716,
+      "f1_after": 0.673,
+      "delta": 0.0014,
+      "std_before": 0.0086,
+      "std_after": 0.0071,
+      "se": 0.0024,
+      "threshold": 0.0073,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {
+        "workclass": "fill_mode"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 12,
+      "column": "occupation",
+      "operation": "fill_mode",
+      "reason": "Fill missing values with the most frequent category to preserve dataset size and reduce missingness.",
+      "f1_before": 0.6716,
+      "f1_after": 0.6712,
+      "delta": -0.0004,
+      "std_before": 0.0086,
+      "std_after": 0.0095,
+      "se": 0.0031,
+      "threshold": 0.0096,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {
+        "workclass": "fill_mode",
+        "occupation": "fill_mode"
+      },
+      "committed_ops": {}
+    }
+  ],
+  "baseline_f1": 0.6716,
+  "final_f1": 0.6716,
+  "finished_at": "2026-09-30T03:33:53.069867+00:00"
+}

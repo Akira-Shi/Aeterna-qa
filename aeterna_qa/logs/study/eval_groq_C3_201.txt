@@ -1,0 +1,30 @@
+Fixed 5-fold x 3-repeat evaluation folds computed from the raw dataset (15 total train/test splits, reused for every comparison in this run). Bonferroni-corrected for up to 16 look-backs in this run (exhaustive_search.py uses a different correction, sized to its own 64 comparisons -- the two scripts' threshold numbers are not meant to match).
+
+Evaluator: LR
+Baseline neg-Brier (SYNTHETIC-injected, as-is), fixed-fold: -0.1058 +/- 0.0027   [F1 0.6589]
+
+--- Iteration 1 ---
+Planner: column='age' operation='sentinel_to_median' reason='The age column has 3,619 rows (15% of the dataset) with the sentinel value 999, far outside the realistic age range and clearly a missing‑value code. Replacing these with the median age directly addresses this defect and preserves the age feature for the model.'
+Cumulative neg-Brier (chain=[('age', 'sentinel_to_median')]) before=-0.1058 after=-0.1046 paired_delta=+0.0012 (threshold=0.0008, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> COMMITTED
+
+--- Iteration 2 ---
+Planner: column='capital.gain' operation='sentinel_to_median' reason='The defect in capital.gain shows 115 rows (47.7% of the dataset) with the sentinel value 99999, far outside the typical range and 38× the count of neighboring values, indicating a missing‑value code. Replacing these with the median directly repairs the defect.'
+Cumulative neg-Brier (chain=[('capital.gain', 'sentinel_to_median')]) before=-0.1046 after=-0.1055 paired_delta=-0.0009 (threshold=0.0005, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0000); chain stays (empty)
+
+--- Iteration 3 ---
+Planner: column='hours.per.week' operation='clip_outliers' reason='The evidence shows 59 rows (0.245%) have the value 99, which appears 30× more often than its neighbors and is clearly a top‑code. Clipping these outliers will correct the defect.'
+Cumulative neg-Brier (chain=[('hours.per.week', 'clip_outliers')]) before=-0.1046 after=-0.1045 paired_delta=+0.0001 (threshold=0.0005, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0000); chain stays (empty)
+
+--- Iteration 4 ---
+Planner: column='*' operation='dedupe_rows' reason='11 rows (4.6% of the dataset) are exact duplicates of earlier rows, as indicated by the evidence "11 rows are exact copies of an earlier row". Removing these duplicates will eliminate redundant data and prevent skewing of model training.'
+Cumulative neg-Brier (chain=[('*', 'dedupe_rows')]) before=-0.1046 after=-0.1046 paired_delta=-0.0000 (threshold=0.0000, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0000); chain stays (empty)
+
+--- Iteration 5 ---
+Planner failed or chain exhausted: No untried, dtype-valid (column, operation) combinations remain.
+Final neg-Brier: -0.1046   [F1 0.6653]
+Committed operations: {'age': 'sentinel_to_median'}
+Distinct full (column -> operation) states evaluated this run (deduplicated): 4.
+
+Answer key check (SYNTHETIC run -- did the agent commit the fix that undoes each injected defect?)
+  C3: negative control, harmless defect, agent should NOT fix -> WRONG (committed sentinel_to_median)
+Audit log written to: C:\Users\Raghav\Downloads\Capstone\aeterna_qa\logs\run_20260930T093422Z.json

@@ -1,0 +1,531 @@
+{
+ "planner": "groq",
+ "results": [
+  {
+   "scenario": "C1",
+   "seed": 201,
+   "rate": 0.1,
+   "expected_commit": true,
+   "committed_ops": {},
+   "outcome_as_expected": false,
+   "kind": "miss",
+   "gate_injected": -0.10509042727223479,
+   "gate_final": -0.10509042727223479,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.0,
+   "delta_ci95": [
+    0.0,
+    0.0
+   ],
+   "recovery_fraction": 0.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "occupation": "normalize_categories",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340851,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 2339,
+    "injected_rows_present": 2339,
+    "restored_share": 0.0
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T092833Z.json"
+  },
+  {
+   "scenario": "C1",
+   "seed": 202,
+   "rate": 0.1,
+   "expected_commit": true,
+   "committed_ops": {},
+   "outcome_as_expected": false,
+   "kind": "miss",
+   "gate_injected": -0.10496159895791275,
+   "gate_final": -0.10496159895791275,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.0,
+   "delta_ci95": [
+    0.0,
+    0.0
+   ],
+   "recovery_fraction": 0.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "occupation": "normalize_categories",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340851,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 2344,
+    "injected_rows_present": 2344,
+    "restored_share": 0.0
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T093011Z.json"
+  },
+  {
+   "scenario": "C1",
+   "seed": 203,
+   "rate": 0.1,
+   "expected_commit": true,
+   "committed_ops": {
+    "occupation": "normalize_categories"
+   },
+   "outcome_as_expected": true,
+   "kind": "hit",
+   "gate_injected": -0.10517561859437044,
+   "gate_final": -0.10455160749224607,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.000624011102124363,
+   "delta_ci95": [
+    0.000273167902765085,
+    0.0009748543014836408
+   ],
+   "recovery_fraction": 1.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "occupation": "normalize_categories",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340851,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 2337,
+    "injected_rows_present": 2337,
+    "restored_share": 1.0
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T093109Z.json"
+  },
+  {
+   "scenario": "C2",
+   "seed": 201,
+   "rate": 0.3,
+   "expected_commit": false,
+   "committed_ops": {
+    "age": "rescale_units"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.10576579163525457,
+   "gate_final": -0.10455160749224607,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.0012141841430084713,
+   "delta_ci95": [
+    0.0006086686864363139,
+    0.0018196995995806288
+   ],
+   "recovery_fraction": 1.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "age": "rescale_units",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340851,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 7238,
+    "injected_rows_present": 7238,
+    "restored_share": 1.0
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T093200Z.json"
+  },
+  {
+   "scenario": "C2",
+   "seed": 202,
+   "rate": 0.3,
+   "expected_commit": false,
+   "committed_ops": {
+    "age": "rescale_units"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.10569344376434925,
+   "gate_final": -0.10455160749224607,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.0011418362721031601,
+   "delta_ci95": [
+    0.0005767707802295009,
+    0.0017069017639768193
+   ],
+   "recovery_fraction": 1.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "age": "rescale_units",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340851,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 7238,
+    "injected_rows_present": 7238,
+    "restored_share": 1.0
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T093246Z.json"
+  },
+  {
+   "scenario": "C2",
+   "seed": 203,
+   "rate": 0.3,
+   "expected_commit": false,
+   "committed_ops": {
+    "age": "rescale_units"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.10577974697127779,
+   "gate_final": -0.10455160749224607,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.001228139479031709,
+   "delta_ci95": [
+    0.0005872142337459569,
+    0.0018690647243174612
+   ],
+   "recovery_fraction": 1.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "age": "rescale_units",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340851,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 7238,
+    "injected_rows_present": 7238,
+    "restored_share": 1.0
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T093335Z.json"
+  },
+  {
+   "scenario": "C3",
+   "seed": 201,
+   "rate": 0.15,
+   "expected_commit": false,
+   "committed_ops": {
+    "age": "sentinel_to_median"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.10578234498849651,
+   "gate_final": -0.10459737839601506,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.0011849665924814374,
+   "delta_ci95": [
+    0.0006458383662381428,
+    0.001724094818724732
+   ],
+   "recovery_fraction": 0.9628101817743945,
+   "blind_clean_ops": {
+    "age": "sentinel_to_median",
+    "capital.gain": "sentinel_to_median",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10541349277139293,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 3619,
+    "injected_rows_present": 3619,
+    "mae": 10.742746615087041,
+    "mae_median_reference": 10.742746615087041,
+    "mae_unrepaired": 960.7919314727825
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T093422Z.json"
+  },
+  {
+   "scenario": "C3",
+   "seed": 202,
+   "rate": 0.15,
+   "expected_commit": false,
+   "committed_ops": {
+    "age": "sentinel_to_median"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.10576318498431614,
+   "gate_final": -0.10468941672315714,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.0010737682611590158,
+   "delta_ci95": [
+    0.0005125424418731027,
+    0.0016349940804449288
+   ],
+   "recovery_fraction": 0.8862563626238935,
+   "blind_clean_ops": {
+    "age": "sentinel_to_median",
+    "capital.gain": "sentinel_to_median",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10549173468974372,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 3619,
+    "injected_rows_present": 3619,
+    "mae": 10.69825918762089,
+    "mae_median_reference": 10.69825918762089,
+    "mae_unrepaired": 960.4871511467256
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T093604Z.json"
+  },
+  {
+   "scenario": "C3",
+   "seed": 203,
+   "rate": 0.15,
+   "expected_commit": false,
+   "committed_ops": {},
+   "outcome_as_expected": true,
+   "kind": "correct_rollback",
+   "gate_injected": -0.10579296100275845,
+   "gate_final": -0.10579296100275845,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.0,
+   "delta_ci95": [
+    0.0,
+    0.0
+   ],
+   "recovery_fraction": 0.0,
+   "blind_clean_ops": {
+    "age": "sentinel_to_median",
+    "capital.gain": "sentinel_to_median",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10556731393406664,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 3619,
+    "injected_rows_present": 3619,
+    "mae": 961.0848300635535,
+    "mae_median_reference": 10.489638021552915,
+    "mae_unrepaired": 961.0848300635535
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T093717Z.json"
+  },
+  {
+   "scenario": "C4",
+   "seed": 201,
+   "rate": 0.3,
+   "expected_commit": false,
+   "committed_ops": {
+    "native.country": "normalize_categories"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.10543079718603025,
+   "gate_final": -0.10455160749224607,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.0008791896937841937,
+   "delta_ci95": [
+    0.00036450926668661263,
+    0.0013938701208817748
+   ],
+   "recovery_fraction": 1.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "native.country": "normalize_categories",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340848,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 7089,
+    "injected_rows_present": 7089,
+    "restored_share": 0.9998589363803075
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T093903Z.json"
+  },
+  {
+   "scenario": "C4",
+   "seed": 202,
+   "rate": 0.3,
+   "expected_commit": false,
+   "committed_ops": {
+    "native.country": "normalize_categories"
+   },
+   "outcome_as_expected": false,
+   "kind": "false_commit",
+   "gate_injected": -0.10545100200535888,
+   "gate_final": -0.10455160749224607,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.000899394513112825,
+   "delta_ci95": [
+    0.0003975351454329247,
+    0.0014012538807927253
+   ],
+   "recovery_fraction": 1.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "native.country": "normalize_categories",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10537168945340848,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 7093,
+    "injected_rows_present": 7093,
+    "restored_share": 0.9998590159311997
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T094114Z.json"
+  },
+  {
+   "scenario": "C4",
+   "seed": 203,
+   "rate": 0.3,
+   "expected_commit": false,
+   "committed_ops": {},
+   "outcome_as_expected": true,
+   "kind": "correct_rollback",
+   "gate_injected": -0.10577435278604506,
+   "gate_final": -0.10577435278604506,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.0,
+   "delta_ci95": [
+    0.0,
+    0.0
+   ],
+   "recovery_fraction": 0.0,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "native.country": "normalize_categories",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.1053716894534085,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 7090,
+    "injected_rows_present": 7090,
+    "restored_share": 0.0
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T094346Z.json"
+  },
+  {
+   "scenario": "C5",
+   "seed": 201,
+   "rate": 0.01,
+   "expected_commit": true,
+   "committed_ops": {
+    "capital.gain": "sentinel_to_median"
+   },
+   "outcome_as_expected": true,
+   "kind": "hit",
+   "gate_injected": -0.11376647198591258,
+   "gate_final": -0.10462886875414629,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.009137603231766274,
+   "delta_ci95": [
+    0.007933128419182195,
+    0.010342078044350353
+   ],
+   "recovery_fraction": 0.9916155835006232,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10450171434981123,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 241,
+    "injected_rows_present": 241,
+    "mae": 621.6182572614108,
+    "mae_median_reference": 621.6182572614108,
+    "mae_unrepaired": 9999377.381742738
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T094529Z.json"
+  },
+  {
+   "scenario": "C5",
+   "seed": 202,
+   "rate": 0.01,
+   "expected_commit": true,
+   "committed_ops": {
+    "capital.gain": "sentinel_to_median"
+   },
+   "outcome_as_expected": true,
+   "kind": "hit",
+   "gate_injected": -0.11377081251656107,
+   "gate_final": -0.1046063138412999,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.009164498675261161,
+   "delta_ci95": [
+    0.007923695585651256,
+    0.010405301764871066
+   ],
+   "recovery_fraction": 0.9940660448585811,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10448465520032627,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 241,
+    "injected_rows_present": 241,
+    "mae": 391.24896265560164,
+    "mae_median_reference": 391.24896265560164,
+    "mae_unrepaired": 9999607.751037344
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T094716Z.json"
+  },
+  {
+   "scenario": "C5",
+   "seed": 203,
+   "rate": 0.01,
+   "expected_commit": true,
+   "committed_ops": {
+    "capital.gain": "sentinel_to_median"
+   },
+   "outcome_as_expected": true,
+   "kind": "hit",
+   "gate_injected": -0.11378076428637637,
+   "gate_final": -0.10467718325071769,
+   "gate_clean": -0.10455160749224607,
+   "delta_vs_injected": 0.009103581035658713,
+   "delta_ci95": [
+    0.007937695000349625,
+    0.010269467070967802
+   ],
+   "recovery_fraction": 0.9863935827212853,
+   "blind_clean_ops": {
+    "capital.gain": "sentinel_to_median",
+    "*": "dedupe_rows",
+    "hours.per.week": "clip_outliers"
+   },
+   "gate_blind_clean": -0.10456139644608288,
+   "grading": {
+    "rows_dropped": 0,
+    "collateral_cells": 0,
+    "injected_rows": 241,
+    "injected_rows_present": 241,
+    "mae": 1064.759336099585,
+    "mae_median_reference": 1064.759336099585,
+    "mae_unrepaired": 9998934.240663901
+   },
+   "log_path": "C:\\Users\\Raghav\\Downloads\\Capstone\\aeterna_qa\\logs\\run_20260930T094856Z.json"
+  }
+ ]
+}

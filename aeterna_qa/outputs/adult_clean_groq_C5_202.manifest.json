@@ -1,0 +1,20 @@
+{
+ "scenario": "C5",
+ "seed": 202,
+ "synthetic_corruption": {
+  "id": "C5",
+  "kind": "sentinel",
+  "column": "capital.gain",
+  "rate": 0.01,
+  "expected_fix": "sentinel_to_median",
+  "value": 9999999,
+  "expected_commit": true,
+  "rows": null
+ },
+ "committed_ops": {
+  "capital.gain": "sentinel_to_median"
+ },
+ "rows_in": 24128,
+ "rows_out": 24128,
+ "cells_changed_vs_corrupted": 241
+}

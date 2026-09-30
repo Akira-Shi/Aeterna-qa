@@ -1,0 +1,26 @@
+Fixed 5-fold x 3-repeat evaluation folds computed from the raw dataset (15 total train/test splits, reused for every comparison in this run). Bonferroni-corrected for up to 16 look-backs in this run (exhaustive_search.py uses a different correction, sized to its own 64 comparisons -- the two scripts' threshold numbers are not meant to match).
+
+Evaluator: LR
+Baseline neg-Brier (SYNTHETIC-injected, as-is), fixed-fold: -0.1138 +/- 0.0022   [F1 0.6317]
+
+--- Iteration 1 ---
+Planner: column='capital.gain' operation='sentinel_to_median' reason='241 rows (0.999%) contain the sentinel value 9999999 in capital.gain, far outside the real range and clearly a missing‑value code; replacing it with the median directly repairs this defect.'
+Cumulative neg-Brier (chain=[('capital.gain', 'sentinel_to_median')]) before=-0.1138 after=-0.1047 paired_delta=+0.0091 (threshold=0.0017, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> COMMITTED
+
+--- Iteration 2 ---
+Planner: column='hours.per.week' operation='clip_outliers' reason='59 rows (0.245%) have the value 99, 30× the typical count of its neighbours, indicating a top‑code; clipping these outliers directly repairs the top_coded defect.'
+Cumulative neg-Brier (chain=[('hours.per.week', 'clip_outliers')]) before=-0.1047 after=-0.1046 paired_delta=+0.0001 (threshold=0.0005, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0000); chain stays (empty)
+
+--- Iteration 3 ---
+Planner: column='*' operation='dedupe_rows' reason='The defect report shows 17 rows (0.07%) are exact duplicates of earlier rows, indicating duplicate data that should be removed to avoid bias and redundancy.'
+Cumulative neg-Brier (chain=[('*', 'dedupe_rows')]) before=-0.1047 after=-0.1047 paired_delta=-0.0000 (threshold=0.0000, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0000); chain stays (empty)
+
+--- Iteration 4 ---
+Planner failed or chain exhausted: No untried, dtype-valid (column, operation) combinations remain.
+Final neg-Brier: -0.1047   [F1 0.6657]
+Committed operations: {'capital.gain': 'sentinel_to_median'}
+Distinct full (column -> operation) states evaluated this run (deduplicated): 3.
+
+Answer key check (SYNTHETIC run -- did the agent commit the fix that undoes each injected defect?)
+  C5: expected sentinel_to_median on 'capital.gain' -> YES
+Audit log written to: C:\Users\Raghav\Downloads\Capstone\aeterna_qa\logs\run_20260930T094856Z.json

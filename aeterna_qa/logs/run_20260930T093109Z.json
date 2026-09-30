@@ -1,0 +1,130 @@
+{
+  "started_at": "2026-09-30T09:30:37.975520+00:00",
+  "meta": {
+    "scenario": "synthetic_injection",
+    "label": "STUDY C1 rate 10% seed 203 (SYNTHETIC)",
+    "declared_spec": [
+      {
+        "id": "C1",
+        "kind": "category_variants",
+        "column": "occupation",
+        "rate": 0.1,
+        "expected_fix": "normalize_categories",
+        "expected_commit": true
+      }
+    ],
+    "evaluator": "lr",
+    "metric": "brier",
+    "planner": "openai/gpt-oss-20b"
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "column": "occupation",
+      "operation": "normalize_categories",
+      "reason": "The occupation column has 2337 rows (9.686% of the dataset) using 65 different spellings across 14 categories, indicating significant category variants that need normalization.",
+      "f1_before": -0.1052,
+      "f1_after": -0.1046,
+      "delta": 0.0006,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": true,
+      "error": null,
+      "status": "committed",
+      "chain_id": 0,
+      "chain_ops": {
+        "occupation": "normalize_categories"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 2,
+      "column": "capital.gain",
+      "operation": "sentinel_to_median",
+      "reason": "115 rows (0.477%) contain the sentinel value 99999 in capital.gain, far outside the typical range and likely a missing\u2011value code. Replacing these with the median will correctly impute the missing values.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1055,
+      "delta": -0.0009,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "occupation": "normalize_categories"
+      }
+    },
+    {
+      "iteration": 3,
+      "column": "hours.per.week",
+      "operation": "clip_outliers",
+      "reason": "The top_coded defect affects 59 rows (0.245% of the dataset), with value 99 appearing 30\u00d7 the typical count of its neighbours, indicating a cap/top-code. Applying clip_outliers will replace these extreme values with the nearest valid value, directly repairing the defect.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1044,
+      "delta": 0.0001,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "occupation": "normalize_categories"
+      }
+    },
+    {
+      "iteration": 4,
+      "column": "*",
+      "operation": "dedupe_rows",
+      "reason": "17 rows are exact copies of an earlier row (0.07% of rows), indicating duplicate records that should be removed.",
+      "f1_before": -0.1046,
+      "f1_after": -0.1046,
+      "delta": 0.0,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0,
+      "threshold": 0.0,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "occupation": "normalize_categories"
+      }
+    },
+    {
+      "iteration": 5,
+      "column": null,
+      "operation": null,
+      "reason": null,
+      "f1_before": -0.1046,
+      "f1_after": null,
+      "delta": null,
+      "std_before": null,
+      "std_after": null,
+      "se": null,
+      "threshold": null,
+      "accepted": false,
+      "error": "No untried, dtype-valid (column, operation) combinations remain.",
+      "status": "error",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "occupation": "normalize_categories"
+      }
+    }
+  ],
+  "baseline_f1": -0.1052,
+  "final_f1": -0.1046,
+  "finished_at": "2026-09-30T09:31:09.878702+00:00"
+}

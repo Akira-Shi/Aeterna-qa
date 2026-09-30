@@ -1,0 +1,179 @@
+{
+  "started_at": "2026-09-30T09:35:06.757936+00:00",
+  "meta": {
+    "scenario": "synthetic_injection",
+    "label": "STUDY C3 rate 15% seed 202 (SYNTHETIC)",
+    "declared_spec": [
+      {
+        "id": "C3",
+        "kind": "sentinel",
+        "column": "age",
+        "rate": 0.15,
+        "expected_fix": "sentinel_to_median",
+        "value": 999,
+        "expected_commit": false
+      }
+    ],
+    "evaluator": "lr",
+    "metric": "brier",
+    "planner": "openai/gpt-oss-20b"
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "column": "age",
+      "operation": "sentinel_to_median",
+      "reason": "The age column has 3,619 rows (14.999% of the dataset) with the sentinel value 999, which is far outside the realistic age range and appears 557 times more often than its neighboring values. This indicates a missing\u2011value code rather than an outlier, so replacing 999 with the median of age will directly repair the defect.",
+      "f1_before": -0.1058,
+      "f1_after": -0.1047,
+      "delta": 0.0011,
+      "std_before": 0.0027,
+      "std_after": 0.0026,
+      "se": 0.0003,
+      "threshold": 0.0008,
+      "accepted": true,
+      "error": null,
+      "status": "committed",
+      "chain_id": 0,
+      "chain_ops": {
+        "age": "sentinel_to_median"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 2,
+      "column": "capital.gain",
+      "operation": "sentinel_to_median",
+      "reason": "115 rows (0.477%) contain the sentinel value 99999, which is 38\u00d7 the typical count of its neighbours and far outside the real range, indicating a missing\u2011value code that should be replaced with the median.",
+      "f1_before": -0.1047,
+      "f1_after": -0.1056,
+      "delta": -0.0009,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "age": "sentinel_to_median"
+      }
+    },
+    {
+      "iteration": 3,
+      "column": "hours.per.week",
+      "operation": "clip_outliers",
+      "reason": "The evidence shows 59 rows (0.245%) have the value 99, which is 30\u00d7 the typical count of its neighbours and appears to be a top\u2011code. Clipping outliers directly addresses this top\u2011coded defect.",
+      "f1_before": -0.1047,
+      "f1_after": -0.1046,
+      "delta": 0.0001,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {
+        "hours.per.week": "clip_outliers"
+      },
+      "committed_ops": {
+        "age": "sentinel_to_median"
+      }
+    },
+    {
+      "iteration": 4,
+      "column": "*",
+      "operation": "dedupe_rows",
+      "reason": "12 rows are exact copies of an earlier row, affecting 5% of the dataset; dedupe_rows will remove these duplicates.",
+      "f1_before": -0.1047,
+      "f1_after": -0.1046,
+      "delta": 0.0001,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {
+        "hours.per.week": "clip_outliers"
+      },
+      "committed_ops": {
+        "age": "sentinel_to_median"
+      }
+    },
+    {
+      "iteration": 5,
+      "column": null,
+      "operation": null,
+      "reason": null,
+      "f1_before": -0.1047,
+      "f1_after": null,
+      "delta": null,
+      "std_before": null,
+      "std_after": null,
+      "se": null,
+      "threshold": null,
+      "accepted": false,
+      "error": "No untried, dtype-valid (column, operation) combinations remain.",
+      "status": "error",
+      "chain_id": 1,
+      "chain_ops": {
+        "hours.per.week": "clip_outliers"
+      },
+      "committed_ops": {
+        "age": "sentinel_to_median"
+      }
+    },
+    {
+      "iteration": 6,
+      "column": "*",
+      "operation": "dedupe_rows",
+      "reason": "12 rows (5%) are exact duplicates, which can bias model training and evaluation.",
+      "f1_before": -0.1047,
+      "f1_after": -0.1047,
+      "delta": -0.0,
+      "std_before": 0.0026,
+      "std_after": 0.0026,
+      "se": 0.0,
+      "threshold": 0.0,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 2,
+      "chain_ops": {},
+      "committed_ops": {
+        "age": "sentinel_to_median"
+      }
+    },
+    {
+      "iteration": 7,
+      "column": null,
+      "operation": null,
+      "reason": null,
+      "f1_before": -0.1047,
+      "f1_after": null,
+      "delta": null,
+      "std_before": null,
+      "std_after": null,
+      "se": null,
+      "threshold": null,
+      "accepted": false,
+      "error": "No untried, dtype-valid (column, operation) combinations remain.",
+      "status": "error",
+      "chain_id": 2,
+      "chain_ops": {},
+      "committed_ops": {
+        "age": "sentinel_to_median"
+      }
+    }
+  ],
+  "baseline_f1": -0.1058,
+  "final_f1": -0.1047,
+  "finished_at": "2026-09-30T09:36:04.902401+00:00"
+}

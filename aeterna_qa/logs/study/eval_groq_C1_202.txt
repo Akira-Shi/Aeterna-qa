@@ -1,0 +1,46 @@
+Fixed 5-fold x 3-repeat evaluation folds computed from the raw dataset (15 total train/test splits, reused for every comparison in this run). Bonferroni-corrected for up to 16 look-backs in this run (exhaustive_search.py uses a different correction, sized to its own 64 comparisons -- the two scripts' threshold numbers are not meant to match).
+
+Evaluator: LR
+Baseline neg-Brier (SYNTHETIC-injected, as-is), fixed-fold: -0.1050 +/- 0.0026   [F1 0.6656]
+
+--- Iteration 1 ---
+Planner: column='occupation' operation='normalize_categories' reason='13 categories split into 63 spellings; 2344 rows use a non-dominant spelling, affecting 9.715% of rows'
+Cumulative neg-Brier (chain=[('occupation', 'normalize_categories')]) before=-0.1050 after=-0.1046 paired_delta=+0.0004 (threshold=0.0008, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> STAGED (improves the chain from +0.0000), continuing to test for a compounding effect
+
+--- Iteration 2 ---
+Planner: column='capital.gain' operation='sentinel_to_median' reason='115 rows (0.477%) contain the sentinel value 99999, which is far outside the real range and appears 38× the typical count of its neighbours, indicating a missing‑value code. Replacing these with the median directly repairs the defect.'
+Cumulative neg-Brier (chain=[('occupation', 'normalize_categories'), ('capital.gain', 'sentinel_to_median')]) before=-0.1050 after=-0.1055 paired_delta=-0.0005 (threshold=0.0011, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0004); chain stays [('occupation', 'normalize_categories')]
+
+--- Iteration 3 ---
+Planner: column='hours.per.week' operation='clip_outliers' reason='The evidence shows 59 rows (0.245%) have the value 99, which is 30× the typical count of its neighbours and appears to be a top‑code. Clipping these outliers directly addresses the top_coded defect and will correct the distribution of the hours.per.week feature.'
+Cumulative neg-Brier (chain=[('occupation', 'normalize_categories'), ('hours.per.week', 'clip_outliers')]) before=-0.1050 after=-0.1044 paired_delta=+0.0005 (threshold=0.0010, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0004); chain stays [('occupation', 'normalize_categories')]
+
+--- Iteration 4 ---
+Planner: column='*' operation='dedupe_rows' reason='15 rows (6.2% of dataset) are exact duplicates of earlier rows, indicating redundant data that should be removed.'
+Cumulative neg-Brier (chain=[('occupation', 'normalize_categories'), ('*', 'dedupe_rows')]) before=-0.1050 after=-0.1046 paired_delta=+0.0004 (threshold=0.0008, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0004); chain stays [('occupation', 'normalize_categories')]
+
+--- Iteration 5 ---
+Planner failed or chain exhausted: No untried, dtype-valid (column, operation) combinations remain.
+Discarding chain [('occupation', 'normalize_categories')].
+
+--- Iteration 6 ---
+Planner: column='capital.gain' operation='sentinel_to_median' reason='The value 99999 appears 115 times (0.477% of rows) in capital.gain, far outside the typical range and clearly a missing‑value sentinel; replacing it with the column median will correct this defect affecting a large portion of the dataset.'
+Cumulative neg-Brier (chain=[('capital.gain', 'sentinel_to_median')]) before=-0.1050 after=-0.1059 paired_delta=-0.0009 (threshold=0.0005, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0000); chain stays (empty)
+
+--- Iteration 7 ---
+Planner: column='hours.per.week' operation='clip_outliers' reason='The evidence shows 59 rows (0.245%) with the value 99, which appears 30× the typical count of its neighbours and is likely a top-code. Clipping outliers will replace these extreme values with a more realistic cap, directly addressing the top_coded defect.'
+Cumulative neg-Brier (chain=[('hours.per.week', 'clip_outliers')]) before=-0.1050 after=-0.1049 paired_delta=+0.0001 (threshold=0.0005, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0000); chain stays (empty)
+
+--- Iteration 8 ---
+Planner: column='*' operation='dedupe_rows' reason='15 rows (6.2% of dataset) are exact duplicates, as noted in the findings. Removing these duplicates will eliminate redundant data and prevent model bias from repeated instances.'
+Cumulative neg-Brier (chain=[('*', 'dedupe_rows')]) before=-0.1050 after=-0.1050 paired_delta=-0.0000 (threshold=0.0000, corrected-SE + t-dist, Bonferroni over 16 look-backs, n=15 folds) -> DROPPED from chain (does not improve the chain's +0.0000); chain stays (empty)
+
+--- Iteration 9 ---
+Planner failed or chain exhausted: No untried, dtype-valid (column, operation) combinations remain.
+Final neg-Brier: -0.1050   [F1 0.6656]
+Committed operations: (none)
+Distinct full (column -> operation) states evaluated this run (deduplicated): 7.
+
+Answer key check (SYNTHETIC run -- did the agent commit the fix that undoes each injected defect?)
+  C1: expected normalize_categories on 'occupation' -> NO (not committed)
+Audit log written to: C:\Users\Raghav\Downloads\Capstone\aeterna_qa\logs\run_20260930T093011Z.json

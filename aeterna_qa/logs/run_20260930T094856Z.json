@@ -1,0 +1,110 @@
+{
+  "started_at": "2026-09-30T09:48:13.886242+00:00",
+  "meta": {
+    "scenario": "synthetic_injection",
+    "label": "STUDY C5 rate 1% seed 203 (SYNTHETIC)",
+    "declared_spec": [
+      {
+        "id": "C5",
+        "kind": "sentinel",
+        "column": "capital.gain",
+        "rate": 0.01,
+        "expected_fix": "sentinel_to_median",
+        "value": 9999999,
+        "expected_commit": true
+      }
+    ],
+    "evaluator": "lr",
+    "metric": "brier",
+    "planner": "openai/gpt-oss-20b"
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "column": "capital.gain",
+      "operation": "sentinel_to_median",
+      "reason": "241 rows (0.999%) contain the sentinel value 9999999 in capital.gain, far outside the real range and clearly a missing\u2011value code; replacing it with the median directly repairs this defect.",
+      "f1_before": -0.1138,
+      "f1_after": -0.1047,
+      "delta": 0.0091,
+      "std_before": 0.0022,
+      "std_after": 0.0025,
+      "se": 0.0005,
+      "threshold": 0.0017,
+      "accepted": true,
+      "error": null,
+      "status": "committed",
+      "chain_id": 0,
+      "chain_ops": {
+        "capital.gain": "sentinel_to_median"
+      },
+      "committed_ops": {}
+    },
+    {
+      "iteration": 2,
+      "column": "hours.per.week",
+      "operation": "clip_outliers",
+      "reason": "59 rows (0.245%) have the value 99, 30\u00d7 the typical count of its neighbours, indicating a top\u2011code; clipping these outliers directly repairs the top_coded defect.",
+      "f1_before": -0.1047,
+      "f1_after": -0.1046,
+      "delta": 0.0001,
+      "std_before": 0.0025,
+      "std_after": 0.0025,
+      "se": 0.0002,
+      "threshold": 0.0005,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "capital.gain": "sentinel_to_median"
+      }
+    },
+    {
+      "iteration": 3,
+      "column": "*",
+      "operation": "dedupe_rows",
+      "reason": "The defect report shows 17 rows (0.07%) are exact duplicates of earlier rows, indicating duplicate data that should be removed to avoid bias and redundancy.",
+      "f1_before": -0.1047,
+      "f1_after": -0.1047,
+      "delta": -0.0,
+      "std_before": 0.0025,
+      "std_after": 0.0025,
+      "se": 0.0,
+      "threshold": 0.0,
+      "accepted": false,
+      "error": null,
+      "status": "discarded",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "capital.gain": "sentinel_to_median"
+      }
+    },
+    {
+      "iteration": 4,
+      "column": null,
+      "operation": null,
+      "reason": null,
+      "f1_before": -0.1047,
+      "f1_after": null,
+      "delta": null,
+      "std_before": null,
+      "std_after": null,
+      "se": null,
+      "threshold": null,
+      "accepted": false,
+      "error": "No untried, dtype-valid (column, operation) combinations remain.",
+      "status": "error",
+      "chain_id": 1,
+      "chain_ops": {},
+      "committed_ops": {
+        "capital.gain": "sentinel_to_median"
+      }
+    }
+  ],
+  "baseline_f1": -0.1138,
+  "final_f1": -0.1047,
+  "finished_at": "2026-09-30T09:48:56.137737+00:00"
+}

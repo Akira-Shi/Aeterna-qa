@@ -1,0 +1,25 @@
+{
+  "started_at": "2026-09-29T05:17:06.805167+00:00",
+  "iterations": [
+    {
+      "iteration": 1,
+      "column": null,
+      "operation": null,
+      "reason": null,
+      "f1_before": 0.6716,
+      "f1_after": null,
+      "delta": null,
+      "std_before": null,
+      "std_after": null,
+      "se": null,
+      "threshold": null,
+      "accepted": false,
+      "error": "Connection error.",
+      "status": "error",
+      "chain_id": 0
+    }
+  ],
+  "baseline_f1": 0.6716,
+  "final_f1": 0.6716,
+  "finished_at": "2026-09-29T05:17:08.587327+00:00"
+}

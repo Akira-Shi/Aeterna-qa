@@ -1,0 +1,19 @@
+{
+ "scenario": "C1",
+ "seed": 203,
+ "synthetic_corruption": {
+  "id": "C1",
+  "kind": "category_variants",
+  "column": "occupation",
+  "rate": 0.1,
+  "expected_fix": "normalize_categories",
+  "expected_commit": true,
+  "rows": null
+ },
+ "committed_ops": {
+  "occupation": "normalize_categories"
+ },
+ "rows_in": 24128,
+ "rows_out": 24128,
+ "cells_changed_vs_corrupted": 2337
+}

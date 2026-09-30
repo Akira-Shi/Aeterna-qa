@@ -1,0 +1,59 @@
+{
+  "started_at": "2026-09-29T04:16:04.826202+00:00",
+  "iterations": [
+    {
+      "iteration": 1,
+      "column": "native.country",
+      "operation": "drop_rows",
+      "reason": "test: expect STAGED (individually noise)",
+      "f1_before": 0.6733,
+      "f1_after": 0.6728,
+      "delta": -0.0006,
+      "std_before": 0.0082,
+      "std_after": 0.0078,
+      "se": 0.0037,
+      "threshold": 0.0074,
+      "accepted": true,
+      "error": null,
+      "status": "committed",
+      "chain_id": 0
+    },
+    {
+      "iteration": 2,
+      "column": "workclass",
+      "operation": "drop_rows",
+      "reason": "test: expect COMMITTED (compounds with prior)",
+      "f1_before": 0.6733,
+      "f1_after": 0.6808,
+      "delta": 0.0075,
+      "std_before": 0.0082,
+      "std_after": 0.0038,
+      "se": 0.0037,
+      "threshold": 0.0074,
+      "accepted": true,
+      "error": null,
+      "status": "committed",
+      "chain_id": 0
+    },
+    {
+      "iteration": 3,
+      "column": null,
+      "operation": null,
+      "reason": null,
+      "f1_before": 0.6808,
+      "f1_after": null,
+      "delta": null,
+      "std_before": 0.0038,
+      "std_after": null,
+      "se": null,
+      "threshold": null,
+      "accepted": false,
+      "error": "list index out of range",
+      "status": "error",
+      "chain_id": 1
+    }
+  ],
+  "baseline_f1": 0.6733,
+  "final_f1": 0.6808,
+  "finished_at": "2026-09-29T04:16:22.502987+00:00"
+}
