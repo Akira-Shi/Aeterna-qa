@@ -310,6 +310,10 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - **Not changed:** verdict logic, number-check guard, evaluator, audit schema, console output. Older logs without `committed_ops` still render ("Which fix exactly was not recorded in this older log"). The "no more options" placeholder iteration (column None) is no longer counted as a fix in the plain view.
 - **Tests:** `explain_tests.py` extended (synthetic banner, card count, no jargon on main view, old log, unknown op, none-committed). Report for `run_20260930T113058Z` regenerated (tracked file overwritten).
 
+### 2026-09-30 -- New root README.md (docs only)
+- **Added:** `README.md` at the repo root: plain-language pitch, worked example, loop diagram, glossary (folds, Brier vs F1, Nadeau-Bengio, Bonferroni, leakage, pre-registration, manifest), repo map, run/test commands, RESULTS.md counts quoted as k/n (4 hit, 2 miss, 2 correct rollback, 7 false commit over 15 runs, not pooled) and limitations. It supersedes the stale `Documents/README.md`, which now carries a one-line "outdated" pointer at its top (not deleted).
+- **Not changed:** any code, evaluator, gate, constants, results or pre-registration.
+
 <!-- Add new entries above this line, most recent on top. Format:
 ### YYYY-MM-DD
 - What you built/changed
