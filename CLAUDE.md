@@ -47,3 +47,8 @@ Capstone: closed-loop data-cleaning agent (detect → plan → execute → verif
 - Don't call the top-coded values `99999`, `99`, `90` "errors"; they are censored real values.
 - Don't cite the retracted numbers: +0.0175 drop-rows gain, F1 ≈ 0.688, the "2.0× SE" threshold, `calculate_f1_cv`.
 - The planner sees only detector output, never the injection manifest.
+
+# Agent Execution & Delegation Strategy
+- **Delegate via Sub-Agents:** The primary orchestrator must act exclusively as a project manager. Do not directly execute long multi-step coding, deep documentation writing, or file refactoring yourself.
+- **Autonomous Sub-Agents:** For every standalone feature, test execution cycle, or data processing task, spin up a dedicated sub-agent.
+- **Intervention-Free Loop:** Instruct sub-agents to run, test, fix, and verify their assigned code autonomously. They must halt and ask the user before: touching the frozen evaluator, changing the gate metric or commit rule, choosing or changing a scenario/model after seeing results, altering the pre-registration, or any architectural break.

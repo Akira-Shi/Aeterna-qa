@@ -284,6 +284,36 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - Documentation.md restructured: added a "Current state" block, rewrote the module table, rewrote Known issues. Older sections are history.
 - Rule-planner per-run logs for all 15 runs are now in `logs/study/`.
 
+### 2026-09-30 -- T1: `committed_ops: None` resolved (no logging bug; Explain headline fixed for older logs)
+- **Finding (Certain, checked programmatically over `logs/run_*.json`):** `audit.log_iteration` stores `dict(committed_ops)` and every `pipeline.py` call passes it. All 19 logs from `run_20260930T033353Z` onward (30 Sep) have the key on every iteration and never `None`; the 11 logs `run_20260929T035527Z` to `run_20260929T062818Z` (29 Sep) lack the key entirely (and `chain_ops`). `None` only arises in `audit.py` if a caller omits the argument, and no caller does. Semantics to remember: `committed_ops` on an iteration is the set committed BEFORE that evaluation, so the committing iteration itself shows the pre-commit set; later iterations show the new one (e.g. `run_20260930T093200Z.json`: 0,1,1,1,1). Study logs (`logs/study/`) hold no `run_*.json`.
+- **Real defect found in Explain, not in logging:** on older logs the headline read "1 of 2 chain(s) committed ((none))", presenting an unknown as an empty set. `explain.build_facts` now sets `committed_ops_recorded`; `headline` says "committed operations not recorded in this older log" when a committed chain has no recorded ops.
+- New `modules/explain_tests.py` (`python -m modules.explain_tests`). No change to audit schema, evaluator, gate, commit rule, scenarios or models.
+
+### 2026-09-30 -- D1 demo scenario spec (SYNTHETIC DEMO, declared BEFORE any D1 run)
+- Purpose: show the commit gate firing on several columns in one run. A labelled synthetic DEMO, not a study result: never pooled with C1-C5, not in RESULTS.md, not pre-registered.
+- Basis (paper only): column headroom already recorded in the pilot `ceilings` table (capital.gain 0.0121, occupation 0.0030, capital.loss 0.0017, hours.per.week 0.0014 Brier; commit bar about 0.0009 on the eval partition), plus the existing ops. Rates are taken from the top of the existing C1/C2/C5 ladders. No D1 run was seen when this was written.
+- Data: the 80% eval partition from `study.base_and_split()` (24,128 rows), injection seed 201, one `inject()` call with the four entries below in this order (shared RNG). Planner: Groq (`openai/gpt-oss-20b`), manifest hidden from planner.
+  1. `capital.gain`: sentinel 9999999 at 2% of rows -> expected fix `sentinel_to_median`.
+  2. `capital.loss`: sentinel 9999999 at 3% -> expected fix `sentinel_to_median`.
+  3. `hours.per.week`: mixed_units, factor 12, at 30% -> expected fix `rescale_units`.
+  4. `occupation`: category_variants (case / hyphen noise) at 60% -> expected fix `normalize_categories`.
+- Run once, seed 201. No rate is changed after seeing the result; if few columns commit, that is reported as is.
+- Labels: audit `scenario` = `synthetic_D1_demo`, banner "SYNTHETIC DEMO", files `adult_clean_[groq_]D1_<seed>.csv` + `.manifest.json`.
+
+### 2026-09-30 -- D1 labelled-synthetic DEMO scenario built and run once (Groq, seed 201)
+- **Built:** `modules/demo.py` (D1 spec + runner + answer-key grading + cleaned CSV/manifest), `modules/demo_tests.py`, `pipeline.py`: new optional `scenario_name` arg on `run()` (default keeps `synthetic_injection`) and CLI `--scenario D1 --seed N`. Run: `python -m modules.pipeline --scenario D1 --seed 201` (set `PYTHONIOENCODING=utf-8` on Windows: a first attempt crashed on a non-cp1252 character in a Groq reason, before any result; re-run unchanged). Audit `scenario` = `synthetic_D1_demo`; files `adult_clean_groq_D1_201.csv` + `.manifest.json`. Spec is the entry above, unchanged. Evaluator, gate, constants, C1-C5, models untouched.
+- **Result (Certain, `logs/run_20260930T113058Z.json`):** baseline -0.1171 -> final -0.1062 (+0.0109). Committed on 3 columns: capital.gain sentinel_to_median (delta +0.0094, bar 0.0019); capital.loss sentinel_to_median (+0.0015, bar 0.0008); occupation normalize_categories (committed as part of a chain: alone +0.0005, below its bar 0.0006, chain total +0.0015 cleared 0.0008). NOT committed: hours.per.week x12 (30%): `find_unit_shift` returns None on it, so the planner never saw a unit finding and never proposed `rescale_units`. dedupe_rows (8 natural duplicates) was correctly rolled back. Not retuned.
+- **Caveats:** occupation's commit rode on the chain (staged, then capital.loss pushed the chain over the bar); the Explain summary note says occupation "did not improve performance", which is true of its stand-alone delta but reads oddly next to COMMITTED (guard passed; wording only). Per-column `collateral_cells` in the demo grading counts the other injected columns as collateral (grade() is per-manifest-entry); real collateral is zero on non-injected columns. One run, one seed: a demo, not evidence.
+
+### 2026-09-30 -- Explain HTML report rewritten for non-technical readers (rendering only)
+- **Changed:** `render_html` in `modules/explain.py` only. Main view is now: synthetic banner (kept, plus a one-line "planted on purpose" note), a plain headline ("We checked N possible fixes... K were kept..."), an overall-quality sentence ("evidence, not proof"), one card per kept fix (plain sentence + "improved slightly/noticeably"; noticeably = delta >= 3x the bar, presentation only), a collapsed "tried but undone" list with plain reasons, and a short glossary. Everything technical (deltas, bars, op names, planner quotes, gauges, folds/evaluator wording, LLM-note tallies) is in ONE collapsed "Technical details" section. New helpers `plain_fix` (op -> sentence, safe fallback for unknown ops), `_plain_summary`, `_plain_impact`, `_plain_undone_reason`.
+- **Not changed:** verdict logic, number-check guard, evaluator, audit schema, console output. Older logs without `committed_ops` still render ("Which fix exactly was not recorded in this older log"). The "no more options" placeholder iteration (column None) is no longer counted as a fix in the plain view.
+- **Tests:** `explain_tests.py` extended (synthetic banner, card count, no jargon on main view, old log, unknown op, none-committed). Report for `run_20260930T113058Z` regenerated (tracked file overwritten).
+
+### 2026-09-30 -- New root README.md (docs only)
+- **Added:** `README.md` at the repo root: plain-language pitch, worked example, loop diagram, glossary (folds, Brier vs F1, Nadeau-Bengio, Bonferroni, leakage, pre-registration, manifest), repo map, run/test commands, RESULTS.md counts quoted as k/n (4 hit, 2 miss, 2 correct rollback, 7 false commit over 15 runs, not pooled) and limitations. It supersedes the stale `Documents/README.md`, which now carries a one-line "outdated" pointer at its top (not deleted).
+- **Not changed:** any code, evaluator, gate, constants, results or pre-registration.
+
 <!-- Add new entries above this line, most recent on top. Format:
 ### YYYY-MM-DD
 - What you built/changed

@@ -1,0 +1,50 @@
+{
+ "scenario": "synthetic_D1_demo",
+ "label": "SYNTHETIC DEMO, not a study result",
+ "seed": 201,
+ "synthetic_corruption": [
+  {
+   "id": "D1_capital_gain",
+   "kind": "sentinel",
+   "column": "capital.gain",
+   "rate": 0.02,
+   "value": 9999999,
+   "expected_fix": "sentinel_to_median",
+   "expected_commit": true
+  },
+  {
+   "id": "D1_capital_loss",
+   "kind": "sentinel",
+   "column": "capital.loss",
+   "rate": 0.03,
+   "value": 9999999,
+   "expected_fix": "sentinel_to_median",
+   "expected_commit": true
+  },
+  {
+   "id": "D1_hours_units",
+   "kind": "mixed_units",
+   "column": "hours.per.week",
+   "rate": 0.3,
+   "factor": 12,
+   "expected_fix": "rescale_units",
+   "expected_commit": true
+  },
+  {
+   "id": "D1_occupation",
+   "kind": "category_variants",
+   "column": "occupation",
+   "rate": 0.6,
+   "expected_fix": "normalize_categories",
+   "expected_commit": true
+  }
+ ],
+ "committed_ops": {
+  "occupation": "normalize_categories",
+  "capital.loss": "sentinel_to_median",
+  "capital.gain": "sentinel_to_median"
+ },
+ "rows_in": 24128,
+ "rows_out": 24128,
+ "cells_changed_vs_corrupted": 15241
+}

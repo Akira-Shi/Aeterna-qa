@@ -1,0 +1,10 @@
+{
+  "iter": 0,
+  "status": "needs_build",
+  "lane": "A",
+  "baseline_commit": "2dae093",
+  "last_verified_commit": null,
+  "max_iterations": 6,
+  "halt": false,
+  "notes": "Status values: needs_build -> ready_for_verify -> verified | needs_fix | halted. Create a file named STOP in LOOP/ to halt both sides."
+}

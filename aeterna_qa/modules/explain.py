@@ -114,6 +114,9 @@ def build_facts(run: dict) -> dict:
     for ch in chains.values():
         if ch["status"] == "committed" and ch["ops"]:
             committed_ops.update(ch["ops"])
+    # Older logs (before chain_ops was recorded) cannot say WHICH ops a committed
+    # chain held. Flag that instead of presenting an empty set as "(none)".
+    ops_recorded = all(bool(c["ops"]) for c in chains.values() if c["status"] == "committed")
 
     evaluated_all = [i for i in its if i.get("delta") is not None and i.get("ratio") is not None]
     closest = max(evaluated_all, key=lambda i: i["ratio"]) if evaluated_all else None
@@ -128,6 +131,7 @@ def build_facts(run: dict) -> dict:
         "baseline": run.get("baseline_f1"),
         "final": run.get("final_f1"),
         "committed_ops": committed_ops,
+        "committed_ops_recorded": ops_recorded,
         "n_committed": n_committed,
         "n_chains": n_eval_chains,
         "n_evaluations": len(evaluated_all),
@@ -179,8 +183,10 @@ def headline(facts: dict) -> str:
             s += (f" Closest miss: iteration {c['iteration']} at {c['ratio']:.0%} of its bar "
                   f"(delta {c['delta']:+.4f}, bar {c['threshold']:.4f}).")
         return s
+    ops_txt = (_ops_str(facts["committed_ops"]) if facts["committed_ops_recorded"]
+               else "committed operations not recorded in this older log")
     return (f"{facts['n_committed']} of {facts['n_chains']} chain(s) committed "
-            f"({_ops_str(facts['committed_ops'])}). {facts['metric']} {b:.4f} -> {f:.4f} ({f - b:+.4f}).")
+            f"({ops_txt}). {facts['metric']} {b:.4f} -> {f:.4f} ({f - b:+.4f}).")
 
 
 # --------------------------------------------------------------------------
@@ -511,29 +517,173 @@ details{margin-top:14px}summary{cursor:pointer;color:var(--mute)}
 """
 
 
+_CSS_PLAIN = """
+.banner.synth{display:block;padding:10px 14px;font-size:14px;border-radius:8px}
+.lead{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:14px 0}
+.lead h2{font-size:22px;line-height:1.35;margin:0 0 8px}.lead p{margin:6px 0;font-size:16px}
+.lead .sum{color:var(--mute);font-style:italic}
+h3.sec{font-size:18px;margin:26px 0 10px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--good);border-radius:10px;padding:14px 16px}
+.card b{display:block;font-size:16px;margin-bottom:6px}.card .impact{color:var(--good);font-weight:600}
+ul.undone{padding-left:20px;margin:10px 0}ul.undone li{margin:8px 0}
+dl.gloss dt{font-weight:600;margin-top:10px}dl.gloss dd{margin:2px 0 0;color:var(--mute)}
+.ctx{color:var(--mute);font-size:14px}
+"""
+
+_OP_PLAIN = {
+    "fill_mean": "Filled in missing values in {c} with the average value",
+    "fill_median": "Filled in missing values in {c} with the typical (middle) value",
+    "fill_mode": "Filled in missing values in {c} with the most common value",
+    "fill_unknown": "Filled in missing values in {c} with an \"Unknown\" label",
+    "drop_rows": "Removed rows that had problems in {c}",
+    "clip_outliers": "Pulled extreme values in {c} back toward the normal range",
+    "sentinel_to_median": "Replaced placeholder values in {c} with the typical value",
+    "normalize_categories": "Merged different spellings of the same category in {c}",
+    "rescale_units": "Converted mixed units in {c} to one consistent unit",
+    "dedupe_rows": "Removed duplicate rows",
+}
+
+
+def plain_fix(column, op) -> str:
+    """Plain-English sentence for one (column, operation); safe for unknown ops."""
+    col = str(column)
+    if column is None and op is None:
+        return "Looked for another fix to try"
+    tpl = _OP_PLAIN.get(str(op))
+    if tpl is None:
+        return f"Applied an automatic clean-up to {col}"
+    return tpl.format(c=col)
+
+
+def _plain_undone_reason(code: str) -> str:
+    return {
+        "rollback": "it did not make the predictions any better",
+        "noise": "the improvement was not big enough to be sure it was real",
+        "unresolved": "the run ended before a decision was reached",
+        "no_eval": "it could not be checked",
+    }.get(code, "it did not clearly help")
+
+
+def _plain_impact(it: dict | None) -> str:
+    if not it or it.get("ratio") is None:
+        return "prediction accuracy improved (size not recorded)"
+    return ("prediction accuracy improved noticeably" if it["ratio"] >= 3
+            else "prediction accuracy improved slightly")
+
+
+def _plain_summary(facts: dict) -> tuple[str, str]:
+    """(headline, overall sentence) in plain words. Derived from counts and
+    baseline/final only; never overstates."""
+    its = [i for i in facts["iterations"] if i.get("column") is not None or i.get("operation") is not None]
+    n = len(its)
+    kept_chain = {c["chain_id"] for c in facts["chains"] if c["status"] == "committed"}
+    k = sum(1 for i in its if i.get("chain_id") in kept_chain)
+    b, f = facts["baseline"], facts["final"]
+    if n == 0:
+        return "No fixes were tried in this run.", ""
+    head = (f"We checked {n} possible fix{'es' if n != 1 else ''} to your data. "
+            f"{k} {'was' if k == 1 else 'were'} kept"
+            + (", the rest were undone because they did not clearly help." if n - k else "."))
+    if k == 0:
+        head = (f"We checked {n} possible fix{'es' if n != 1 else ''} to your data. "
+                "None were kept, because none of them clearly helped.")
+    if b is None or f is None:
+        overall = "This run did not finish, so overall quality could not be compared."
+    elif k == 0 or f == b:
+        overall = "Overall, data quality was not changed: the data was left as it was."
+    elif f > b:
+        overall = ("Overall, the checks suggest the data is somewhat cleaner: predictions built on "
+                   "it were more accurate in our cross-checked test. This is evidence, not proof.")
+    else:
+        overall = "Overall, the checks did not show an improvement."
+    return head, overall
+
+
 def render_html(facts: dict, stats: dict, source: Path) -> str:
     e = html.escape
     scale = max([abs(i["delta"]) for i in facts["iterations"] if i.get("delta") is not None] +
                 [i["threshold"] for i in facts["iterations"] if i.get("threshold") is not None] + [1e-4]) * 1.15
     synth = (facts.get("scenario") or "").startswith("synthetic")
+    head, overall = _plain_summary(facts)
     out = [f"<!doctype html><html lang='en'><head><meta charset='utf-8'>"
            f"<meta name='viewport' content='width=device-width,initial-scale=1'>"
-           f"<title>AETERNA-QA Run Explanation</title><style>{_CSS}</style></head><body><main>"]
+           f"<title>AETERNA-QA Data Cleaning Report</title><style>{_CSS}{_CSS_PLAIN}</style></head><body><main>"]
     out.append(f"<span class='banner {'synth' if synth else 'real'}'>{e(facts['label'])}</span>")
-    out.append("<h1>What the agent did, and why</h1>")
-    out.append(f"<div class='sub'>Source: {e(source.name)} &middot; started {e(str(facts['run'].get('started_at','')))}</div>")
-    out.append(f"<div class='hero'><p>{e(headline(facts))}</p>")
+    if synth:
+        out.append("<p class='ctx'>This is a synthetic demonstration: the data problems in this run were "
+                   "planted on purpose. It shows how the tool works, not a real-world result.</p>")
+    out.append("<h1>Data cleaning report</h1>")
+    out.append(f"<div class='lead'><h2>{e(head)}</h2><p>{e(overall)}</p>")
     if facts.get("summary_note"):
-        out.append(f"<div class='sum'>{e(facts['summary_note'])} <span class='tiny'>(LLM note; numbers machine-checked)</span></div>")
+        out.append(f"<p class='sum'>Assistant's note: {e(facts['summary_note'])}</p>")
     out.append("</div>")
+
+    # ---- What was fixed
+    kept = [c for c in facts["chains"] if c["status"] == "committed"]
+    out.append("<h3 class='sec'>What was fixed</h3>")
+    if not kept:
+        out.append("<p class='ctx'>Nothing was changed. Your data was left exactly as it was.</p>")
+    else:
+        out.append("<div class='cards'>")
+        for ch in kept:
+            ci = ch.get("commit_iter")
+            it = next((i for i in ch["iterations"] if i["iteration"] == ci), None)
+            impact = _plain_impact(it)
+            if ch["ops"]:
+                for col, op in ch["ops"].items():
+                    note = next((i["note"] for i in ch["iterations"]
+                                 if i.get("note") and i.get("column") == col), None)
+                    out.append(f"<div class='card'><b>{e(plain_fix(col, op))}</b>"
+                               f"<span class='impact'>Effect: {e(impact)}</span>"
+                               + (f"<div class='tiny'>Assistant's note: {e(note)}</div>" if note else "")
+                               + "</div>")
+            else:
+                n_it = len([i for i in ch["iterations"] if i.get("delta") is not None])
+                out.append(f"<div class='card'><b>{'A group of ' + str(n_it) + ' fixes was' if n_it > 1 else 'A fix was'} kept</b>"
+                           "<span class='impact'>Effect: " + e(impact) + "</span>"
+                           "<div class='tiny'>Which fix exactly was not recorded in this older log.</div></div>")
+        out.append("</div>")
+        if len(kept) and any(c["ops"] and len(c["ops"]) > 1 for c in kept):
+            out.append("<p class='tiny'>Fixes in the same group were judged together, so the effect shown "
+                       "applies to the group.</p>")
+
+    # ---- What was tried but undone
+    undone = [(c, i) for c in facts["chains"] if c["status"] != "committed" for i in c["iterations"]
+              if i.get("column") is not None or i.get("operation") is not None]
+    if undone:
+        out.append(f"<details><summary><b>What was tried but undone ({len(undone)})</b></summary>"
+                   "<ul class='undone'>")
+        for c, i in undone:
+            out.append(f"<li>{e(plain_fix(i.get('column'), i.get('operation')))}. Undone: "
+                       f"{e(_plain_undone_reason(i['verdict']['code']))}."
+                       + (f" <span class='tiny'>Assistant's note: {e(i['note'])}</span>" if i.get("note") else "")
+                       + "</li>")
+        out.append("</ul></details>")
+
+    # ---- Glossary
+    out.append("<h3 class='sec'>How to read this</h3><dl class='gloss'>"
+               + ("<dt>Brier score</dt><dd>How far off the model's predictions are. Lower is better.</dd>"
+                  if facts["metric"] == "neg-Brier" else
+                  "<dt>F1 score</dt><dd>One number for how well the model finds the right answers. Higher is better.</dd>") +
+               "<dt>Keep the fix (commit)</dt><dd>The change stays in your cleaned data.</dd>"
+               "<dt>Undo (rollback)</dt><dd>The change is reverted and the data goes back to how it was.</dd>"
+               "<dt>Bar / threshold</dt><dd>The minimum improvement needed before we trust a fix.</dd>"
+               + ("<dt>Synthetic</dt><dd>Data problems planted on purpose so the tool can be demonstrated.</dd>"
+                  if synth else "") + "</dl>")
+
+    # ---- Technical details (single collapsed section)
+    out.append("<details><summary><b>Technical details</b></summary>")
     b, f = facts["baseline"], facts["final"]
     if b is not None and f is not None:
         out.append("<div class='stats'>"
-                   f"<div class='stat'><span>Baseline score</span><b>{b:.4f}</b></div>"
-                   f"<div class='stat'><span>Final score</span><b>{f:.4f}</b></div>"
+                   f"<div class='stat'><span>Baseline score ({e(facts['metric'])})</span><b>{b:.4f}</b></div>"
+                   f"<div class='stat'><span>Final score ({e(facts['metric'])})</span><b>{f:.4f}</b></div>"
                    f"<div class='stat'><span>Chains tried</span><b>{facts['n_chains']}</b></div>"
                    f"<div class='stat'><span>Evaluations</span><b>{facts['n_evaluations']}</b></div>"
                    f"<div class='stat'><span>Chains committed</span><b>{facts['n_committed']}</b></div></div>")
+    out.append(f"<p class='tiny'>{e(headline(facts))}</p>")
+    out.append(f"<div class='sub'>Source: {e(source.name)} &middot; started {e(str(facts['run'].get('started_at','')))}</div>")
     if facts["legacy"]:
         out.append("<p class='tiny'>Older log: chain contents were not recorded, so each delta is the cumulative "
                    "chain result, attributed here to the last-added operation.</p>")
@@ -569,12 +719,11 @@ def render_html(facts: dict, stats: dict, source: Path) -> str:
                        f"<td class='quote'>{e(it.get('reason') or '-')}</td><td>{gauge}</td>"
                        f"<td><span class='v-{v['code']}'>{e(v['text'])}</span>{note}</td></tr>")
         out.append("</tbody></table></section>")
-    out.append("<details><summary>How to read this report</summary><p class='tiny'>Verdicts are computed by code "
-               "from the audit log: an operation (or chain of operations) is committed only if its paired F1 "
-               "improvement over the current baseline exceeds a bar derived from measured noise (corrected "
-               "standard error, t-distribution, Bonferroni-adjusted for the number of looks in a run). The planner's "
-               "reason is quoted as written, before any measurement. Notes marked LLM are one-sentence readings; "
-               "any note containing a number or column name not in the log is discarded.</p></details>")
+    out.append("<p class='tiny'>Verdicts are computed by code from the audit log: an operation (or chain of "
+               "operations) is committed only if its cross-validated improvement over the current baseline exceeds a "
+               "bar derived from measured noise (corrected standard error, Bonferroni-adjusted for the number of "
+               "looks in a run). The planner's reason is quoted as written, before any measurement. Assistant notes "
+               "are one-sentence readings; any note containing a number or column name not in the log is discarded.</p>")
     tail = (f"LLM notes: {stats['verified']} verified, {len(stats.get('rejected', []))} rejected"
             if stats.get("mode") == "llm" else "LLM notes: none (template-only)")
     if stats.get("error"):
@@ -586,7 +735,7 @@ def render_html(facts: dict, stats: dict, source: Path) -> str:
         for r in stats["rejected"]:
             out.append(f"<li>iteration {e(str(r['iteration']))}: {e('; '.join(r['why']))} &mdash; &ldquo;{e(r['note'])}&rdquo;</li>")
         out.append("</ul></details>")
-    out.append("</main></body></html>")
+    out.append("</details></main></body></html>")
     return "".join(out)
 
 

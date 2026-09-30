@@ -1,3 +1,5 @@
+> **Outdated (mentions RandomForest and profiler.py). See ../README.md.**
+
 # AETERNA-QA
 
 An autonomous data-quality agent: detect real data errors, plan a fix with an LLM, execute it safely (fixed operation menu, no freeform code generation), verify the fix actually improved a downstream ML model, and roll back if it didn't.
