@@ -78,7 +78,8 @@ from . import audit
 
 
 def run(use_injection: bool = False, offline_planner: bool = False, raw_df=None, manifest=None,
-        label: str | None = None, scenario_meta: dict | None = None, run_explain: bool = True) -> dict:
+        label: str | None = None, scenario_meta: dict | None = None, run_explain: bool = True,
+        scenario_name: str | None = None) -> dict:
     """use_injection: corrupt the data with injection.DECLARED_SPEC first (SYNTHETIC,
     labelled as such everywhere). offline_planner: use the rule-based planner instead
     of Groq. Real-data runs use neither."""
@@ -110,7 +111,7 @@ def run(use_injection: bool = False, offline_planner: bool = False, raw_df=None,
           f"{committed_f1:.4f} +/- {committed['std']:.4f}   [F1 {committed['f1_mean']:.4f}]\n")
 
     if use_injection:
-        log_meta = {"scenario": "synthetic_injection",
+        log_meta = {"scenario": scenario_name or "synthetic_injection",
                     "label": label or "SYNTHETIC INJECTION (declared corruption on Adult - not real data)",
                     "declared_spec": scenario_meta if external else DECLARED_SPEC}
     else:
@@ -287,10 +288,17 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="AETERNA-QA pipeline")
     ap.add_argument("--inject", action="store_true",
                     help="run on Adult with the DECLARED synthetic corruption (labelled SYNTHETIC)")
+    ap.add_argument("--scenario", choices=["D1"], default=None,
+                    help="run a labelled SYNTHETIC DEMO scenario (D1) on the eval partition; use with --seed")
+    ap.add_argument("--seed", type=int, default=201, help="injection seed for --scenario (default 201)")
     ap.add_argument("--evaluator", choices=config.EVALUATORS, default=config.EVALUATOR,
                     help="model used for every accept/commit decision (declared input)")
     ap.add_argument("--offline-planner", action="store_true",
                     help="use the rule-based planner instead of Groq (no API key needed)")
     a = ap.parse_args()
     config.EVALUATOR = a.evaluator
-    run(use_injection=a.inject, offline_planner=a.offline_planner)
+    if a.scenario:
+        from . import demo
+        demo.run_d1(seed=a.seed, offline_planner=a.offline_planner)
+    else:
+        run(use_injection=a.inject, offline_planner=a.offline_planner)

@@ -289,6 +289,22 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - **Real defect found in Explain, not in logging:** on older logs the headline read "1 of 2 chain(s) committed ((none))", presenting an unknown as an empty set. `explain.build_facts` now sets `committed_ops_recorded`; `headline` says "committed operations not recorded in this older log" when a committed chain has no recorded ops.
 - New `modules/explain_tests.py` (`python -m modules.explain_tests`). No change to audit schema, evaluator, gate, commit rule, scenarios or models.
 
+### 2026-09-30 -- D1 demo scenario spec (SYNTHETIC DEMO, declared BEFORE any D1 run)
+- Purpose: show the commit gate firing on several columns in one run. A labelled synthetic DEMO, not a study result: never pooled with C1-C5, not in RESULTS.md, not pre-registered.
+- Basis (paper only): column headroom already recorded in the pilot `ceilings` table (capital.gain 0.0121, occupation 0.0030, capital.loss 0.0017, hours.per.week 0.0014 Brier; commit bar about 0.0009 on the eval partition), plus the existing ops. Rates are taken from the top of the existing C1/C2/C5 ladders. No D1 run was seen when this was written.
+- Data: the 80% eval partition from `study.base_and_split()` (24,128 rows), injection seed 201, one `inject()` call with the four entries below in this order (shared RNG). Planner: Groq (`openai/gpt-oss-20b`), manifest hidden from planner.
+  1. `capital.gain`: sentinel 9999999 at 2% of rows -> expected fix `sentinel_to_median`.
+  2. `capital.loss`: sentinel 9999999 at 3% -> expected fix `sentinel_to_median`.
+  3. `hours.per.week`: mixed_units, factor 12, at 30% -> expected fix `rescale_units`.
+  4. `occupation`: category_variants (case / hyphen noise) at 60% -> expected fix `normalize_categories`.
+- Run once, seed 201. No rate is changed after seeing the result; if few columns commit, that is reported as is.
+- Labels: audit `scenario` = `synthetic_D1_demo`, banner "SYNTHETIC DEMO", files `adult_clean_[groq_]D1_<seed>.csv` + `.manifest.json`.
+
+### 2026-09-30 -- D1 labelled-synthetic DEMO scenario built and run once (Groq, seed 201)
+- **Built:** `modules/demo.py` (D1 spec + runner + answer-key grading + cleaned CSV/manifest), `modules/demo_tests.py`, `pipeline.py`: new optional `scenario_name` arg on `run()` (default keeps `synthetic_injection`) and CLI `--scenario D1 --seed N`. Run: `python -m modules.pipeline --scenario D1 --seed 201` (set `PYTHONIOENCODING=utf-8` on Windows: a first attempt crashed on a non-cp1252 character in a Groq reason, before any result; re-run unchanged). Audit `scenario` = `synthetic_D1_demo`; files `adult_clean_groq_D1_201.csv` + `.manifest.json`. Spec is the entry above, unchanged. Evaluator, gate, constants, C1-C5, models untouched.
+- **Result (Certain, `logs/run_20260930T113058Z.json`):** baseline -0.1171 -> final -0.1062 (+0.0109). Committed on 3 columns: capital.gain sentinel_to_median (delta +0.0094, bar 0.0019); capital.loss sentinel_to_median (+0.0015, bar 0.0008); occupation normalize_categories (committed as part of a chain: alone +0.0005, below its bar 0.0006, chain total +0.0015 cleared 0.0008). NOT committed: hours.per.week x12 (30%): `find_unit_shift` returns None on it, so the planner never saw a unit finding and never proposed `rescale_units`. dedupe_rows (8 natural duplicates) was correctly rolled back. Not retuned.
+- **Caveats:** occupation's commit rode on the chain (staged, then capital.loss pushed the chain over the bar); the Explain summary note says occupation "did not improve performance", which is true of its stand-alone delta but reads oddly next to COMMITTED (guard passed; wording only). Per-column `collateral_cells` in the demo grading counts the other injected columns as collateral (grade() is per-manifest-entry); real collateral is zero on non-injected columns. One run, one seed: a demo, not evidence.
+
 <!-- Add new entries above this line, most recent on top. Format:
 ### YYYY-MM-DD
 - What you built/changed
