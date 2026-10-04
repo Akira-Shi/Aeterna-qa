@@ -480,25 +480,20 @@ def _render_plain(facts: dict, stats: dict) -> None:
 
 
 _CSS = """
-:root{--bg:#f7f7f5;--card:#fff;--ink:#1b1f24;--mute:#5d6672;--line:#e3e5e8;--good:#1a7f4b;--bad:#b3312d;
---warn:#a86a00;--info:#1f5fae;--track:#eceef1;--accent:#1f5fae}
-@media (prefers-color-scheme:dark){:root{--bg:#14171b;--card:#1d2127;--ink:#e8eaed;--mute:#9aa3ae;--line:#2c323a;
---good:#4cc38a;--bad:#ef7f7a;--warn:#e0a84a;--info:#6ea8ff;--track:#2a3037;--accent:#6ea8ff}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);
+:root{--bg:#0b1030;--card:#141b45;--ink:#eef2ff;--mute:#9fb0e0;--line:#2b3677;--good:#6fe3d0;--bad:#ff8fa3;
+--warn:#f5d77a;--info:#8fd3ff;--track:#222c63;--accent:#e8c872}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);
+background:radial-gradient(1200px 600px at 50% -10%,#26337f 0%,#0b1030 60%) fixed,var(--bg);
 font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-main{max-width:1100px;margin:0 auto;padding:20px 16px 48px}
-.banner{display:inline-block;padding:4px 12px;border-radius:6px;font-weight:600;font-size:13px;margin-bottom:12px}
-.banner.real{background:var(--info);color:#fff}.banner.synth{background:#f2c94c;color:#222}
-h1{font-size:22px;margin:4px 0 4px}h2{font-size:17px;margin:0}
+main{max-width:1000px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:22px;margin:4px 0 4px;color:var(--accent);letter-spacing:.04em}h2{font-size:17px;margin:0}
 .sub{color:var(--mute);font-size:13px}
-.hero{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0}
-.hero p{margin:0 0 8px;font-size:16px}.hero .sum{color:var(--mute);font-style:italic;margin-top:10px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
-.stat b{display:block;font-size:20px}.stat span{color:var(--mute);font-size:12px}
+.stat b{display:block;font-size:20px;color:var(--accent)}.stat span{color:var(--mute);font-size:12px}
 .chain{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:14px 0;overflow:hidden}
 .chain>header{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
-.pill{padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;color:#fff}
+.pill{padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;color:#0b1030}
 .pill.committed{background:var(--good)}.pill.discarded{background:var(--bad)}.pill.other{background:var(--mute)}
 table{width:100%;border-collapse:collapse}th,td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);font-size:14px}
 th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
@@ -509,7 +504,7 @@ tr:last-child td{border-bottom:none}
 .gauge{position:relative;height:12px;background:var(--track);border-radius:6px;min-width:150px}
 .gauge .zero{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--mute)}
 .gauge .fill{position:absolute;top:2px;bottom:2px;border-radius:4px}
-.gauge .tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink)}
+.gauge .tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--accent)}
 .note{border-left:3px solid var(--accent);padding-left:8px;margin-top:6px;font-size:13px}
 .foot{color:var(--mute);font-size:12px;margin-top:24px}
 details{margin-top:14px}summary{cursor:pointer;color:var(--mute)}
@@ -518,13 +513,12 @@ details{margin-top:14px}summary{cursor:pointer;color:var(--mute)}
 
 
 _CSS_PLAIN = """
-.banner.synth{display:block;padding:10px 14px;font-size:14px;border-radius:8px}
-.lead{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin:14px 0}
+.lead{background:linear-gradient(135deg,#1c2766,#141b45);border:1px solid var(--accent);border-radius:12px;padding:20px 22px;margin:14px 0}
 .lead h2{font-size:22px;line-height:1.35;margin:0 0 8px}.lead p{margin:6px 0;font-size:16px}
 .lead .sum{color:var(--mute);font-style:italic}
 h3.sec{font-size:18px;margin:26px 0 10px}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
-.card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--good);border-radius:10px;padding:14px 16px}
+.card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:14px 16px}
 .card b{display:block;font-size:16px;margin-bottom:6px}.card .impact{color:var(--good);font-weight:600}
 ul.undone{padding-left:20px;margin:10px 0}ul.undone li{margin:8px 0}
 dl.gloss dt{font-weight:600;margin-top:10px}dl.gloss dd{margin:2px 0 0;color:var(--mute)}
@@ -604,15 +598,10 @@ def render_html(facts: dict, stats: dict, source: Path) -> str:
     e = html.escape
     scale = max([abs(i["delta"]) for i in facts["iterations"] if i.get("delta") is not None] +
                 [i["threshold"] for i in facts["iterations"] if i.get("threshold") is not None] + [1e-4]) * 1.15
-    synth = (facts.get("scenario") or "").startswith("synthetic")
     head, overall = _plain_summary(facts)
     out = [f"<!doctype html><html lang='en'><head><meta charset='utf-8'>"
            f"<meta name='viewport' content='width=device-width,initial-scale=1'>"
            f"<title>AETERNA-QA Data Cleaning Report</title><style>{_CSS}{_CSS_PLAIN}</style></head><body><main>"]
-    out.append(f"<span class='banner {'synth' if synth else 'real'}'>{e(facts['label'])}</span>")
-    if synth:
-        out.append("<p class='ctx'>This is a synthetic demonstration: the data problems in this run were "
-                   "planted on purpose. It shows how the tool works, not a real-world result.</p>")
     out.append("<h1>Data cleaning report</h1>")
     out.append(f"<div class='lead'><h2>{e(head)}</h2><p>{e(overall)}</p>")
     if facts.get("summary_note"):
@@ -662,15 +651,11 @@ def render_html(facts: dict, stats: dict, source: Path) -> str:
         out.append("</ul></details>")
 
     # ---- Glossary
-    out.append("<h3 class='sec'>How to read this</h3><dl class='gloss'>"
-               + ("<dt>Brier score</dt><dd>How far off the model's predictions are. Lower is better.</dd>"
+    out.append("<details><summary><b>Key terms</b></summary><dl class='gloss'>"
+               + ("<dt>Brier score</dt><dd>Prediction error. Lower is better.</dd>"
                   if facts["metric"] == "neg-Brier" else
-                  "<dt>F1 score</dt><dd>One number for how well the model finds the right answers. Higher is better.</dd>") +
-               "<dt>Keep the fix (commit)</dt><dd>The change stays in your cleaned data.</dd>"
-               "<dt>Undo (rollback)</dt><dd>The change is reverted and the data goes back to how it was.</dd>"
-               "<dt>Bar / threshold</dt><dd>The minimum improvement needed before we trust a fix.</dd>"
-               + ("<dt>Synthetic</dt><dd>Data problems planted on purpose so the tool can be demonstrated.</dd>"
-                  if synth else "") + "</dl>")
+                  "<dt>F1 score</dt><dd>Hit quality. Higher is better.</dd>") +
+               "<dt>Commit</dt><dd>Fix kept.</dd><dt>Rollback</dt><dd>Fix undone.</dd></dl></details>")
 
     # ---- Technical details (single collapsed section)
     out.append("<details><summary><b>Technical details</b></summary>")
@@ -719,11 +704,6 @@ def render_html(facts: dict, stats: dict, source: Path) -> str:
                        f"<td class='quote'>{e(it.get('reason') or '-')}</td><td>{gauge}</td>"
                        f"<td><span class='v-{v['code']}'>{e(v['text'])}</span>{note}</td></tr>")
         out.append("</tbody></table></section>")
-    out.append("<p class='tiny'>Verdicts are computed by code from the audit log: an operation (or chain of "
-               "operations) is committed only if its cross-validated improvement over the current baseline exceeds a "
-               "bar derived from measured noise (corrected standard error, Bonferroni-adjusted for the number of "
-               "looks in a run). The planner's reason is quoted as written, before any measurement. Assistant notes "
-               "are one-sentence readings; any note containing a number or column name not in the log is discarded.</p>")
     tail = (f"LLM notes: {stats['verified']} verified, {len(stats.get('rejected', []))} rejected"
             if stats.get("mode") == "llm" else "LLM notes: none (template-only)")
     if stats.get("error"):

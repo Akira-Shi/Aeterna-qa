@@ -41,7 +41,7 @@ Capstone: closed-loop data-cleaning agent (detect → plan → execute → verif
 6. **Minor:** demo date blank in `BUILD_PLAN.md`; `positive_control.py` doesn't call `audit`; IQR outlier detection is unreliable on skewed columns.
 
 ## Rules that stay on
-- Label every synthetic result "synthetic" (banner, audit `scenario`, file names, report titles).
+- Label every synthetic result "synthetic" (audit `scenario`, file names, console banner). **Exception (user decision 2026-10-04):** the Explain HTML report carries no synthetic banner or wording and uses the Celestia colour theme; synthetic status lives in the audit log, file names and docs only.
 - Don't choose a scenario, metric or model after seeing its result without a written rule.
 - Report RF and LR separately, never pooled. Report positive and negative scenarios as k/n, never pooled.
 - Don't call the top-coded values `99999`, `99`, `90` "errors"; they are censored real values.

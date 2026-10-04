@@ -314,6 +314,12 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - **Added:** `README.md` at the repo root: plain-language pitch, worked example, loop diagram, glossary (folds, Brier vs F1, Nadeau-Bengio, Bonferroni, leakage, pre-registration, manifest), repo map, run/test commands, RESULTS.md counts quoted as k/n (4 hit, 2 miss, 2 correct rollback, 7 false commit over 15 runs, not pooled) and limitations. It supersedes the stale `Documents/README.md`, which now carries a one-line "outdated" pointer at its top (not deleted).
 - **Not changed:** any code, evaluator, gate, constants, results or pre-registration.
 
+### 2026-10-04 -- Explain HTML report: Celestia theme, less text, synthetic wording removed (rendering only)
+- **Changed:** `_CSS`, `_CSS_PLAIN` and `render_html` in `modules/explain.py`. Celestia (Genshin) night palette: navy-indigo gradient, gold accent, teal commit / rose rollback; single dark theme (light/dark switch removed). Removed the scenario banner, the "synthetic demonstration" paragraph, the "Synthetic" glossary entry and the long verdict footnote. Glossary is now a collapsed "Key terms" (3 lines).
+- **Policy change (user decision):** the HTML report no longer says a run is synthetic. This amends the "label every synthetic result" rule for the HTML report only; synthetic status remains in the audit `scenario`, output file names, the console banner and the docs. Readers of the HTML alone cannot tell damage was injected, so share it with that in mind. `CLAUDE.md` rule updated to match.
+- **Tests:** `explain_tests.py` banner assertion replaced with a check that the HTML has no synthetic wording; all pass. Report for `run_20261004T132716Z` regenerated.
+- **Not changed:** verdict logic, number-check guard, evaluator, gate, audit schema, console output, pre-registration.
+
 <!-- Add new entries above this line, most recent on top. Format:
 ### YYYY-MM-DD
 - What you built/changed

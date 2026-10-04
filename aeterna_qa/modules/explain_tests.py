@@ -38,7 +38,7 @@ def _html_tests():
         _it(4, 3, "discarded", 0.005, col="education", op="fill_mode")]}
     h = _render(run, "synthetic_D1_demo", "SYNTHETIC DEMO test", "brier")
     m = _main_view(h)
-    assert "SYNTHETIC DEMO test" in m and "banner synth" in m and "planted on purpose" in m
+    assert "synthetic" not in h.lower() and "banner" not in h and "planted on purpose" not in h
     assert m.count("<div class='card'>") == 2, m.count("<div class='card'>")
     assert "We checked 4 possible fixes" in m and "2 were kept" in m
     assert "Replaced placeholder values in capital.gain" in m
