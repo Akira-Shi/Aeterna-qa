@@ -320,6 +320,12 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - **Tests:** `explain_tests.py` banner assertion replaced with a check that the HTML has no synthetic wording; all pass. Report for `run_20261004T132716Z` regenerated.
 - **Not changed:** verdict logic, number-check guard, evaluator, gate, audit schema, console output, pre-registration.
 
+### 2026-10-04 -- Explain HTML report restyled to "Steep" (rendering only)
+- **Changed:** `_CSS`, `_CSS_PLAIN` in `modules/explain.py`, plus a Google Fonts link in `<head>`. Replaces the Celestia theme from the entry above. Light theme, white canvas, 1200px max width; Source Serif 4 headings (weight 400, tight tracking) and Inter body (substitutes for Signifier/Sohne); one Blush Peach (#fbe1d1) summary card with brown text; Mist Gray 24px-radius fix cards; white floating chain tables with hairline + soft shadow; fully rounded pills.
+- **Colour rule:** spec allows no chromatic colour beyond peach/brown, so commit vs rollback is shown by shade and label (committed = ink pill, rollback = peach pill with brown text, gauges ink/gray), not green/red.
+- **Skipped from spec:** hero collage, avatars, dark mode, italic display phrase.
+- **Not changed:** verdict logic, number-check guard, evaluator, gate, audit schema, console output, pre-registration. `explain_tests.py` passes. Report regenerated as `run_20261004T135853Z`.
+
 <!-- Add new entries above this line, most recent on top. Format:
 ### YYYY-MM-DD
 - What you built/changed

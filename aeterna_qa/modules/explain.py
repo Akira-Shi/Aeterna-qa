@@ -480,49 +480,53 @@ def _render_plain(facts: dict, stats: dict) -> None:
 
 
 _CSS = """
-:root{--bg:#0b1030;--card:#141b45;--ink:#eef2ff;--mute:#9fb0e0;--line:#2b3677;--good:#6fe3d0;--bad:#ff8fa3;
---warn:#f5d77a;--info:#8fd3ff;--track:#222c63;--accent:#e8c872}
-*{box-sizing:border-box}body{margin:0;color:var(--ink);
-background:radial-gradient(1200px 600px at 50% -10%,#26337f 0%,#0b1030 60%) fixed,var(--bg);
-font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-main{max-width:1000px;margin:0 auto;padding:24px 16px 48px}
-h1{font-size:22px;margin:4px 0 4px;color:var(--accent);letter-spacing:.04em}h2{font-size:17px;margin:0}
-.sub{color:var(--mute);font-size:13px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
-.stat b{display:block;font-size:20px;color:var(--accent)}.stat span{color:var(--mute);font-size:12px}
-.chain{background:var(--card);border:1px solid var(--line);border-radius:10px;margin:14px 0;overflow:hidden}
-.chain>header{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
-.pill{padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;color:#0b1030}
-.pill.committed{background:var(--good)}.pill.discarded{background:var(--bad)}.pill.other{background:var(--mute)}
-table{width:100%;border-collapse:collapse}th,td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);font-size:14px}
-th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+:root{--bg:#ffffff;--card:#f2f2f3;--fog:#fafafb;--ink:#17191c;--mute:#777b86;--ash:#979799;--line:#ececec;
+--peach:#fbe1d1;--brown:#5d2a1a;--good:#17191c;--bad:#979799;--warn:#777b86;--track:#ececec;--accent:#5d2a1a;
+--serif:'Source Serif 4','Signifier',ui-serif,Georgia,serif;
+--sans:'Inter','Sohne',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+--float:0 0 0 1px rgba(4,23,43,.05),0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);
+font:17px/1.35 var(--sans);font-weight:430}
+main{max-width:1200px;margin:0 auto;padding:64px 20px 80px}
+h1,h2.serif{font-family:var(--serif);font-weight:400}
+h1{font-size:clamp(34px,6vw,44px);line-height:1.3;letter-spacing:-.66px;margin:0 0 24px}
+h2{font-size:17px;margin:0;font-weight:500}
+.sub{color:var(--mute);font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.stat{background:var(--card);border-radius:16px;padding:16px 20px}
+.stat b{display:block;font-size:20px;font-weight:500}.stat span{color:var(--mute);font-size:14px}
+.chain{background:#fff;border-radius:20px;box-shadow:var(--float);margin:24px 0;overflow:hidden}
+.chain>header{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.pill{padding:2px 12px;border-radius:9999px;font-size:12px;font-weight:500;color:#fff}
+.pill.committed{background:var(--ink)}.pill.discarded{background:var(--peach);color:var(--brown)}.pill.other{background:var(--ash)}
+table{width:100%;border-collapse:collapse}th,td{padding:12px 20px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);font-size:15px}
+th{color:var(--ash);font-weight:400;font-size:14px}
 tr:last-child td{border-bottom:none}
-.quote{color:var(--mute);font-style:italic}.tiny{font-size:12px;color:var(--mute)}
-.v-commit,.v-commit_with_chain{color:var(--good);font-weight:600}.v-rollback{color:var(--bad);font-weight:600}
-.v-noise{color:var(--warn);font-weight:600}.v-unresolved,.v-no_eval{color:var(--mute);font-weight:600}
-.gauge{position:relative;height:12px;background:var(--track);border-radius:6px;min-width:150px}
-.gauge .zero{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:var(--mute)}
-.gauge .fill{position:absolute;top:2px;bottom:2px;border-radius:4px}
-.gauge .tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--accent)}
-.note{border-left:3px solid var(--accent);padding-left:8px;margin-top:6px;font-size:13px}
-.foot{color:var(--mute);font-size:12px;margin-top:24px}
-details{margin-top:14px}summary{cursor:pointer;color:var(--mute)}
+.quote{color:var(--mute)}.tiny{font-size:14px;color:var(--mute)}
+.v-commit,.v-commit_with_chain{color:var(--ink);font-weight:500}.v-rollback{color:var(--mute);font-weight:480}
+.v-noise{color:var(--mute);font-weight:480}.v-unresolved,.v-no_eval{color:var(--ash);font-weight:480}
+.gauge{position:relative;height:8px;background:var(--track);border-radius:9999px;min-width:150px}
+.gauge .zero{position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--ash)}
+.gauge .fill{position:absolute;top:0;bottom:0;border-radius:9999px}
+.gauge .tick{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.note{border-left:2px solid var(--ash);padding-left:8px;margin-top:6px;font-size:14px}
+.foot{color:var(--ash);font-size:14px;margin-top:40px}
+details{margin-top:24px}summary{cursor:pointer;color:var(--mute)}
 @media (max-width:720px){th:nth-child(3),td:nth-child(3){display:none}}
 """
 
 
 _CSS_PLAIN = """
-.lead{background:linear-gradient(135deg,#1c2766,#141b45);border:1px solid var(--accent);border-radius:12px;padding:20px 22px;margin:14px 0}
-.lead h2{font-size:22px;line-height:1.35;margin:0 0 8px}.lead p{margin:6px 0;font-size:16px}
-.lead .sum{color:var(--mute);font-style:italic}
-h3.sec{font-size:18px;margin:26px 0 10px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
-.card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:14px 16px}
-.card b{display:block;font-size:16px;margin-bottom:6px}.card .impact{color:var(--good);font-weight:600}
-ul.undone{padding-left:20px;margin:10px 0}ul.undone li{margin:8px 0}
-dl.gloss dt{font-weight:600;margin-top:10px}dl.gloss dd{margin:2px 0 0;color:var(--mute)}
-.ctx{color:var(--mute);font-size:14px}
+.lead{background:var(--peach);color:var(--brown);border-radius:24px;padding:40px;margin:24px 0}
+.lead h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,4vw,44px);line-height:1.3;letter-spacing:-.66px;margin:0 0 12px}
+.lead p{margin:8px 0;font-size:18px}.lead .sum{font-style:italic}
+h3.sec{font-family:var(--serif);font-weight:400;font-size:26px;letter-spacing:-.23px;margin:64px 0 16px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.card{background:var(--card);border-radius:24px;padding:24px 20px}
+.card b{display:block;font-size:20px;font-weight:500;margin-bottom:8px}.card .impact{color:var(--mute);font-weight:430}
+ul.undone{padding-left:20px;margin:12px 0}ul.undone li{margin:8px 0;color:var(--mute)}
+dl.gloss dt{font-weight:500;margin-top:12px}dl.gloss dd{margin:2px 0 0;color:var(--mute)}
+.ctx{color:var(--mute);font-size:15px}
 """
 
 _OP_PLAIN = {
@@ -601,6 +605,7 @@ def render_html(facts: dict, stats: dict, source: Path) -> str:
     head, overall = _plain_summary(facts)
     out = [f"<!doctype html><html lang='en'><head><meta charset='utf-8'>"
            f"<meta name='viewport' content='width=device-width,initial-scale=1'>"
+           f"<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Source+Serif+4:wght@400&display=swap'>"
            f"<title>AETERNA-QA Data Cleaning Report</title><style>{_CSS}{_CSS_PLAIN}</style></head><body><main>"]
     out.append("<h1>Data cleaning report</h1>")
     out.append(f"<div class='lead'><h2>{e(head)}</h2><p>{e(overall)}</p>")
