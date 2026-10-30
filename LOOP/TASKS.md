@@ -2,7 +2,7 @@
 
 Rules for every task
 - Read CLAUDE.md first. Do not touch: evaluator.py, evaluator_tests.py, PREREGISTRATION.md (except appending a signed row), gate metric, commit rule, scenarios, models.
-- Before each commit run: `python tools/frozen_check.py` (must exit 0; exit 2 = stop and ask Akira), `python -m aeterna_qa.modules.ops_tests`, `python -m aeterna_qa.modules.evaluator_tests` (adjust invocation to how they are run today).
+- Before each commit run: `python tools/frozen_check.py` (must exit 0; exit 2 = stop and ask Akira), from `aeterna_qa/`: `python -m modules.ops_tests`, `python -m modules.evaluator_tests`, `python -m modules.explain_tests`.
 - Add a Documentation.md changelog entry for every change. One commit per task. Write LOOP/reports/build-<iter>.md (what changed, files, test output).
 - Then set STATE.json status = ready_for_verify. Do not verify your own work.
 - Synthetic results stay labelled "synthetic". No new study runs unless a task says so.
