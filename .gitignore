@@ -1,8 +1,9 @@
 .env
 __pycache__/
-venv/
 *.pyc
+venv/
 .DS_Store
 aeterna_qa/data/*.csv
-aeterna_qa/outputs/*.csv 
-aeterna_qa/outputs/*.csv 
+aeterna_qa/outputs/
+aeterna_qa/logs/
+_scratch/
