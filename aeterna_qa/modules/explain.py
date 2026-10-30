@@ -527,6 +527,25 @@ h3.sec{font-family:var(--serif);font-weight:400;font-size:26px;letter-spacing:-.
 ul.undone{padding-left:20px;margin:12px 0}ul.undone li{margin:8px 0;color:var(--mute)}
 dl.gloss dt{font-weight:500;margin-top:12px}dl.gloss dd{margin:2px 0 0;color:var(--mute)}
 .ctx{color:var(--mute);font-size:15px}
+.funnel{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0 8px}
+.ftile{background:var(--card);border-radius:20px;padding:16px 20px}
+.ftile b{display:block;font-size:44px;font-family:var(--serif);font-weight:400;letter-spacing:-.66px;line-height:1.1}
+.ftile span{color:var(--mute);font-size:14px}
+.fbar{display:flex;height:10px;border-radius:9999px;overflow:hidden;background:var(--track);margin:12px 0 0}
+.fbar i{display:block;height:100%;transform-origin:left;animation:grow .9s cubic-bezier(.2,.7,.2,1) .2s both}
+.fbar .k{background:var(--ink)}.fbar .u{background:var(--peach);animation-delay:.5s}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes wipe-r{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}
+@keyframes wipe-l{from{clip-path:inset(0 0 0 100%)}to{clip-path:inset(0)}}
+.lead,.ftile,.card{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.ftile:nth-child(2),.card:nth-child(2){animation-delay:.12s}.ftile:nth-child(3),.card:nth-child(3){animation-delay:.24s}
+.card:nth-child(n+4){animation-delay:.36s}
+.gauge .fill.pos{animation:wipe-r .9s cubic-bezier(.2,.7,.2,1) .3s both}
+.gauge .fill.neg{animation:wipe-l .9s cubic-bezier(.2,.7,.2,1) .3s both}
+.gauge .tick{animation:rise .5s ease 1s both}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+@media (max-width:520px){.funnel{grid-template-columns:1fr}}
 """
 
 _OP_PLAIN = {
@@ -612,6 +631,16 @@ def render_html(facts: dict, stats: dict, source: Path) -> str:
     if facts.get("summary_note"):
         out.append(f"<p class='sum'>Assistant's note: {e(facts['summary_note'])}</p>")
     out.append("</div>")
+    its_ = [i for i in facts["iterations"] if i.get("column") is not None or i.get("operation") is not None]
+    kc_ = {c["chain_id"] for c in facts["chains"] if c["status"] == "committed"}
+    n_, k_ = len(its_), sum(1 for i in its_ if i.get("chain_id") in kc_)
+    if n_:
+        out.append("<div class='funnel'>"
+                   f"<div class='ftile'><b data-count='{n_}'>{n_}</b><span>fixes checked</span></div>"
+                   f"<div class='ftile'><b data-count='{k_}'>{k_}</b><span>kept</span></div>"
+                   f"<div class='ftile'><b data-count='{n_ - k_}'>{n_ - k_}</b><span>undone</span></div></div>"
+                   f"<div class='fbar'><i class='k' style='width:{k_ / n_ * 100:.1f}%'></i>"
+                   f"<i class='u' style='width:{(n_ - k_) / n_ * 100:.1f}%'></i></div>")
 
     # ---- What was fixed
     kept = [c for c in facts["chains"] if c["status"] == "committed"]
@@ -699,7 +728,7 @@ def render_html(facts: dict, stats: dict, source: Path) -> str:
                 col = "var(--good)" if it["own_clears"] else ("var(--bad)" if d <= 0 else "var(--warn)")
                 tick = 50 + t / scale * 50
                 gauge = (f"<div class='gauge'><span class='zero'></span>"
-                         f"<span class='fill' style='left:{fill_l:.1f}%;width:{fill_w:.1f}%;background:{col}'></span>"
+                         f"<span class='fill {"pos" if d >= 0 else "neg"}' style='left:{fill_l:.1f}%;width:{fill_w:.1f}%;background:{col}'></span>"
                          f"<span class='tick' style='left:{tick:.1f}%'></span></div>"
                          f"<div class='tiny'>delta {d:+.4f} &middot; bar {t:.4f} (black tick)</div>")
             else:
@@ -720,7 +749,11 @@ def render_html(facts: dict, stats: dict, source: Path) -> str:
         for r in stats["rejected"]:
             out.append(f"<li>iteration {e(str(r['iteration']))}: {e('; '.join(r['why']))} &mdash; &ldquo;{e(r['note'])}&rdquo;</li>")
         out.append("</ul></details>")
-    out.append("</details></main></body></html>")
+    out.append("</details></main><script>(function(){if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;"
+               "document.querySelectorAll('[data-count]').forEach(function(el){var t=+el.dataset.count,s=null;"
+               "el.textContent='0';function f(ts){if(s===null)s=ts;var p=Math.min((ts-s)/900,1);"
+               "el.textContent=Math.round(t*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)}"
+               "setTimeout(function(){requestAnimationFrame(f)},200)})})();</script></body></html>")
     return "".join(out)
 
 
