@@ -326,6 +326,17 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - **Skipped from spec:** hero collage, avatars, dark mode, italic display phrase.
 - **Not changed:** verdict logic, number-check guard, evaluator, gate, audit schema, console output, pre-registration. `explain_tests.py` passes. Report regenerated as `run_20261004T135853Z`.
 
+### 2026-10-30 -- Pending #1 resolved: `committed_ops: None` is a stale-log artifact, not a bug (investigation only, no code change)
+- **Finding:** the `committed_ops: None` seen in audit JSONs comes only from 11 old logs (`run_20260929T035527Z` through `run_20260929T062818Z`) written before the key existed. The 27 logs from `run_20260930T033353Z` onward all carry it. Current code writes it per iteration in `audit.py:92`; `pipeline.py:166`, `:204` and `:220` pass it in; `pipeline.py:230` updates the running state after the log call. The value is therefore the pre-decision state, so it is `{}` on a first-chain commit by design.
+- **Explain is unaffected:** `explain.py:103-119` derives committed ops from `chain_ops`, not from `committed_ops`, so the chain logic does not depend on the field.
+- **Not changed:** any code, evaluator, gate, audit schema, pre-registration. Pending item 1 can be closed.
+
+### 2026-10-30 -- Repo hygiene: `.gitignore` extended and work committed
+- **Changed:** root `.gitignore` now covers `.env`, `__pycache__/`, `*.pyc`, `venv/`, `aeterna_qa/outputs/`, `aeterna_qa/logs/` and `_scratch/` (the old outputs entry had a trailing space that stopped it matching). Patterns only affect untracked files, so logs and scratch scripts already tracked from earlier commits stay tracked until someone chooses to untrack them; none were removed.
+- **Committed:** the Explain restyle (`modules/explain.py`), the docs (including the v2/v3 review decks), the `.gitignore` and the `LOOP/` state files, as separate commits on `rebuild-study`. Nothing was pushed.
+- **Tests before commit:** evaluator_tests, ops_tests, explain_tests and demo_tests all pass.
+- **Not changed:** evaluator, gate, commit rule, pre-registration.
+
 <!-- Add new entries above this line, most recent on top. Format:
 ### YYYY-MM-DD
 - What you built/changed
