@@ -56,7 +56,7 @@ Capstone: closed-loop data-cleaning agent (detect → plan → execute → verif
 ## Rules that stay on
 - Label every synthetic result "synthetic" (audit `scenario`, file names, console banner). **Exception (user decision 2026-10-04):** the Explain HTML report carries no synthetic banner or wording and uses the Steep style (light, serif headings, peach accent); synthetic status lives in the audit log, file names and docs only.
 - Don't choose a scenario, metric or model after seeing its result without a written rule.
-- Report RF and LR separately, never pooled. Report positive and negative scenarios as k/n, never pooled.
+- Report RF and LR separately, never pooled (v1 synthetic study). Real-data evaluation is LR only; RF reproduces old numbers only. Report positive and negative scenarios as k/n, never pooled.
 - Don't call the top-coded values `99999`, `99`, `90` "errors"; they are censored real values.
 - Don't cite the retracted numbers: +0.0175 drop-rows gain, F1 ≈ 0.688, the "2.0× SE" threshold, `calculate_f1_cv`.
 - The planner sees only detector output, never the injection manifest.

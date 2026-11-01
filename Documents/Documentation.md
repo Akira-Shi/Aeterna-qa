@@ -381,6 +381,10 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - `Documents/NOVELTY.md` section 4(1): claim replaced with Akira's final wording (fixed CV bar, Bonferroni within each run, 15 runs / 5 scenarios, 11 correct commits, planner 15/15 match, 1.0 vs 1.55); superseded caveat paragraph removed; footnote added (4 hit / 7 false_commit, C5 post-pilot, planner comparison exploratory).
 - Learn2Clean row filled once from the GitHub README (not the paper), cells marked "(from README, not full text)"; README is silent on gate/correction/rollback, so those remain "(unverified: full text gated)". Known issue, not retried.
 
+### 2026-11-01 (phase 3 finalize; docs only)
+- `Documents/AMENDMENT_DRAFT_real_data.md` v2: applied Akira's decisions (N=2 with next-in-order fallback, ground truth = published cleaned version, 20/80 split with pilot as pipeline check, per-run Bonferroni primary, seeds 401-403 both planners, LR only, Adult closed, descriptive k/n, wrong-op = failure, expected-outcome file signing procedure, `v2-p4` placeholder). Datasets from CleanML repo order (`schema/dataset.py`): Marketing, Airbnb, fallback EEG; Citation skipped by a proposed rule 6. Licence/PII table added; unknowns marked (unverified). PREREGISTRATION.md not edited.
+- CLAUDE.md "Rules that stay on": RF/LR line now says real-data evaluation is LR only.
+
 <!-- Add new entries above this line, most recent on top. Format:
 ### 2026-11-01 (phase 2b, novelty full-text check; docs only)
 - Read full text of ActiveClean, BoostClean, CPClean (arXiv PDFs, pdftotext). Filled gate/correction/rollback/audit cells in `Documents/NOVELTY.md` with page-cited quotes or "not found in full text". No competitor shows both a corrected statistical gate and rollback.
@@ -390,6 +394,9 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 
 ### 2026-11-01 (CLAUDE.md, docs only)
 - Added "planner-critic: not novel, see Documents/NOVELTY.md" after the Pending list. No planner-critic item existed in Pending (P7 is FastAPI backend), so nothing was removed.
+
+### 2026-11-01 (phase 3, real-data amendment DRAFT; docs only)
+- Added `Documents/AMENDMENT_DRAFT_real_data.md`: a draft of a PREREGISTRATION section 12 amendment for real-data evaluation (selection rule, ground-truth options, hypotheses, Bonferroni family, seeds, k/n reporting, frozen list, 12 open questions). All items are proposals for Akira. PREREGISTRATION.md not edited; no dataset run or opened; branch phase/3-real-data-amendment, not merged, not pushed.
 
 ### YYYY-MM-DD
 - What you built/changed
