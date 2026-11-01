@@ -348,6 +348,15 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - **False passes (semantic):** sign blindness ("Delta -0.0006 equals bar 0.0006"), a staged-then-committed op described as "no measurable improvement", and "Contradicts:" used without a predicted improvement. Exact texts in `LOOP/reports/build-T2.md`.
 - **Not changed:** guard logic, evaluator, gate, commit rule, pre-registration. Guard changes need Akira's OK.
 
+### 2026-11-01 -- T3b: `_archive/positive_control.py` superseded (won't fix, docs only)
+- **Status:** `aeterna_qa/_archive/positive_control.py` is superseded by C5 and the D1 demo (both log `synthetic_*` scenarios). Won't fix.
+- **Reasons:** (1) under the frozen LR evaluator the as-is baseline on MCAR NaN `education.num` raises `ValueError: Input X contains NaN`; fixing it needs an evaluation-policy choice on NaN handling; (2) it uses relative imports that fail outside `modules/`.
+- **Citations of `Documents/positive_control_results.png` as a result (audit, nothing edited):**
+  - `Documents/AETERNA_QA_50pct_Review.pptx`, slide 19 ("Positive Control & Next Steps"): embeds the image (`ppt/media/image2.png`, byte-identical to the PNG) and quotes "Control v1 ... best repair +0.0013 vs threshold 0.0207. No commit", framed as a kept negative control (RF-era numbers).
+  - `Documents/AETERNA_QA_50pct_Review_v2.pptx`, `_v3.pptx` and `AETERNA_QA_Project_Proposal_Akira.pptx`: no match to the PNG bytes and no slide text with 0.0207 or "Control v1".
+  - Markdown: no file references `positive_control_results.png` by name. `Documents/BUILD_PLAN.md` lines 14 and 22 cite the same +0.0013 / 0.0207 result as a negative example in prose.
+- **Not changed:** any code, deck, evaluator, gate, commit rule, pre-registration.
+
 ### 2026-11-01 -- T3: minor cleanups (docs only; part b blocked, needs Akira)
 - **(a) Needs Akira:** `BUILD_PLAN.md` demo date is still blank ("fill in here: ______"). Left blank on purpose; no date invented.
 - **(b) Blocked, no code change:** `positive_control.py` lives at `aeterna_qa/_archive/positive_control.py` and is not part of the pipeline. Wiring in `audit.new_run` / `log_iteration` / `save` (scenario `synthetic_positive_control`) was tried and reverted. The script cannot run at all under the current frozen LR evaluator: the as-is baseline on MCAR-corrupted `education.num` passes NaN into `LogisticRegression` and raises `ValueError: Input X contains NaN` (the script dates from the RF era). Running it needs a decision on how the baseline handles NaN (an evaluation-policy choice), and it also uses relative imports that fail outside `modules/`. Both are beyond "add an audit call", so it was left untouched. The labelled synthetic positive controls that exist are C5 and the D1 demo, which already log `synthetic_*` scenarios.
