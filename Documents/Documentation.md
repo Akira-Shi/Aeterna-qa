@@ -483,6 +483,12 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - New section 15 "Product backlog (not this study)": on a planner `ValueError`, re-prompt instead of ending the run.
 - Left open (Akira has not answered): the `dedupe_rows` note and the section 11 exploratory-run wording. Signed files untouched. Generated via `tools/make_results_real_md.py` (regenerated, not hand-edited).
 
+### 2026-11-01 (phase 6, P6a: Stage 2 rule engine; branch phase/6-recommender; additive, no frozen/gate/commit-rule/scenario change)
+- New package `aeterna_qa/stage2/`: `rules.py` (deterministic table task_type x model family x column profile -> steps for imputation, encoding, scaling, imbalance; each Step has rule_id, reason, alternative; families linear / tree_ensemble / distance / neural; `resolve_family` maps an unknown model to the nearest family with a UserWarning, else raises `UnsupportedModel`), `build.py` (unfitted sklearn Pipeline = ColumnTransformer + family estimator; `fit_on_train`; `save_pipeline` via joblib with a steps sidecar JSON), `compare.py` (recommended vs default = median fill + one-hot + scale, same estimator, on the evaluator's fixed 5x3 folds via read-only import of `make_fixed_folds` / `paired_delta_corrected`; reports mean diff +/- corrected SE for neg-Brier and F1; REPORT ONLY, no gate, no threshold; binary only, else `CompareNotSupported`).
+- Rule thresholds are fixed constants chosen up front (|skew| > 1, > 15 levels, >= 5% categorical missing, class ratio < 0.25), not tuned on any result.
+- Spec note: `V2_PROMPTS.md` names the branch `phase/6-stage2`; Akira's instruction named `phase/6-recommender`, which was used.
+- Tests: `tests/test_stage2_rules.py` (every family x task type builds, fits on train rows, saves; per-family rule choices; imbalance; determinism; unsupported model; compare). No pipeline run, no Groq call.
+
 ## Known issues / open questions (rewritten 2026-09-30)
 
 - Evaluator v1.1 (2026-11-01): numeric NaN is median-imputed inside each fold, so fill_median/fill_mean on a continuous NaN column cannot beat the baseline (delta about 0, expected outcome "no commit"). Text columns with more than 300 distinct values are rejected by TaskSpec (one-hot blow-up); drop or ID-exclude them. The Airbnb positive label `Rating=Y` is inferred from the CleanML wording, pending Akira's confirmation.
