@@ -430,6 +430,13 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - (Superseded 2026-11-01 by evaluator v1.1, see the entries above: numeric NaN is now median-imputed in-fold and the TaskSpec workaround is removed.) Original note: the LR evaluator one-hot encoded only text columns, so a numeric NaN crashed LR.
 - Known issue: the "any CSV" assumption set is small (CSV only, comma separator, UTF-8 or latin-1, '?' and blanks are the only extra NA markers); multiclass/regression get detection only.
 
+### 2026-11-01 (phase 3/4, expected outcomes generator, amendment v5; no evaluator change)
+- DISCLOSURE: on 2026-11-01, before the real-data amendment was signed, exploratory full-data pipeline-acceptance runs were made on Marketing (`--positive 0`, rule planner) and Airbnb (`--positive Y`), scenario `exploratory`. Marketing: 16/16 candidate evaluations rolled back, nothing committed. Airbnb: no commits; `fill_median` / `fill_mean` delta +0.0000. They are not study results and no expectation was derived from them. No further pipeline or evaluator run on Marketing, Airbnb or any CleanML dataset occurs until Akira signs the amendment.
+- New `tools/make_expected_outcomes.py` (deterministic, reads the CleanML dirty/clean files only, no pipeline or evaluator import) writes `Documents/EXPECTED_OUTCOMES_real_data.md` using the Q1 union rule. Rows the amendment rules do not settle are listed under "Ambiguous - Akira decides" and not chosen. File is unsigned.
+- Amendment draft v5: split seed 20261101; Airbnb raw.csv 33,145 rows with sha256 (the PDF's 42,492 is a noted discrepancy); positive labels Marketing `Income = 0`, Airbnb `Rating = Y`; CleanML terms (no repo licence, per-dataset terms, academic use, no redistribution); the split-seed, Airbnb-label and data-zip-terms open items removed as resolved; disclosure added to section L; future-work section M.
+- Future work: no dedupe op in the menu; Marketing has 1,154 exact duplicate rows. The op is not added.
+- Finding while writing the generator: Marketing `raw/Holoclean_mv_clean.csv` is not row-aligned to `raw/raw.csv` (5,909 of 8,993 rows differ positionally, including rows with no missing cell), and Airbnb's `clean_SD_impute_mean_dummy_train.csv` ships with 0 rows; both are flagged as ambiguous rather than worked around.
+
 ### YYYY-MM-DD
 - What you built/changed
 - Any numbers worth keeping (F1 before/after, time spent, what broke)
