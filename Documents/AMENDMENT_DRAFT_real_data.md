@@ -93,6 +93,17 @@ Airbnb's licence was confirmed by Akira (section J), so no swap is needed. Had i
 - **Failure condition (decided):** any wrong-op commit fails the phase. Everything else is descriptive k/n; no thresholds such as "2 of 3".
 - **H3 (no harm):** every committed op has a final gate delta >= 0 on the held-out evaluation partition and no collateral damage measurable against ground truth where G1 applies. Any commit with negative delta on a partition not used for the commit decision is a failure of the gate and is reported prominently.
 - **Reporting of the inevitable:** positives (H2) and negatives (H1) are reported separately as k/n, never pooled. No overall accuracy number across both.
+- **Failure-stage labels (pre-signing addition, 2026-11-01; made before any registered run, derived from the pipeline structure in `pipeline.py` / `planner.py` / `audit.py`, not from any result).** Every expected-commit row of `EXPECTED_OUTCOMES_real_data.md` (unit = dataset, column, error type) that does NOT commit is labelled by the pipeline stage where it failed. Labels only: hit/miss scoring, H1-H3 and the failure condition are unchanged, and `EXPECTED_OUTCOMES_real_data.md` is not modified.
+  1. **detector-miss:** the detectors offered no reachable op (section D, R2) for that column.
+  2. **planner-miss:** a reachable op was offered, the planner never selected it.
+  3. **gate-reject:** the reachable op was evaluated and the gate rolled it back.
+  - Reported as counts per dataset beside the k/n for that dataset (for example "k of n hit; misses: a detector-miss, b planner-miss, c gate-reject"), per planner and seed as in section F, never pooled across datasets or with H1.
+  - **Fields that identify a stage.** Each audit iteration records `column`, `operation`, `status` (`committed` / `staged` / `discarded` / `error`), `chain_id`, `chain_ops`, `committed_ops`, `error`; `audit.resolve_chain` rewrites `staged` to `committed` or `discarded` when the chain resolves, so a saved log has no `staged` entries (`audit.py` 59-104; `pipeline.py` 165-224).
+     - **gate-reject:** the log has at least one iteration with `column` = the row's column, `operation` a reachable op for it, `error` null, and final `status` = `discarded`. This includes an op that was staged in a chain and then discarded with the chain (chain-level rollback is still the gate's decision).
+     - **detector-miss and planner-miss:** the expected signature is "no iteration entry for that column (`column` equal to it) with an evaluated op". The log CANNOT separate the two causes (see limitation).
+     - Iterations with `error` set and `status` = `error` (evaluation failure, or planner failure with `column` null) are not gate decisions. A row whose only entries are of this kind is reported as "unclassified (error)" with the log path, not forced into one of the three labels.
+  - **Stated limitation.** The existing audit log does not record the detector findings or the option list offered to the planner. `detect(...)` is called every iteration (`pipeline.py` line 141) and `remaining_options(findings, rejected)` is computed inside the planner (`planner.py` 85-99), but neither result is written to the log; only the planner's single selection and the evaluated outcome are. A column with no iteration entry is therefore either a detector-miss or a planner-miss and the two cannot be told apart from the audit log alone. Until that is resolved, detector-miss and planner-miss are reported as one combined count labelled "not evaluated (detector-miss or planner-miss, not separable)", and the three-way split is reported only for gate-reject versus the rest. No audit schema or code is changed by this amendment.
+  - **Open item for Akira (not decided here).** Minimal logging need to make the split possible: write, per iteration, the list of `(column, operation)` pairs returned by `remaining_options(findings, exclude)` into the audit entry (for example a field `offered`), or at minimum write the iteration-1 detector findings once in `meta`. That is an audit-schema and `pipeline.py` change made BEFORE the first registered run, under the v2 rules (one branch, changelog, three test suites, frozen_check). Alternative needing explicit approval: a read-only post-hoc replay of `detect()` on each dataset after the runs; it is not a pipeline run but it executes code on the data after results are known, so it is not used unless Akira says so. If neither is approved, the combined-count limitation above stands.
 - A "pass" for the phase is not defined as all-hypotheses-true; the deliverable is the pre-stated table and an honest reading, including false commits and misses.
 
 ## F. Statistics (decided)
@@ -107,6 +118,7 @@ Airbnb's licence was confirmed by Akira (section J), so no swap is needed. Had i
 - Per dataset: expected outcome, committed ops, gate delta with 95% CI, bar, F1 beside it, rollback count, audit-log path.
 - LR is the only model for real-data evaluation. RF reproduces old numbers only.
 - Every result labelled "real (not injected)", separate from synthetic C1-C5, in tables, file names and docs.
+- Beside each dataset's k/n: failure-stage counts for expected-commit rows that did not commit (section E, failure-stage labels, including the detector/planner non-separability limitation).
 - Planner comparison (Groq vs rule, both run) reported as efficiency only, as in RESULTS.md; no accuracy claim.
 - The Explain HTML report stays unchanged (no banner rule); provenance lives in the audit log and docs.
 
@@ -153,7 +165,7 @@ Dataset list and N; the selection and tie-break rule; expected outcomes; ground-
 
 Resolved this round (2026-11-01): split seed 20261101 (section F); Airbnb `Rating = Y` (section D); CleanML data zip terms (section J); evaluator v1.1 and the continuous-NaN expectation (section B), rule-6 column types (section C2), Marketing positive label (section D), licences (section J).
 
-Still open for Akira before signing: review and sign `EXPECTED_OUTCOMES_real_data.md` (section K). Its "Ambiguous" section is empty (rules R1-R6 of section D).
+Still open for Akira before signing: decide the logging open item in section E (add an `offered` field, approve a post-hoc detector replay, or accept the combined detector/planner count); review and sign `EXPECTED_OUTCOMES_real_data.md` (section K). Its "Ambiguous" section is empty (rules R1-R6 of section D).
 
 ## M. Future work (not in this study)
 

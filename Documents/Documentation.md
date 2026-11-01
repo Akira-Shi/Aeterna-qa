@@ -449,6 +449,11 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - `tools/make_expected_outcomes.py` updated; `EXPECTED_OUTCOMES_real_data.md` regenerated, Ambiguous section empty, deterministic (two runs, identical sha256). Rows: Marketing 26 (9 commit / 17 no commit), Airbnb 78 (55 commit / 23 no commit). Previously 52 and 232 rows.
 - Committed-file hashes (blob as committed, not the on-disk file): git blob id `ef025a4cc0d2d8a29f2c838c6db5003e7da96898`; sha256 of the blob bytes `f30e162ba79a6d82d0c925d0db9bde8f6c117c91725ed0f11f8cd40824f047ba`. Signing procedure (amendment section K items 5-6): the section 12 row hashes the committed blob; `frozen_check.py --init` runs AFTER the section 12 row is appended (option a), as a new commit. `--init` NOT run. The file is NOT signed.
 
+### 2026-11-01 (phase 3, pre-signing addition: failure-stage labels in amendment section E; docs only)
+- Added by Akira BEFORE signing and before any registered run, derived from the pipeline structure (pipeline.py, planner.py, audit.py), not from any result. Every expected-commit row that does not commit is labelled detector-miss / planner-miss / gate-reject; labels only, scoring unchanged; counts per dataset beside k/n (amendment sections E and G).
+- Finding: the audit log (`iterations[]`: column, operation, status, chain_id, chain_ops, committed_ops, error) identifies gate-reject (evaluated op, status discarded). It does NOT record detector findings or the planner's offered options, so detector-miss and planner-miss cannot be separated; stated as a limitation in the amendment, reported as one combined count unless fixed. Open item for Akira: log an `offered` list per iteration (or iteration-1 findings in meta) before the first registered run, or approve a post-hoc detector replay. No audit schema or code changed.
+- `EXPECTED_OUTCOMES_real_data.md` untouched (blob ef025a4cc0d2d8a29f2c838c6db5003e7da96898). PREREGISTRATION.md, evaluator, gate, scenarios untouched.
+
 ### YYYY-MM-DD
 - What you built/changed
 - Any numbers worth keeping (F1 before/after, time spent, what broke)
