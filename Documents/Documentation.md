@@ -384,6 +384,9 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - Replaced the novelty claim with the user-supplied text; added section 6 verifying every number against RESULTS.md and flagging wording risks (7 of 11 commits are registered false commits; C5 post-pilot; Groq comparison not in prereg v1; Bonferroni per-run; 1.0 vs 1.55 is mean evaluation index over committed runs only).
 - No code touched. Frozen files untouched.
 
+### 2026-11-01 (CLAUDE.md, docs only)
+- Added "planner-critic: not novel, see Documents/NOVELTY.md" after the Pending list. No planner-critic item existed in Pending (P7 is FastAPI backend), so nothing was removed.
+
 ### YYYY-MM-DD
 - What you built/changed
 - Any numbers worth keeping (F1 before/after, time spent, what broke)

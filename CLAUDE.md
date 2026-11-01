@@ -42,6 +42,7 @@ Capstone: closed-loop data-cleaning agent (detect → plan → execute → verif
 - **P7:** FastAPI backend
 - **P8:** web frontend
 - **P9:** release
+- planner-critic: not novel, see Documents/NOVELTY.md
 
 ## v2 rules
 - v2 wraps v1. Never edit evaluator.py, evaluator_tests.py, PREREGISTRATION.md §1-11, gate metric, commit rule, scenarios.
