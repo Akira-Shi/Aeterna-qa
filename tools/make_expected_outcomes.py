@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Generate Documents/EXPECTED_OUTCOMES_real_data.md from the CleanML dirty-vs-clean diff only.
+"""Generate Documents/EXPECTED_OUTCOMES_real_data.md from the CleanML dirty file's NaN cells and dirty-vs-clean diffs only.
 
   python -E -P tools/make_expected_outcomes.py
 
 Deterministic: no randomness, no timestamps, no model scores, no pipeline or evaluator import. Reads files in
-Dataset/real/ (untrusted data; only pandas reads them). Applies the Q1 union rule of
-Documents/AMENDMENT_DRAFT_real_data.md section D. Any row the amendment rules do not settle goes under
-"Ambiguous - Akira decides"; this script never chooses for them.
+Dataset/real/ (untrusted data; only pandas reads them). Applies the rules R1-R6 of
+Documents/AMENDMENT_DRAFT_real_data.md section D. Any row those rules do not settle goes under
+"Ambiguous - Akira decides"; this script never chooses for them. Prints the per-file alignment test.
 """
 import hashlib
+import re
 import sys
 from pathlib import Path
 
@@ -19,13 +20,29 @@ REAL = ROOT / "Dataset" / "real"
 OUT = ROOT / "Documents" / "EXPECTED_OUTCOMES_real_data.md"
 SPLIT_SEED = 20261101
 
-Q1_RULE = ("Q1 union rule (amendment section D): error cells for an error type = the union, over ALL CleanML cleaned "
-           "files for that error type, of the cells where dirty != clean (NaN-aware, exact comparison, positional "
-           "row alignment). Matching op class: missing values -> fill_* / drop_rows; outliers -> clip_outliers; "
-           "inconsistency -> normalize_categories. Column with a diff for that error type -> expected commit for "
-           "the matching op class. fill_mean / fill_median on a continuous numeric column with NaN -> no commit "
-           "(evaluator v1.1 median-imputes numeric NaN in every fold, section B). Column with no diff -> no commit "
-           "(any commit there is an 'unexplained commit', reported separately).")
+Q1_RULE = (
+    "Section D rules (Akira, 2026-11-01). (R1) Missing-value error cells = the NaN cells of the DIRTY file "
+    "(`raw/raw.csv` of each dataset) as loaded by the TaskSpec loader convention: `pandas.read_csv` defaults, column names "
+    "stripped, text cells stripped, and '?' and empty text mapped to NaN. Cleaned files are never used to locate "
+    "missing-value errors. (R2) Missing-value op class = fill_mode, fill_unknown, drop_rows; fill_mean and fill_median are "
+    "outside the class (section B: on a continuous numeric column with NaN they are expected 'no commit'). The executor "
+    "(`executor.fit_and_apply`) rejects only the ops in its _NUMERIC_ONLY set (fill_mean, fill_median, clip_outliers, "
+    "sentinel_to_median, rescale_units) on non-numeric columns and the op in its _TEXT_ONLY set (normalize_categories) on "
+    "numeric columns; fill_mode, fill_unknown and drop_rows are in neither set, so all three are applicable to every dtype "
+    "and none is excluded. A commit by any op of the class on a column with NaN cells = hit (expected 'commit'); on a "
+    "column with no NaN cell = expected 'no commit'. (R3) Outlier error cells = the union, over the CleanML outlier "
+    "cleaned files that pass the alignment test, of the cells where dirty != clean (NaN-aware, exact, positional row "
+    "alignment; train file rows then test file rows; a file shipped with 0 rows contributes no cells). Matching op class: "
+    "clip_outliers on a numeric column with such cells -> expected 'commit', otherwise 'no commit'. (R4) Inconsistency: no "
+    "CleanML inconsistency cleaned file ships for either dataset, so normalize_categories -> expected 'no commit' on every "
+    "text column. (R5) Alignment test: a cleaned file is used only if its positional diff against its dirty file has the "
+    "same shape and columns and is zero cells on the label column and on every identifier-like column of the dirty file. "
+    "Identifier-like = the taskspec.py validate() rule: the column name matches `(^|[_\\s.-])(id|uuid|guid|index|idx)$|"
+    "^(id|uuid|guid)([_\\s.-]|$)` (case-insensitive), or the file has more than 50 rows and the column's distinct count >= "
+    "0.98 x its non-null count and the column is not a float dtype. 'ALL cleaned files' in Q1 means all cleaned files that "
+    "pass this test. (R6) Duplicates are outside the op menu (amendment section M): no rows.")
+
+ID_NAME = re.compile(r"(^|[_\s.-])(id|uuid|guid|index|idx)$|^(id|uuid|guid)([_\s.-]|$)", re.I)   # = taskspec._ID_NAME
 
 
 def sha(p: Path) -> str:
@@ -34,13 +51,24 @@ def sha(p: Path) -> str:
     return h.hexdigest()
 
 
-def rd(rel: str, **kw) -> pd.DataFrame:
-    return pd.read_csv(REAL / rel, **kw)
+def rd(rel: str) -> pd.DataFrame:
+    """TaskSpec loader convention (taskspec._read_csv + _normalise): read_csv defaults, stripped names, stripped text,
+    '?' and empty text -> NaN."""
+    df = pd.read_csv(REAL / rel)
+    df.columns = [str(c).strip() for c in df.columns]
+    for col in df.columns:
+        if pd.api.types.is_string_dtype(df[col]) or df[col].dtype == object:
+            t = df[col].astype("string").str.strip()
+            df[col] = t.mask(t.isin(["?", ""])).astype(object)
+    return df
+
+
+def cat(*rels) -> pd.DataFrame:
+    return pd.concat([rd(r) for r in rels], ignore_index=True)
 
 
 def diff_cols(dirty: pd.DataFrame, clean: pd.DataFrame) -> dict:
     """Per-column count of cells where dirty != clean (both NaN counts as equal). Requires aligned shape."""
-    assert dirty.shape == clean.shape and list(dirty.columns) == list(clean.columns), (dirty.shape, clean.shape)
     out = {}
     for c in dirty.columns:
         x, y = dirty[c], clean[c]
@@ -50,87 +78,113 @@ def diff_cols(dirty: pd.DataFrame, clean: pd.DataFrame) -> dict:
     return out
 
 
+def id_like(df: pd.DataFrame, label: str) -> list:
+    n = len(df)
+    out = []
+    for c in df.columns:
+        if c == label:
+            continue
+        nun = df[c].nunique(dropna=True)
+        if bool(ID_NAME.search(str(c))) or (n > 50 and nun >= 0.98 * df[c].notna().sum()
+                                             and not pd.api.types.is_float_dtype(df[c])):
+            out.append(c)
+    return out
+
+
+def align(name, dirty, clean, label):
+    """Rule R5. Returns (record, diff-cols-or-None)."""
+    rec = {"file": name, "dirty_rows": len(dirty), "clean_rows": len(clean)}
+    if dirty.shape != clean.shape or list(dirty.columns) != list(clean.columns):
+        rec.update(label_diff="n/a", id_cols="n/a", id_diff="n/a", ok=False,
+                   why=f"shape/columns differ ({dirty.shape} vs {clean.shape})")
+        return rec, None
+    d = diff_cols(dirty, clean)
+    ids = id_like(dirty, label)
+    ld = d.get(label, 0)
+    idd = {c: d.get(c, 0) for c in ids}
+    ok = ld == 0 and all(v == 0 for v in idd.values())
+    bad = ([f"label {label} differs in {ld} cells"] if ld else []) + [f"{c} differs in {v} cells" for c, v in idd.items() if v]
+    rec.update(label_diff=ld, id_cols=",".join(ids) or "none", id_diff=sum(idd.values()), ok=ok,
+               why="; ".join(bad) or "zero diff on label and identifier-like columns",
+               rows_with_any_diff=int((~((dirty == clean) | (dirty.isna() & clean.isna()))).any(axis=1).sum()))
+    return rec, d
+
+
 def main():
     inputs = []          # (relative path, sha256)
 
     def use(rel):
         inputs.append((rel, sha(REAL / rel)))
 
-    # ---------------- Airbnb ----------------
+    mk_files = ["Marketing/raw/raw.csv", "Marketing/raw/Holoclean_mv_clean.csv", "Marketing/raw/orgin.csv"]
     ab_files = ["Airbnb/raw/raw.csv", "Airbnb/raw/Holoclean_mv_clean.csv",
                 "Airbnb/outliers/dirty_train.csv", "Airbnb/outliers/dirty_test.csv",
                 "Airbnb/outliers/clean_HC_impute_holoclean_train.csv", "Airbnb/outliers/clean_HC_impute_holoclean_test.csv",
                 "Airbnb/outliers/clean_SD_impute_mean_dummy_train.csv", "Airbnb/outliers/clean_SD_impute_mean_dummy_test.csv",
                 "Airbnb/raw/Holoclean_outlier_clean.csv"]
-    mk_files = ["Marketing/raw/raw.csv", "Marketing/raw/Holoclean_mv_clean.csv", "Marketing/raw/orgin.csv"]
     for f in mk_files + ab_files:
         use(f)
 
-    raw = rd("Airbnb/raw/raw.csv")
-    label_ab = "Rating"
-    feats_ab = [c for c in raw.columns if c != label_ab]
-    num_ab = [c for c in feats_ab if pd.api.types.is_numeric_dtype(raw[c])]
-    txt_ab = [c for c in feats_ab if c not in num_ab]
-    mv_ab = diff_cols(raw, rd("Airbnb/raw/Holoclean_mv_clean.csv"))
-
-    dirty = pd.concat([rd("Airbnb/outliers/dirty_train.csv"), rd("Airbnb/outliers/dirty_test.csv")], ignore_index=True)
-    hc = pd.concat([rd("Airbnb/outliers/clean_HC_impute_holoclean_train.csv"),
-                    rd("Airbnb/outliers/clean_HC_impute_holoclean_test.csv")], ignore_index=True)
-    sd_train = rd("Airbnb/outliers/clean_SD_impute_mean_dummy_train.csv")
-    sd_test = rd("Airbnb/outliers/clean_SD_impute_mean_dummy_test.csv")
-    d_test = rd("Airbnb/outliers/dirty_test.csv")
-    out_hc = diff_cols(dirty, hc)
-    out_sd = diff_cols(d_test, sd_test)          # train file of this cleaner ships with 0 rows
-    out_union = {c: (out_hc.get(c, 0), out_sd.get(c, 0)) for c in sorted(set(out_hc) | set(out_sd))}
-    ho = rd("Airbnb/raw/Holoclean_outlier_clean.csv")
-
-    # ---------------- Marketing ----------------
-    mraw = rd("Marketing/raw/raw.csv", keep_default_na=False, dtype=str)
-    mclean = rd("Marketing/raw/Holoclean_mv_clean.csv", keep_default_na=False, dtype=str)
-    label_mk = "Income"
+    label_ab, label_mk = "Rating", "Income"
+    mraw, araw = rd("Marketing/raw/raw.csv"), rd("Airbnb/raw/raw.csv")
     feats_mk = [c for c in mraw.columns if c != label_mk]
-    blanks_mk = {c: int((mraw[c] == "").sum()) for c in feats_mk}
-    ok = (mraw != "").all(axis=1)
-    pos_diff_mk = int((mraw != mclean).any(axis=1).sum())
-    pos_diff_complete_mk = int((mraw != mclean).any(axis=1)[ok].sum())
-    first_bad = int((mraw != mclean).any(axis=1)[ok].idxmax())
+    feats_ab = [c for c in araw.columns if c != label_ab]
+    num_mk = [c for c in feats_mk if pd.api.types.is_numeric_dtype(mraw[c])]
+    num_ab = [c for c in feats_ab if pd.api.types.is_numeric_dtype(araw[c])]
+    nan_mk = {c: int(mraw[c].isna().sum()) for c in feats_mk}
+    nan_ab = {c: int(araw[c].isna().sum()) for c in feats_ab}
 
-    # ---------------- rows ----------------
+    # ---- alignment test (R5), every cleaned file ----
+    d_out = cat("Airbnb/outliers/dirty_train.csv", "Airbnb/outliers/dirty_test.csv")
+    d_test = rd("Airbnb/outliers/dirty_test.csv")
+    pairs = [
+        ("Marketing", "missing", "Marketing/raw/Holoclean_mv_clean.csv", mraw, rd("Marketing/raw/Holoclean_mv_clean.csv"), label_mk),
+        ("Airbnb", "missing", "Airbnb/raw/Holoclean_mv_clean.csv", araw, rd("Airbnb/raw/Holoclean_mv_clean.csv"), label_ab),
+        ("Airbnb", "outliers", "Airbnb/outliers/clean_HC_impute_holoclean_{train+test}.csv", d_out,
+         cat("Airbnb/outliers/clean_HC_impute_holoclean_train.csv", "Airbnb/outliers/clean_HC_impute_holoclean_test.csv"), label_ab),
+        ("Airbnb", "outliers", "Airbnb/outliers/clean_SD_impute_mean_dummy_test.csv", d_test,
+         rd("Airbnb/outliers/clean_SD_impute_mean_dummy_test.csv"), label_ab),
+        ("Airbnb", "outliers", "Airbnb/raw/Holoclean_outlier_clean.csv", d_out,
+         rd("Airbnb/raw/Holoclean_outlier_clean.csv"), label_ab),
+    ]
+    recs = []
+    out_union = {}
+    print("ALIGNMENT TEST (rule R5)")
+    for ds, et, name, dirty, clean, label in pairs:
+        rec, d = align(name, dirty, clean, label)
+        rec["ds"], rec["et"] = ds, et
+        recs.append(rec)
+        print(f"  {'PASS' if rec['ok'] else 'FAIL'}  {ds}/{et}  {name}: rows dirty={rec['dirty_rows']} clean={rec['clean_rows']}, "
+              f"label_diff={rec['label_diff']}, id_like={rec['id_cols']}, id_diff={rec['id_diff']}, "
+              f"rows_with_any_diff={rec.get('rows_with_any_diff', 'n/a')}; {rec['why']}")
+        if rec["ok"] and et == "outliers":
+            for c, n in d.items():
+                out_union.setdefault(c, []).append((name.split("/")[-1], n))
+
+    # ---- rows ----
     rows = []         # (dataset, column, error type, op class, expected, evidence)
     amb = []          # (dataset, column, error type, op class, reason)
-
-    for c in feats_ab:
-        n = mv_ab.get(c, 0)
-        isnum = c in num_ab
-        ops = (["fill_mean", "fill_median"] if isnum else []) + ["fill_mode", "fill_unknown", "drop_rows"]
-        for op in ops:
-            ev = f"missing diff cells={n}"
-            if n == 0:
-                rows.append(("Airbnb", c, "missing", op, "no commit", ev))
-            elif op in ("fill_mean", "fill_median"):
-                rows.append(("Airbnb", c, "missing", op, "no commit", ev + "; continuous numeric NaN, v1.1 in-fold imputation"))
-            elif isnum:
-                amb.append(("Airbnb", c, "missing", op, ev + "; numeric column, op not fill_mean/fill_median: the continuous-NaN "
-                            "rule does not cover it, the literal rule says commit"))
+    for ds, feats, nums, nans in (("Marketing", feats_mk, num_mk, nan_mk), ("Airbnb", feats_ab, num_ab, nan_ab)):
+        for c in feats:
+            n = nans[c]
+            for op in ["fill_mode", "fill_unknown", "drop_rows"]:
+                rows.append((ds, c, "missing", op, "commit" if n else "no commit", f"NaN cells in dirty file={n}"))
+            if c in nums:
+                for op in ["fill_mean", "fill_median"]:
+                    rows.append((ds, c, "missing", op, "no commit",
+                                 f"NaN cells in dirty file={n}; outside the op class (section B: v1.1 in-fold median imputation)"))
+                u = out_union.get(c, []) if ds == "Airbnb" else []
+                if u:
+                    ev = "outlier diff cells (passing files): " + ", ".join(f"{f}={k}" for f, k in u)
+                elif ds == "Airbnb":
+                    ev = "no outlier diff cells in any passing cleaned file"
+                else:
+                    ev = "no outlier cleaned file ships"
+                rows.append((ds, c, "outliers", "clip_outliers", "commit" if u else "no commit", ev))
             else:
-                rows.append(("Airbnb", c, "missing", op, "commit", ev))
-    for c in num_ab:
-        h, s = out_union.get(c, (0, 0))
-        rows.append(("Airbnb", c, "outliers", "clip_outliers", "commit" if (h or s) else "no commit",
-                     f"outlier diff cells: HC_impute_holoclean={h}, SD_impute_mean_dummy(test only)={s}"))
-    for c in txt_ab:
-        rows.append(("Airbnb", c, "inconsistency", "normalize_categories", "no commit",
-                     "no CleanML inconsistency cleaned file for Airbnb; no diff"))
-
-    for c in feats_mk:
-        for op in ["fill_mode", "fill_unknown", "drop_rows"]:
-            amb.append(("Marketing", c, "missing", op,
-                        f"blank cells in raw.csv={blanks_mk[c]}; cleaned file not row-aligned (see note M1)"))
-        rows.append(("Marketing", c, "inconsistency", "normalize_categories", "no commit",
-                     "no CleanML inconsistency cleaned file for Marketing; no diff"))
-
+                rows.append((ds, c, "inconsistency", "normalize_categories", "no commit",
+                             "no CleanML inconsistency cleaned file ships; no diff"))
     rows.sort(key=lambda r: (r[0], r[2], r[1], r[3]))
-    amb.sort(key=lambda r: (r[0], r[2], r[1], r[3]))
 
     def counts(ds):
         r = [x for x in rows if x[0] == ds]
@@ -140,7 +194,7 @@ def main():
     L.append("# EXPECTED OUTCOMES - real data (CleanML Marketing, Airbnb)")
     L.append("")
     L.append("Generated by `tools/make_expected_outcomes.py` (script git hash: `__SCRIPT_GIT_HASH_PLACEHOLDER__`). "
-             "Derived from the dirty-vs-clean diff only; no pilot or evaluation score was used. "
+             "Derived from the dirty file's NaN cells and the dirty-vs-clean diff only; no pilot or evaluation score was used. "
              "Deterministic: re-running yields a byte-identical file.")
     L.append("")
     L.append("Status: **NOT SIGNED.** No pre-registered run may start until Akira signs and this file is committed "
@@ -151,8 +205,8 @@ def main():
     L.append(f"- Split seed (Akira, amendment section F): {SPLIT_SEED}")
     L.append("- Positive labels: Marketing `Income = 0`; Airbnb `Rating = Y`")
     L.append("- Evaluator: v1.1 (LR, Brier gate); op menu and detectors unchanged")
-    L.append("- Airbnb `raw.csv`: 33,145 rows x 40 columns")
-    L.append("- Q1 rule text, verbatim from this script:")
+    L.append(f"- Marketing `raw.csv`: {len(mraw):,} rows x {mraw.shape[1]} columns; Airbnb `raw.csv`: {len(araw):,} rows x {araw.shape[1]} columns")
+    L.append("- Rule text, verbatim from this script:")
     L.append("")
     L.append("> " + Q1_RULE)
     L.append("")
@@ -163,23 +217,22 @@ def main():
     for rel, h in inputs:
         L.append(f"| `{rel}` | `{h}` |")
     L.append("")
-    L.append("Cleaned files used per error type:")
+    L.append("## Alignment test (rule R5), every cleaned file")
     L.append("")
-    L.append("- Marketing, missing: `Marketing/raw/Holoclean_mv_clean.csv` vs `Marketing/raw/raw.csv` - UNUSABLE for a positional diff (note M1); see Ambiguous.")
-    L.append("- Marketing, outliers / inconsistency: no cleaned file ships; no rows other than the no-diff rows below.")
-    L.append("- Airbnb, missing: `Airbnb/raw/Holoclean_mv_clean.csv` vs `Airbnb/raw/raw.csv` (row-aligned; diff cells equal the NaN cells per column).")
-    L.append("- Airbnb, outliers: `clean_HC_impute_holoclean_{train,test}.csv` vs `dirty_{train,test}.csv` (train rows then test rows), "
-             f"and `clean_SD_impute_mean_dummy_test.csv` vs `dirty_test.csv` (the SD train file ships with {len(sd_train)} rows, so only its test file is usable). "
-             "Union of the two.")
-    L.append("- Airbnb, inconsistency: no cleaned file ships.")
-    L.append("- Airbnb, duplicates (not a row class here): CleanML ships `duplicates/` files, but the v1 op menu has no dedupe op, so no op class maps to them and no rows are generated.")
+    L.append("| Dataset | Error type | Cleaned file | Rows dirty / clean | Label diff cells | Identifier-like columns | Their diff cells | Result | Detail |")
+    L.append("|---|---|---|---|---|---|---|---|---|")
+    for r in recs:
+        res = ("PASS (used)" if r["et"] == "outliers" else "PASS (not used for missing, R1)") if r["ok"] else "FAIL (excluded)"
+        L.append(f"| {r['ds']} | {r['et']} | `{r['file']}` | {r['dirty_rows']} / {r['clean_rows']} | {r['label_diff']} | "
+                 f"{r['id_cols']} | {r['id_diff']} | {res} | {r['why']} |")
     L.append("")
-    L.append("Notes:")
+    L.append("Cleaned files used:")
     L.append("")
-    L.append(f"- M1: `Marketing/raw/Holoclean_mv_clean.csv` is not row-aligned to `raw.csv`: {pos_diff_mk} of 8,993 rows differ positionally, "
-             f"including {pos_diff_complete_mk} of {int(ok.sum())} rows that have no blank cell in `raw.csv` (first at row index {first_bad}); "
-             "the file has no index column. A positional dirty != clean diff would mark thousands of cells in every column including the label, so it is not applied.")
-    L.append(f"- A1: `Airbnb/raw/Holoclean_outlier_clean.csv` ({len(ho)} rows) is not aligned to any shipped dirty file (positional diff against the outliers dirty files marks nearly every cell, including identifier-like columns), so it is not used; see Ambiguous.")
+    L.append("- Missing values (both datasets): no cleaned file; error cells = NaN cells of the dirty `raw/raw.csv` (R1).")
+    used = [r["file"] for r in recs if r["ok"] and r["et"] == "outliers"]
+    L.append("- Airbnb outliers: " + ("; ".join(f"`{u}`" for u in used) if used else "none") + " (union of cells, R3).")
+    L.append("- Marketing outliers / inconsistency, Airbnb inconsistency: no cleaned file ships.")
+    L.append("- Duplicates: outside the v1 op menu (amendment section M); no rows.")
     L.append("")
     L.append("## Summary")
     L.append("")
@@ -198,20 +251,13 @@ def main():
     L.append("")
     L.append("## Ambiguous - Akira decides")
     L.append("")
-    L.append("The amendment rules do not settle these rows; the script did not choose. Each needs a written decision before signing.")
-    L.append("")
-    L.append("- **Airbnb numeric missing, op fill_mode / fill_unknown / drop_rows:** section B says drop_rows and fill_unknown are unaffected by the continuous-NaN note, "
-             "but states no expectation for them; the literal Q1 hit rule gives 'commit'. fill_mode on a continuous column is also not named in the note.")
-    L.append("- **Marketing missing (all 13 columns):** the only cleaned file is not row-aligned (M1), so the Q1 diff cannot be computed. "
-             "Candidate alternative (not applied): treat blank cells in `raw.csv` (counts below) as the error cells.")
-    L.append("- **Airbnb outliers, `Holoclean_outlier_clean.csv`:** a CleanML cleaned file that cannot be aligned (A1). Q1 says 'ALL cleaned files'; include (and how to align) or exclude?")
-    L.append("- **Airbnb outliers, SD train file is empty:** only its test file contributes; confirm this is acceptable.")
-    L.append("- **Duplicates:** no dedupe op exists in the menu (future work); confirm no rows are wanted.")
-    L.append("")
-    L.append("| Dataset | Column | Error type | Op class | Reason |")
-    L.append("|---|---|---|---|---|")
-    for r in amb:
-        L.append("| " + " | ".join(r) + " |")
+    if amb:
+        L.append("| Dataset | Column | Error type | Op class | Reason |")
+        L.append("|---|---|---|---|---|")
+        for r in amb:
+            L.append("| " + " | ".join(r) + " |")
+    else:
+        L.append("None. Rules R1-R6 settle every row.")
     L.append("")
     L.append("## Signature")
     L.append("")
@@ -222,7 +268,7 @@ def main():
     OUT.write_bytes("\n".join(L).encode("utf-8"))
     print(f"wrote {OUT}")
     for ds in ("Marketing", "Airbnb"):
-        print(ds, counts(ds), "ambiguous", sum(1 for a in amb if a[0] == ds))
+        print(ds, "(rows, commit, no commit) =", counts(ds), "ambiguous", sum(1 for a in amb if a[0] == ds))
     return 0
 
 
