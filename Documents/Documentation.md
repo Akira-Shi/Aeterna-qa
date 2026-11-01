@@ -342,6 +342,12 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - **Tests before commit:** evaluator_tests, ops_tests, explain_tests and demo_tests all pass.
 - **Not changed:** evaluator, gate, commit rule, pre-registration.
 
+### 2026-11-01 -- T2: Explain guard check on live Groq (report only, no code change)
+- **Run:** Explain with Groq notes on 4 existing logs: `run_20260930T060306Z` (real_adult), `run_20260930T093717Z` (synthetic, study C3), `run_20260930T112347Z` (synthetic injection), `run_20261004T141619Z` (synthetic D1 demo). HTML not written.
+- **Result:** 43/43 per-iteration notes and 4/4 summaries passed the number/identifier guard; 0 rejected, so no false rejections.
+- **False passes (semantic):** sign blindness ("Delta -0.0006 equals bar 0.0006"), a staged-then-committed op described as "no measurable improvement", and "Contradicts:" used without a predicted improvement. Exact texts in `LOOP/reports/build-T2.md`.
+- **Not changed:** guard logic, evaluator, gate, commit rule, pre-registration. Guard changes need Akira's OK.
+
 <!-- Add new entries above this line, most recent on top. Format:
 ### YYYY-MM-DD
 - What you built/changed
