@@ -270,7 +270,29 @@ Codes: **H** hit; **ok** correct no-commit (expected no commit, none occurred); 
 
 ## 11. Exploratory-run disclosure
 
-On 2026-11-01, before the amendment was signed, the unchanged pipeline was run on the full datasets for pipeline acceptance (P4): Marketing (`--positive 0`, rule planner) and Airbnb (`--positive Y`), scenario label `exploratory`. They are not study results and no expectation was derived from them. Outcomes as recorded then: Marketing, 16 of 16 candidate evaluations rolled back, nothing committed; Airbnb, no commits, `fill_median` / `fill_mean` delta +0.0000. The registered runs here are separate runs on the eval partition. Note: nine `exploratory_run_*.json` logs exist locally (gitignored, UTC 12:01 to 13:18 on 2026-11-01, scenario `exploratory`; their meta does not record a dataset name), so this disclosure is of at least one run per dataset, not of exactly one; see section 13.
+On 2026-11-01, before the amendment was signed, the unchanged pipeline was run on the full datasets for pipeline acceptance (P4): Marketing (`--positive 0`, rule planner) and Airbnb (`--positive Y`), scenario label `exploratory`. They are not study results and no expectation was derived from them. Outcomes as recorded then: Marketing, 16 of 16 candidate evaluations rolled back, nothing committed; Airbnb, no commits, `fill_median` / `fill_mean` delta +0.0000. The registered runs here are separate runs on the eval partition. All nine `exploratory_run_*.json` logs that exist locally (gitignored, scenario `exploratory`) are listed below, read-only from the logs. The dataset is taken from the logged `task_spec.path` in each log's meta; nothing is inferred beyond that. Times are UTC `started_at`.
+
+| # | Started (UTC) | Dataset (from logged task_spec path) | Iterations | Outcome |
+|---|---|---|---|---|
+| 1 | 2026-11-01 12:01:55 | synthetic sandbox file synth_churn.csv (not Marketing or Airbnb) | 9 | committed {'tenure': 'sentinel_to_median'}; baseline -0.2057 to final -0.1847 |
+| 2 | 2026-11-01 12:02:09 | synthetic sandbox file synth_churn.csv (not Marketing or Airbnb) | 9 | committed {'tenure': 'sentinel_to_median'}; baseline -0.2057 to final -0.1847 |
+| 3 | 2026-11-01 12:15:40 | Marketing (Dataset/real/Marketing/raw/raw.csv) | 16 | nothing committed; 16 iterations, all discarded; baseline -0.1558 |
+| 4 | 2026-11-01 12:16:24 | Marketing (Dataset/real/Marketing/raw/raw.csv) | 16 | nothing committed; 16 iterations, all discarded; baseline -0.1558 |
+| 5 | 2026-11-01 12:17:36 | Airbnb (Dataset/real/Airbnb/raw/raw.csv) | 16 | nothing committed; 16 iterations, all discarded; baseline -0.2035 |
+| 6 | 2026-11-01 12:59:59 | temporary file g.csv in the system temp directory (not a study dataset) | 0 | 0 iterations, nothing evaluated; baseline neg-Brier -0.0857 |
+| 7 | 2026-11-01 13:08:54 | temporary file g.csv in the system temp directory (not a study dataset) | 0 | 0 iterations, nothing evaluated; baseline neg-Brier -0.0857 |
+| 8 | 2026-11-01 13:14:06 | temporary file g.csv in the system temp directory (not a study dataset) | 0 | 0 iterations, nothing evaluated; baseline neg-Brier -0.0857 |
+| 9 | 2026-11-01 13:18:46 | temporary file g.csv in the system temp directory (not a study dataset) | 0 | 0 iterations, nothing evaluated; baseline neg-Brier -0.0857 |
+
+Reading: runs 3-4 are Marketing and run 5 is Airbnb (the P4 acceptance runs; Marketing was run twice). Runs 1-2 are on a synthetic sandbox file, not on either study dataset. Runs 6-9 are 0-iteration runs on a temporary file. The earlier statement that the disclosure covered one run per dataset is replaced by this table. None of these is a study result.
+
+### 11a. Correction note (2026-11-01, Akira): dedupe_rows
+
+The signed amendment (`AMENDMENT_DRAFT_real_data.md`, "No dedupe op exists in the v1 menu ...") and `EXPECTED_OUTCOMES_real_data.md` ("R6 (duplicates). Outside the op menu") state that no dedupe op exists. That statement is false: `dedupe_rows` has been in `config.OPERATION_MENU` since v1 (also in `detectors.py` and `executor.py`). The error originated in advisor guidance, not in the data. The signed text is not edited; this note is the correction. What the P5 audit logs show: `*: dedupe_rows` was offered and evaluated at iteration 1 in every Marketing run (rule and Groq, seeds 401-403; delta -0.0002), at iteration 2 in every Airbnb rule run (delta 0.0000), and at iteration 1 in every Airbnb Groq run (delta 0.0000), and it was rolled back every time. Duplicate rows were not scored rows, so no k/n in this file changes.
+
+Why dedupe can lower the cross-validated score. Documented in v1 at `Documents/Documentation.md` (v1 limits entry: duplicates that land in both train and test folds inflate CV F1, so dedupe may lower measured F1) and, in `Documents/PREREGISTRATION.md` section 4 (signed, cited only): duplicates are not injected because duplicates straddling CV folds inflate scores. The mechanism is stated there in one line each; the pre-registration says it was measured separately, and I did not find that separate measurement in the v1 docs (`Documentation.md`, `PREREGISTRATION.md`, `RESULTS.md`), so none is cited.
+
+Future work: adding a dedupe op is removed from the future-work list (the op exists). The same wording in `Documents/Documentation.md` is corrected; the signed files (`AMENDMENT_DRAFT_real_data.md` section M and its future-work line, `EXPECTED_OUTCOMES_real_data.md` R6 line) still carry it and are untouched.
 
 ## 12. Honest limits
 
@@ -283,10 +305,10 @@ On 2026-11-01, before the amendment was signed, the unchanged pipeline was run o
 
 ## 13. Open questions (for Akira)
 
-1. **`dedupe_rows` is in the v1 operation menu, but the signed amendment says no such op exists.** Read-only findings. `aeterna_qa/modules/config.py`, `OPERATION_MENU` contains `"dedupe_rows",           # drop exact duplicate rows from TRAINING only (column key "*")`. `aeterna_qa/modules/detectors.py` emits a finding with `"defect": "duplicates", "column": "*"` and `"candidate_ops": ["dedupe_rows"]`. `aeterna_qa/modules/executor.py` has `_ROW_LEVEL = {"dedupe_rows"}  # act on whole rows; column key is "*"` and `"dedupe_rows": _via_fit_and_apply("dedupe_rows")` in `_OPERATIONS`. The planner prompt also names it ("exact duplicate rows need dedupe_rows"). The amendment draft (`Documents/AMENDMENT_DRAFT_real_data.md`) says: "No dedupe op exists in the v1 menu; Marketing has 1,154 exact duplicate rows and Airbnb ships CleanML duplicate files. Duplicates are therefore outside the op menu for this study. The op is not added here." and `EXPECTED_OUTCOMES_real_data.md` says "R6 (duplicates). Outside the op menu (section M): no rows." What the logs show: the op was offered and evaluated as `*: dedupe_rows` in the runs (rule Marketing at iteration 1, rule Airbnb at iteration 2, and as iteration 1 of every Airbnb Groq run); it was rolled back every time, and no duplicate row is a scored row, so no k/n in this file is affected. Nothing was edited. The question is whether to record this discrepancy as a dated note (the signed text is not edited).
+1. Resolved (Akira, 2026-11-01): the `dedupe_rows` discrepancy is recorded as a dated correction note in section 11a; signed text not edited.
 2. Resolved (Akira, 2026-11-01): Marketing Groq 401 and 402 are valid terminated runs (section 6b); not rerun.
 3. Rerun timing for the three invalid Airbnb Groq runs (section 8): approve the rule as written, including the quota-reset wait.
-4. Section 11: nine local `exploratory_run_*.json` logs exist while the disclosure text says one run per dataset. Confirm the wording, or list the runs.
+4. Resolved (Akira, 2026-11-01): section 11 now lists all nine exploratory logs in a table.
 
 ## 14. Observations (not re-scoring)
 

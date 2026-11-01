@@ -216,7 +216,30 @@ for ds in ("Marketing", "Airbnb"):
     a("")
 
 a("## 11. Exploratory-run disclosure\n")
-a("On 2026-11-01, before the amendment was signed, the unchanged pipeline was run on the full datasets for pipeline acceptance (P4): Marketing (`--positive 0`, rule planner) and Airbnb (`--positive Y`), scenario label `exploratory`. They are not study results and no expectation was derived from them. Outcomes as recorded then: Marketing, 16 of 16 candidate evaluations rolled back, nothing committed; Airbnb, no commits, `fill_median` / `fill_mean` delta +0.0000. The registered runs here are separate runs on the eval partition. Note: nine `exploratory_run_*.json` logs exist locally (gitignored, UTC 12:01 to 13:18 on 2026-11-01, scenario `exploratory`; their meta does not record a dataset name), so this disclosure is of at least one run per dataset, not of exactly one; see section 13.\n")
+a("On 2026-11-01, before the amendment was signed, the unchanged pipeline was run on the full datasets for pipeline acceptance (P4): Marketing (`--positive 0`, rule planner) and Airbnb (`--positive Y`), scenario label `exploratory`. They are not study results and no expectation was derived from them. Outcomes as recorded then: Marketing, 16 of 16 candidate evaluations rolled back, nothing committed; Airbnb, no commits, `fill_median` / `fill_mean` delta +0.0000. The registered runs here are separate runs on the eval partition. All nine `exploratory_run_*.json` logs that exist locally (gitignored, scenario `exploratory`) are listed below, read-only from the logs. The dataset is taken from the logged `task_spec.path` in each log's meta; nothing is inferred beyond that. Times are UTC `started_at`.\n")
+a("| # | Started (UTC) | Dataset (from logged task_spec path) | Iterations | Outcome |\n|---|---|---|---|---|")
+for n, f in enumerate(sorted(glob.glob(str(ROOT / "aeterna_qa/logs/exploratory_run_*.json"))), 1):
+    x = json.load(open(f, encoding="utf-8"))
+    path = x["meta"]["task_spec"]["path"].replace(chr(92), "/")
+    ds = ("Marketing (Dataset/real/Marketing/raw/raw.csv)" if "/real/Marketing/" in path else
+          "Airbnb (Dataset/real/Airbnb/raw/raw.csv)" if "/real/Airbnb/" in path else
+          "synthetic sandbox file synth_churn.csv (not Marketing or Airbnb)" if path.endswith("sandbox/synth_churn.csv") else
+          "temporary file g.csv in the system temp directory (not a study dataset)" if "/Temp/" in path and path.endswith("/g.csv") else "unidentified")
+    its = x["iterations"]
+    last = its[-1] if its else None
+    if not its:
+        out = f"0 iterations, nothing evaluated; baseline neg-Brier {x['baseline_f1']}"
+    elif last["committed_ops"]:
+        out = f"committed {last['committed_ops']}; baseline {x['baseline_f1']} to final {x['final_f1']}"
+    else:
+        out = f"nothing committed; {len(its)} iterations, all discarded; baseline {x['baseline_f1']}"
+    a(f"| {n} | {x['started_at'][:19].replace('T', ' ')} | {ds} | {len(its)} | {out} |")
+a("")
+a("Reading: runs 3-4 are Marketing and run 5 is Airbnb (the P4 acceptance runs; Marketing was run twice). Runs 1-2 are on a synthetic sandbox file, not on either study dataset. Runs 6-9 are 0-iteration runs on a temporary file. The earlier statement that the disclosure covered one run per dataset is replaced by this table. None of these is a study result.\n")
+a("### 11a. Correction note (2026-11-01, Akira): dedupe_rows\n")
+a("The signed amendment (`AMENDMENT_DRAFT_real_data.md`, \"No dedupe op exists in the v1 menu ...\") and `EXPECTED_OUTCOMES_real_data.md` (\"R6 (duplicates). Outside the op menu\") state that no dedupe op exists. That statement is false: `dedupe_rows` has been in `config.OPERATION_MENU` since v1 (also in `detectors.py` and `executor.py`). The error originated in advisor guidance, not in the data. The signed text is not edited; this note is the correction. What the P5 audit logs show: `*: dedupe_rows` was offered and evaluated at iteration 1 in every Marketing run (rule and Groq, seeds 401-403; delta -0.0002), at iteration 2 in every Airbnb rule run (delta 0.0000), and at iteration 1 in every Airbnb Groq run (delta 0.0000), and it was rolled back every time. Duplicate rows were not scored rows, so no k/n in this file changes.\n")
+a("Why dedupe can lower the cross-validated score. Documented in v1 at `Documents/Documentation.md` (v1 limits entry: duplicates that land in both train and test folds inflate CV F1, so dedupe may lower measured F1) and, in `Documents/PREREGISTRATION.md` section 4 (signed, cited only): duplicates are not injected because duplicates straddling CV folds inflate scores. The mechanism is stated there in one line each; the pre-registration says it was measured separately, and I did not find that separate measurement in the v1 docs (`Documentation.md`, `PREREGISTRATION.md`, `RESULTS.md`), so none is cited.\n")
+a("Future work: adding a dedupe op is removed from the future-work list (the op exists). The same wording in `Documents/Documentation.md` is corrected; the signed files (`AMENDMENT_DRAFT_real_data.md` section M and its future-work line, `EXPECTED_OUTCOMES_real_data.md` R6 line) still carry it and are untouched.\n")
 
 a("## 12. Honest limits\n")
 a("- Expectations are derived from CleanML dirty-vs-clean diffs (and the dirty file's NaN cells), not from the real-world ground truth. \"Expected commit\" means CleanML shows error cells there, not that repairing them helps a downstream LR.")
@@ -227,10 +250,10 @@ a("- `Ethnic` in Marketing is a sensitive attribute; no per-group result is repo
 a("- Small N (2 datasets), one split seed, no family-wide correction in the commit rule. This file describes outcomes; it draws no conclusion about the pipeline's usefulness.\n")
 
 a("## 13. Open questions (for Akira)\n")
-a("1. **`dedupe_rows` is in the v1 operation menu, but the signed amendment says no such op exists.** Read-only findings. `aeterna_qa/modules/config.py`, `OPERATION_MENU` contains `\"dedupe_rows\",           # drop exact duplicate rows from TRAINING only (column key \"*\")`. `aeterna_qa/modules/detectors.py` emits a finding with `\"defect\": \"duplicates\", \"column\": \"*\"` and `\"candidate_ops\": [\"dedupe_rows\"]`. `aeterna_qa/modules/executor.py` has `_ROW_LEVEL = {\"dedupe_rows\"}  # act on whole rows; column key is \"*\"` and `\"dedupe_rows\": _via_fit_and_apply(\"dedupe_rows\")` in `_OPERATIONS`. The planner prompt also names it (\"exact duplicate rows need dedupe_rows\"). The amendment draft (`Documents/AMENDMENT_DRAFT_real_data.md`) says: \"No dedupe op exists in the v1 menu; Marketing has 1,154 exact duplicate rows and Airbnb ships CleanML duplicate files. Duplicates are therefore outside the op menu for this study. The op is not added here.\" and `EXPECTED_OUTCOMES_real_data.md` says \"R6 (duplicates). Outside the op menu (section M): no rows.\" What the logs show: the op was offered and evaluated as `*: dedupe_rows` in the runs (rule Marketing at iteration 1, rule Airbnb at iteration 2, and as iteration 1 of every Airbnb Groq run); it was rolled back every time, and no duplicate row is a scored row, so no k/n in this file is affected. Nothing was edited. The question is whether to record this discrepancy as a dated note (the signed text is not edited).")
+a("1. Resolved (Akira, 2026-11-01): the `dedupe_rows` discrepancy is recorded as a dated correction note in section 11a; signed text not edited.")
 a("2. Resolved (Akira, 2026-11-01): Marketing Groq 401 and 402 are valid terminated runs (section 6b); not rerun.")
 a("3. Rerun timing for the three invalid Airbnb Groq runs (section 8): approve the rule as written, including the quota-reset wait.")
-a("4. Section 11: nine local `exploratory_run_*.json` logs exist while the disclosure text says one run per dataset. Confirm the wording, or list the runs.\n")
+a("4. Resolved (Akira, 2026-11-01): section 11 now lists all nine exploratory logs in a table.\n")
 
 a("## 14. Observations (not re-scoring)\n")
 a("These are descriptive notes. They do not change any registered label or k/n.\n")

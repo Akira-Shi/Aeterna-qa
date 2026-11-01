@@ -434,7 +434,7 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - DISCLOSURE: on 2026-11-01, before the real-data amendment was signed, exploratory full-data pipeline-acceptance runs were made on Marketing (`--positive 0`, rule planner) and Airbnb (`--positive Y`), scenario `exploratory`. Marketing: 16/16 candidate evaluations rolled back, nothing committed. Airbnb: no commits; `fill_median` / `fill_mean` delta +0.0000. They are not study results and no expectation was derived from them. No further pipeline or evaluator run on Marketing, Airbnb or any CleanML dataset occurs until Akira signs the amendment.
 - New `tools/make_expected_outcomes.py` (deterministic, reads the CleanML dirty/clean files only, no pipeline or evaluator import) writes `Documents/EXPECTED_OUTCOMES_real_data.md` using the Q1 union rule. Rows the amendment rules do not settle are listed under "Ambiguous - Akira decides" and not chosen. File is unsigned.
 - Amendment draft v5: split seed 20261101; Airbnb raw.csv 33,145 rows with sha256 (the PDF's 42,492 is a noted discrepancy); positive labels Marketing `Income = 0`, Airbnb `Rating = Y`; CleanML terms (no repo licence, per-dataset terms, academic use, no redistribution); the split-seed, Airbnb-label and data-zip-terms open items removed as resolved; disclosure added to section L; future-work section M.
-- Future work: no dedupe op in the menu; Marketing has 1,154 exact duplicate rows. The op is not added.
+- ~~Future work: no dedupe op in the menu; Marketing has 1,154 exact duplicate rows. The op is not added.~~ Corrected 2026-11-01: `dedupe_rows` IS in `config.OPERATION_MENU` (since v1); the statement came from advisor guidance, not the data. No dedupe future-work item remains. See RESULTS_REAL.md section 11a.
 - Finding while writing the generator: Marketing `raw/Holoclean_mv_clean.csv` is not row-aligned to `raw/raw.csv` (5,909 of 8,993 rows differ positionally, including rows with no missing cell), and Airbnb's `clean_SD_impute_mean_dummy_train.csv` ships with 0 rows; both are flagged as ambiguous rather than worked around.
 
 ### 2026-11-01 (phase 3, amendment section D rules R1-R6 per Akira's decisions; expected outcomes regenerated; no evaluator change)
@@ -488,6 +488,14 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - Rule thresholds are fixed constants chosen up front (|skew| > 1, > 15 levels, >= 5% categorical missing, class ratio < 0.25), not tuned on any result.
 - Spec note: `V2_PROMPTS.md` names the branch `phase/6-stage2`; Akira's instruction named `phase/6-recommender`, which was used.
 - Tests: `tests/test_stage2_rules.py` (every family x task type builds, fits on train rows, saves; per-family rule choices; imbalance; determinism; unsupported model; compare). No pipeline run, no Groq call.
+
+### 2026-11-01 (phase 5, step G: RESULTS_REAL.md correction note and exploratory-run table; reporting only)
+- New section 11a in RESULTS_REAL.md: dated correction that the signed amendment / EXPECTED_OUTCOMES claim "no dedupe op exists" is false; `dedupe_rows` has been in the v1 menu. Error originated in advisor guidance, not the data. P5 audit logs: offered and evaluated at iteration 1 in every Marketing run (rule and Groq, delta -0.0002), iteration 2 in every Airbnb rule run, iteration 1 in every Airbnb Groq run (delta 0.0000), rolled back every time; no k/n changes. The v1 reason a dedupe can lower the CV score is cited from Documentation.md (v1 limits) and PREREGISTRATION section 4; no separate measurement of it was found in the v1 docs, so none is cited.
+- "Add dedupe op" removed from future work (RESULTS_REAL.md; the Documentation.md line is struck and corrected). Signed files still mention it and are untouched: AMENDMENT_DRAFT_real_data.md (section M and the future-work line), EXPECTED_OUTCOMES_real_data.md (R6 line).
+- Section 11 now has a table of all nine `exploratory_run_*.json` logs (UTC time, dataset from the logged task_spec path, outcome): 2 on the synthetic sandbox file, 2 Marketing, 1 Airbnb, 4 zero-iteration runs on a temporary g.csv.
+
+### 2026-11-01 (phase 5, step H: two errata appended to PREREGISTRATION section 12; documentation only)
+- Two dated rows appended to section 12 (author Akira): (a) the real-data amendment and EXPECTED_OUTCOMES claim "no dedupe op exists", which is false (RESULTS_REAL.md section 11a); (b) section 4's "duplicates ... measured separately" has no measurement in the repo and none is cited. No k/n affected. Signed files and sections 1-11 untouched. `frozen_check --init` re-run so the baseline includes these rows.
 
 ## Known issues / open questions (rewritten 2026-09-30)
 
