@@ -21,7 +21,7 @@ Branch phase/5-real-eval.
 - Commit, show Akira the results, then merge and tag v1.2-real.
 
 ## P6a — Stage 2 rule engine [PLAN]
-Branch phase/6-stage2. Build aeterna_qa/stage2/ (no LLM in this step):
+Branch phase/6-recommender. Build aeterna_qa/stage2/ (no LLM in this step):
 - rules.py: deterministic table (task_type, model_family, column profile) -> steps for imputation, encoding, scaling/transforms, imbalance. Families: linear, tree_ensemble, distance, neural. Each step stores rule_id, reason, alternative.
 - build.py: unfitted sklearn Pipeline/ColumnTransformer; fit on training rows only; save via joblib.
 - compare.py: recommended vs default (median fill + one-hot + scale) on the evaluator's 5x3 folds (read-only import). Report mean diff ± corrected SE. Report only, no gate.

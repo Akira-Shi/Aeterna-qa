@@ -4,7 +4,7 @@ Deterministic, no LLM. Every Step carries rule_id, reason and alternative so the
 Stages: imputation, encoding (categorical), scaling (numeric), imbalance (classification, estimator level).
 For each column and stage the FIRST matching rule in COLUMN_RULES wins.
 
-Thresholds are fixed constants (not tuned on any result): SKEW_LIMIT, HIGH_CARD, MISSING_INFORMATIVE, IMBALANCE_RATIO.
+Thresholds live in stage2/constants.py (product defaults, not tuned on any study dataset).
 """
 from __future__ import annotations
 
@@ -17,10 +17,7 @@ import pandas as pd
 TASK_TYPES = ("binary", "multiclass", "regression")
 FAMILIES = ("linear", "tree_ensemble", "distance", "neural")
 
-SKEW_LIMIT = 1.0             # |skew| above this counts as skewed
-HIGH_CARD = 15               # categorical levels above this are "high cardinality"
-MISSING_INFORMATIVE = 0.05   # categorical missing share at/above this is kept as its own level
-IMBALANCE_RATIO = 0.25       # smallest/largest class count below this counts as imbalanced
+from .constants import SKEW_LIMIT, HIGH_CARD, MISSING_INFORMATIVE, IMBALANCE_RATIO  # noqa: E402,F401  (see constants.py)
 
 
 class UnsupportedModel(ValueError):

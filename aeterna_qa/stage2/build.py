@@ -10,6 +10,7 @@ from pathlib import Path
 
 import joblib
 import numpy as np
+import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.impute import SimpleImputer
@@ -17,13 +18,29 @@ from sklearn.linear_model import LogisticRegression, Ridge
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.neural_network import MLPClassifier, MLPRegressor
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import FunctionTransformer
 from sklearn.preprocessing import (OneHotEncoder, OrdinalEncoder, PowerTransformer, RobustScaler, StandardScaler)
 
 from modules import config
 from .rules import Step, FAMILIES, TASK_TYPES, UnsupportedModel
+from .constants import HIGH_CARD
 
 _MISSING_LEVEL = "__missing__"
-_CAP = 15
+_CAP = HIGH_CARD
+
+
+def _na_to_nan(X):
+    """Stateless: pandas NA (object / nullable columns, as TaskSpec loading produces) -> np.nan, which sklearn imputers accept.
+    Added after the first P6a demo attempt crashed with 'boolean value of NA is ambiguous' (see Documentation.md)."""
+    X = X.copy()
+    for c in X.columns:
+        if X[c].dtype == object or isinstance(X[c].dtype, pd.api.extensions.ExtensionDtype):
+            X[c] = X[c].astype(object).where(X[c].notna(), np.nan)
+    return X
+
+
+def _na_step():
+    return FunctionTransformer(_na_to_nan, validate=False, feature_names_out="one-to-one")
 
 
 def _transformer(stage: str, method: str):
@@ -90,7 +107,7 @@ def build_pipeline(steps, task_type: str, family: str) -> Pipeline:
         inner = "passthrough" if not parts else Pipeline(parts)
         blocks.append((f"g{i}", inner, cols))
     prep = ColumnTransformer(blocks, remainder="drop", verbose_feature_names_out=False)
-    return Pipeline([("prep", prep), ("model", make_estimator(task_type, family, class_weight))])
+    return Pipeline([("na", _na_step()), ("prep", prep), ("model", make_estimator(task_type, family, class_weight))])
 
 
 def build_default(X, task_type: str, family: str) -> Pipeline:
@@ -105,7 +122,7 @@ def build_default(X, task_type: str, family: str) -> Pipeline:
         blocks.append(("cat", Pipeline([("imp", SimpleImputer(strategy="most_frequent")),
                                         ("oh", OneHotEncoder(handle_unknown="ignore", sparse_output=False))]), cat))
     prep = ColumnTransformer(blocks, remainder="drop", verbose_feature_names_out=False)
-    return Pipeline([("prep", prep), ("model", make_estimator(task_type, family))])
+    return Pipeline([("na", _na_step()), ("prep", prep), ("model", make_estimator(task_type, family))])
 
 
 def fit_on_train(pipe: Pipeline, X, y, train_index):
