@@ -378,6 +378,12 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - Added `Documents/NOVELTY.md`: comparison of AETERNA-QA with ActiveClean, BoostClean, Learn2Clean, CPClean, DiffPrep, CleanAgent, DeepPrep, Bendinelli et al., IterClean (and Du et al. 2305.14325, which is a multiagent-debate paper, not a cleaning system). Documentation only, no code changes. Abstract-level reads are marked (unverified). Conclusion: only the corrected-statistical commit gate with rollback looks distinct; a planner-critic step is not novel.
 
 <!-- Add new entries above this line, most recent on top. Format:
+### 2026-11-01 (phase 2b, novelty full-text check; docs only)
+- Read full text of ActiveClean, BoostClean, CPClean (arXiv PDFs, pdftotext). Filled gate/correction/rollback/audit cells in `Documents/NOVELTY.md` with page-cited quotes or "not found in full text". No competitor shows both a corrected statistical gate and rollback.
+- Learn2Clean full text could NOT be obtained (author PDF 404; HAL/ACM/IRD gated), so its cells stay "(unverified)". Known issue, not retried.
+- Replaced the novelty claim with the user-supplied text; added section 6 verifying every number against RESULTS.md and flagging wording risks (7 of 11 commits are registered false commits; C5 post-pilot; Groq comparison not in prereg v1; Bonferroni per-run; 1.0 vs 1.55 is mean evaluation index over committed runs only).
+- No code touched. Frozen files untouched.
+
 ### YYYY-MM-DD
 - What you built/changed
 - Any numbers worth keeping (F1 before/after, time spent, what broke)
