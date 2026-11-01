@@ -488,6 +488,9 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - "Add dedupe op" removed from future work (RESULTS_REAL.md; the Documentation.md line is struck and corrected). Signed files still mention it and are untouched: AMENDMENT_DRAFT_real_data.md (section M and the future-work line), EXPECTED_OUTCOMES_real_data.md (R6 line).
 - Section 11 now has a table of all nine `exploratory_run_*.json` logs (UTC time, dataset from the logged task_spec path, outcome): 2 on the synthetic sandbox file, 2 Marketing, 1 Airbnb, 4 zero-iteration runs on a temporary g.csv.
 
+### 2026-11-01 (phase 5, step H: two errata appended to PREREGISTRATION section 12; documentation only)
+- Two dated rows appended to section 12 (author Akira): (a) the real-data amendment and EXPECTED_OUTCOMES claim "no dedupe op exists", which is false (RESULTS_REAL.md section 11a); (b) section 4's "duplicates ... measured separately" has no measurement in the repo and none is cited. No k/n affected. Signed files and sections 1-11 untouched. `frozen_check --init` re-run so the baseline includes these rows.
+
 ## Known issues / open questions (rewritten 2026-09-30)
 
 - Evaluator v1.1 (2026-11-01): numeric NaN is median-imputed inside each fold, so fill_median/fill_mean on a continuous NaN column cannot beat the baseline (delta about 0, expected outcome "no commit"). Text columns with more than 300 distinct values are rejected by TaskSpec (one-hot blow-up); drop or ID-exclude them. The Airbnb positive label `Rating=Y` is inferred from the CleanML wording, pending Akira's confirmation.
