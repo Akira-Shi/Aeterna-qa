@@ -49,6 +49,7 @@ from scipy import stats as scipy_stats
 from sklearn.model_selection import train_test_split, StratifiedKFold, RepeatedStratifiedKFold
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.impute import SimpleImputer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import f1_score, brier_score_loss
@@ -180,6 +181,19 @@ def assert_scaler_fit_on_train_only(clf, X_train) -> None:
     assert np.allclose(sc.mean_, expected), "LEAK: scaler statistics were not fitted on the training fold only"
 
 
+def impute_numeric_in_fold(X_train: pd.DataFrame, X_test: pd.DataFrame):
+    """evaluator v1.1 (2026-11-01, Akira's sign-off): numeric NaN cannot reach LR, so a median
+    SimpleImputer is fit on the fold's TRAINING rows only and applied to train and test. It is a no-op
+    (returns the inputs untouched) when neither matrix contains NaN, so every v1 result is unchanged.
+    One-hot indicator columns have no NaN, so only genuinely numeric columns are touched."""
+    if not (X_train.isna().to_numpy().any() or X_test.isna().to_numpy().any()):
+        return X_train, X_test
+    imp = SimpleImputer(strategy="median", keep_empty_features=True)
+    imp.fit(X_train)
+    return (pd.DataFrame(imp.transform(X_train), index=X_train.index, columns=X_train.columns),
+            pd.DataFrame(imp.transform(X_test), index=X_test.index, columns=X_test.columns))
+
+
 def calculate_f1_candidate(raw_df: pd.DataFrame, folds, committed_ops: dict[str, str] | None = None,
                             candidate_ops: dict[str, str] | None = None, model: str | None = None) -> dict:
     """THE accept/commit measurement (2026-09-29, fourth pass -- fixes a
@@ -238,6 +252,7 @@ def calculate_f1_candidate(raw_df: pd.DataFrame, folds, committed_ops: dict[str,
         clf = make_model(model)
         if model == "lr":
             X_train, X_test = X_train.astype(float), X_test.astype(float)
+            X_train, X_test = impute_numeric_in_fold(X_train, X_test)
         clf.fit(X_train, y_train)
         if model == "lr":
             assert_scaler_fit_on_train_only(clf, X_train)

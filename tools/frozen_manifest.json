@@ -1,7 +1,7 @@
 {
   "frozen": {
-    "aeterna_qa/modules/evaluator.py": "39fb19c203a3409eb7b4abe9ce34093ff45fea445d16e3bf6f196710862baa4c",
-    "aeterna_qa/modules/evaluator_tests.py": "555f2dda0033e2a0e16890feba385b3b508942ddd1bcd862015a4935a33588ba"
+    "aeterna_qa/modules/evaluator.py": "481c2c06affe9bb557e399c728f6475ae53c0337bddfed4ad03614c7dd11f045",
+    "aeterna_qa/modules/evaluator_tests.py": "0d369e5f3b7e938dc1b95299289f2a8036548066a8821a65d55a27cc4c961a49"
   },
   "watched": {
     "aeterna_qa/modules/config.py": "b2012810f02c94a922863e30614a7edac8f1e60c785aba1f95964d35076f0b37",
@@ -22,5 +22,5 @@
     "2b312a61c9c65cac101a0f0b1fb3c4240ab1da6a0aaf600c242349b04bee8030",
     "b3958363f76c56ab1811122f98d84601764d5025f92e36502df1a4ff20acb4c8"
   ],
-  "baseline_commit": "2dae093"
+  "baseline_commit": "c67d637"
 }
