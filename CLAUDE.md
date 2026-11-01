@@ -32,13 +32,23 @@ Capstone: closed-loop data-cleaning agent (detect → plan → execute → verif
 - Runs on the user's Windows machine (Groq key lives there). sklearn study runs can be done in a cloud workspace.
 - Kaggle GPU: not needed so far.
 
-## Pending (priority order)
-1. **Check `committed_ops: None`:** every audit JSON shows it, including runs that committed. It may be stored elsewhere or may be a logging bug. Verify, because Explain's chain logic depends on it.
-2. **Explain guard check:** confirm the Groq notes pass the number-check guard on real runs.
-3. **Git:** the whole rebuild is uncommitted (only 2 pre-rebuild commits exist).
-4. **Planner-critic add-on (Phase 7):** a pre-execution review step. The guide asked for one novel idea. Check Du et al. (arXiv:2305.14325) before calling it novel.
-5. **Real dataset where cleaning measurably helps:** unresolved risk. All positive results are on damage we injected into one dataset.
-6. **Minor:** demo date blank in `BUILD_PLAN.md`; `positive_control.py` doesn't call `audit`; IQR outlier detection is unreliable on skewed columns.
+## Pending (v2 phases)
+- **P1:** v1 leftovers
+- **P2:** novelty check
+- **P3:** real-data amendment draft
+- **P4:** any-CSV TaskSpec
+- **P5:** real-data eval
+- **P6:** Stage 2 recommender
+- **P7:** FastAPI backend
+- **P8:** web frontend
+- **P9:** release
+
+## v2 rules
+- v2 wraps v1. Never edit evaluator.py, evaluator_tests.py, PREREGISTRATION.md §1-11, gate metric, commit rule, scenarios.
+- Before every commit: frozen_check exit 0 and the 3 test suites pass. Exit 2 = stop and ask me.
+- One branch per phase (phase/<n>-<name>). Merge to main with a tag only after I accept.
+- Changelog entry in Documents/Documentation.md for every change.
+- Be brief: report diffs and test results, not file dumps.
 
 ## Rules that stay on
 - Label every synthetic result "synthetic" (audit `scenario`, file names, console banner). **Exception (user decision 2026-10-04):** the Explain HTML report carries no synthetic banner or wording and uses the Steep style (light, serif headings, peach accent); synthetic status lives in the audit log, file names and docs only.

@@ -326,6 +326,11 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - **Skipped from spec:** hero collage, avatars, dark mode, italic display phrase.
 - **Not changed:** verdict logic, number-check guard, evaluator, gate, audit schema, console output, pre-registration. `explain_tests.py` passes. Report regenerated as `run_20261004T135853Z`.
 
+### 2026-11-01 -- v1 merged to main, tagged `v1-study-frozen`; CLAUDE.md pending section replaced (docs only)
+- **Merged:** `rebuild-study` into `main` (fast-forward, not pushed). Tag `v1-study-frozen` at 564639c. Before merge: `tools/frozen_check.py` exit 0, ops_tests, evaluator_tests and explain_tests all pass.
+- **CLAUDE.md:** stale "Pending (priority order)" replaced with "Pending (v2 phases)" P1-P9, and a "v2 rules" block added.
+- **Not changed:** evaluator, gate, commit rule, scenarios, pre-registration, any frozen file.
+
 ### 2026-10-30 -- Pending #1 resolved: `committed_ops: None` is a stale-log artifact, not a bug (investigation only, no code change)
 - **Finding:** the `committed_ops: None` seen in audit JSONs comes only from 11 old logs (`run_20260929T035527Z` through `run_20260929T062818Z`) written before the key existed. The 27 logs from `run_20260930T033353Z` onward all carry it. Current code writes it per iteration in `audit.py:92`; `pipeline.py:166`, `:204` and `:220` pass it in; `pipeline.py:230` updates the running state after the log call. The value is therefore the pre-decision state, so it is `{}` on a first-chain commit by design.
 - **Explain is unaffected:** `explain.py:103-119` derives committed ops from `chain_ops`, not from `committed_ops`, so the chain logic does not depend on the field.
