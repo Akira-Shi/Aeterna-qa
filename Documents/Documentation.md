@@ -374,6 +374,9 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 ### 2026-11-01
 - Guard work closed; v1.1 kept. Rejections 1-3 (060306Z iter 6, 8, 9: negative delta presented as equal to a positive bar) judged correct. Fallback is the safety net, not a failure; the fallback-rate limit is retired. No further guard changes.
 
+### 2026-11-01 (phase 2, novelty)
+- Added `Documents/NOVELTY.md`: comparison of AETERNA-QA with ActiveClean, BoostClean, Learn2Clean, CPClean, DiffPrep, CleanAgent, DeepPrep, Bendinelli et al., IterClean (and Du et al. 2305.14325, which is a multiagent-debate paper, not a cleaning system). Documentation only, no code changes. Abstract-level reads are marked (unverified). Conclusion: only the corrected-statistical commit gate with rollback looks distinct; a planner-critic step is not novel.
+
 <!-- Add new entries above this line, most recent on top. Format:
 ### YYYY-MM-DD
 - What you built/changed
