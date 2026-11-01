@@ -1,0 +1,9259 @@
+{
+ "sanity_ok": true,
+ "sanity_notes": [],
+ "family_K": 192,
+ "n_runs": 12,
+ "results": [
+  {
+   "file": "real_airbnb_groq_401_eval_20261101T134654Z.json",
+   "dataset": "Airbnb",
+   "planner": "groq",
+   "seed": 401,
+   "committed_ops": {},
+   "commit_deltas": {},
+   "n_evaluated": 11,
+   "n_errors": 1,
+   "errors": [
+    {
+     "iteration": 12,
+     "column": null,
+     "operation": null,
+     "error": "Error code: 400 - {'error': {'message': \"Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': ''}}"
+    }
+   ],
+   "unexplained": [],
+   "wrong_op": [],
+   "rows": [
+    {
+     "col": "LocationName",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "normalize_categories"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Average Abnb Price (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average NumReviews (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bathrooms (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bedrooms (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Beds (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Guests (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Rating (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bathrooms",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Bedrooms",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Beds",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Count of Abnb",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Density of Abnb (%)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "LocationName",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumGuests",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumReviews",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Number of Homes",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Price",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "cost_living_index (US avg. = 100)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "land_area (sq.mi.)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "latitude",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "longitude",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median asking price for vacant for-sale home/condo",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median gross rent",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median house value",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median houshold income",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (no mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (with mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (no mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (with mortgage",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "number of females",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "number of males",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2000",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2010",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "pop2016",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "pop_density (people per mile)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "prop taxes paid 2016",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "unemployment (%)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "water_area (sq.mi.)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "zipcode",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Abnb Price (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average NumReviews (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bathrooms (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bedrooms (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Beds (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Guests (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Rating (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bathrooms",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bedrooms",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Beds",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Count of Abnb",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "clip_outliers"
+     ],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Density of Abnb (%)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "clip_outliers"
+     ],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumGuests",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "NumReviews",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Number of Homes",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Price",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "cost_living_index (US avg. = 100)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "land_area (sq.mi.)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "latitude",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "longitude",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median asking price for vacant for-sale home/condo",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median gross rent",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median house value",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median houshold income",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (no mortgage)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (with mortgage)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [
+      "clip_outliers"
+     ],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (no mortgage)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (with mortgage",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "number of females",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "number of males",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2000",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2010",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2016",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop_density (people per mile)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "prop taxes paid 2016",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "unemployment (%)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "water_area (sq.mi.)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "zipcode",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    }
+   ],
+   "baseline": -0.2041,
+   "final": -0.2041
+  },
+  {
+   "file": "real_airbnb_groq_402_eval_20261101T135206Z.json",
+   "dataset": "Airbnb",
+   "planner": "groq",
+   "seed": 402,
+   "committed_ops": {},
+   "commit_deltas": {},
+   "n_evaluated": 8,
+   "n_errors": 1,
+   "errors": [
+    {
+     "iteration": 9,
+     "column": null,
+     "operation": null,
+     "error": "Error code: 400 - {'error': {'message': \"Failed to validate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': ''}}"
+    }
+   ],
+   "unexplained": [],
+   "wrong_op": [],
+   "rows": [
+    {
+     "col": "LocationName",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "normalize_categories"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Average Abnb Price (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average NumReviews (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bathrooms (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bedrooms (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Beds (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Guests (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Rating (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bathrooms",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Bedrooms",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Beds",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Count of Abnb",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Density of Abnb (%)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "LocationName",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumGuests",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumReviews",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Number of Homes",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Price",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "cost_living_index (US avg. = 100)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "land_area (sq.mi.)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "latitude",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "longitude",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median asking price for vacant for-sale home/condo",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median gross rent",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median house value",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median houshold income",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (no mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (with mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (no mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (with mortgage",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "number of females",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "number of males",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2000",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2010",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "pop2016",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "pop_density (people per mile)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "prop taxes paid 2016",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "unemployment (%)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "water_area (sq.mi.)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "zipcode",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Abnb Price (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average NumReviews (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bathrooms (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bedrooms (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Beds (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Guests (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Rating (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bathrooms",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bedrooms",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Beds",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Count of Abnb",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "clip_outliers"
+     ],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Density of Abnb (%)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumGuests",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "NumReviews",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Number of Homes",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Price",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "cost_living_index (US avg. = 100)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "land_area (sq.mi.)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "latitude",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "longitude",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median asking price for vacant for-sale home/condo",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median gross rent",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median house value",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median houshold income",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (no mortgage)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (with mortgage)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (no mortgage)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (with mortgage",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "number of females",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "number of males",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2000",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2010",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2016",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop_density (people per mile)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "prop taxes paid 2016",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "unemployment (%)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "water_area (sq.mi.)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "zipcode",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    }
+   ],
+   "baseline": -0.2041,
+   "final": -0.2041
+  },
+  {
+   "file": "real_airbnb_groq_403_eval_20261101T135401Z.json",
+   "dataset": "Airbnb",
+   "planner": "groq",
+   "seed": 403,
+   "committed_ops": {},
+   "commit_deltas": {},
+   "n_evaluated": 3,
+   "n_errors": 1,
+   "errors": [
+    {
+     "iteration": 4,
+     "column": null,
+     "operation": null,
+     "error": "Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m3nh5yj0e3t989zj64nrgv7b` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 195832, Requested 5703. Please try again in 11m3.12s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}"
+    }
+   ],
+   "unexplained": [],
+   "wrong_op": [],
+   "rows": [
+    {
+     "col": "LocationName",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "normalize_categories"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Average Abnb Price (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average NumReviews (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bathrooms (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bedrooms (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Beds (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Guests (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Rating (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bathrooms",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Bedrooms",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Beds",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Count of Abnb",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Density of Abnb (%)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "LocationName",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumGuests",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumReviews",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Number of Homes",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Price",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "cost_living_index (US avg. = 100)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "land_area (sq.mi.)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "latitude",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "longitude",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median asking price for vacant for-sale home/condo",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median gross rent",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median house value",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median houshold income",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (no mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (with mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (no mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (with mortgage",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "number of females",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "number of males",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2000",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2010",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "pop2016",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "pop_density (people per mile)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "prop taxes paid 2016",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "unemployment (%)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "water_area (sq.mi.)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "zipcode",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Abnb Price (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average NumReviews (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bathrooms (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bedrooms (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Beds (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Guests (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Rating (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bathrooms",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bedrooms",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Beds",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Count of Abnb",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "clip_outliers"
+     ],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Density of Abnb (%)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumGuests",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "NumReviews",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Number of Homes",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Price",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "cost_living_index (US avg. = 100)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "land_area (sq.mi.)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "latitude",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "longitude",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median asking price for vacant for-sale home/condo",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median gross rent",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median house value",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median houshold income",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (no mortgage)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (with mortgage)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (no mortgage)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (with mortgage",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "number of females",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "number of males",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2000",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2010",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2016",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop_density (people per mile)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "prop taxes paid 2016",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "unemployment (%)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "water_area (sq.mi.)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "zipcode",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    }
+   ],
+   "baseline": -0.2041,
+   "final": -0.2041
+  },
+  {
+   "file": "real_airbnb_rule_401_eval_20261101T133926Z.json",
+   "dataset": "Airbnb",
+   "planner": "rule",
+   "seed": 401,
+   "committed_ops": {},
+   "commit_deltas": {},
+   "n_evaluated": 16,
+   "n_errors": 0,
+   "errors": [],
+   "unexplained": [],
+   "wrong_op": [],
+   "rows": [
+    {
+     "col": "LocationName",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [
+      "normalize_categories"
+     ],
+     "offered": [
+      "normalize_categories"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Average Abnb Price (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average NumReviews (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bathrooms (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bedrooms (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Beds (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Guests (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Rating (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bathrooms",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Bedrooms",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Beds",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Count of Abnb",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Density of Abnb (%)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "LocationName",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumGuests",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumReviews",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Number of Homes",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Price",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "cost_living_index (US avg. = 100)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "land_area (sq.mi.)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "latitude",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "longitude",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median asking price for vacant for-sale home/condo",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median gross rent",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median house value",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median houshold income",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (no mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "drop_rows"
+     ],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (with mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "drop_rows"
+     ],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (no mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "drop_rows"
+     ],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (with mortgage",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "drop_rows"
+     ],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "number of females",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "number of males",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2000",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2010",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "pop2016",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "pop_density (people per mile)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "prop taxes paid 2016",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "unemployment (%)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "water_area (sq.mi.)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "zipcode",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Abnb Price (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average NumReviews (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bathrooms (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bedrooms (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Beds (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Guests (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Rating (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bathrooms",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bedrooms",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Beds",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Count of Abnb",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Density of Abnb (%)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumGuests",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "NumReviews",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Number of Homes",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Price",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "cost_living_index (US avg. = 100)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "land_area (sq.mi.)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "latitude",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "longitude",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median asking price for vacant for-sale home/condo",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median gross rent",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median house value",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median houshold income",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (no mortgage)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (with mortgage)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (no mortgage)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (with mortgage",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "number of females",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "number of males",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2000",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2010",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2016",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop_density (people per mile)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "prop taxes paid 2016",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "unemployment (%)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "water_area (sq.mi.)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "zipcode",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    }
+   ],
+   "baseline": -0.2041,
+   "final": -0.2041
+  },
+  {
+   "file": "real_airbnb_rule_402_eval_20261101T134608Z.json",
+   "dataset": "Airbnb",
+   "planner": "rule",
+   "seed": 402,
+   "committed_ops": {},
+   "commit_deltas": {},
+   "n_evaluated": 16,
+   "n_errors": 0,
+   "errors": [],
+   "unexplained": [],
+   "wrong_op": [],
+   "rows": [
+    {
+     "col": "LocationName",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [
+      "normalize_categories"
+     ],
+     "offered": [
+      "normalize_categories"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Average Abnb Price (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average NumReviews (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bathrooms (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bedrooms (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Beds (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Guests (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Rating (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bathrooms",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Bedrooms",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Beds",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Count of Abnb",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Density of Abnb (%)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "LocationName",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumGuests",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumReviews",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Number of Homes",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Price",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "cost_living_index (US avg. = 100)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "land_area (sq.mi.)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "latitude",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "longitude",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median asking price for vacant for-sale home/condo",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median gross rent",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median house value",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median houshold income",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (no mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "drop_rows"
+     ],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (with mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "drop_rows"
+     ],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (no mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "drop_rows"
+     ],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (with mortgage",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "drop_rows"
+     ],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "number of females",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "number of males",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2000",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2010",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "pop2016",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "pop_density (people per mile)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "prop taxes paid 2016",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "unemployment (%)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "water_area (sq.mi.)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "zipcode",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Abnb Price (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average NumReviews (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bathrooms (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bedrooms (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Beds (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Guests (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Rating (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bathrooms",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bedrooms",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Beds",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Count of Abnb",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Density of Abnb (%)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumGuests",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "NumReviews",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Number of Homes",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Price",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "cost_living_index (US avg. = 100)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "land_area (sq.mi.)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "latitude",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "longitude",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median asking price for vacant for-sale home/condo",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median gross rent",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median house value",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median houshold income",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (no mortgage)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (with mortgage)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (no mortgage)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (with mortgage",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "number of females",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "number of males",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2000",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2010",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2016",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop_density (people per mile)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "prop taxes paid 2016",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "unemployment (%)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "water_area (sq.mi.)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "zipcode",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    }
+   ],
+   "baseline": -0.2041,
+   "final": -0.2041
+  },
+  {
+   "file": "real_airbnb_rule_403_eval_20261101T135307Z.json",
+   "dataset": "Airbnb",
+   "planner": "rule",
+   "seed": 403,
+   "committed_ops": {},
+   "commit_deltas": {},
+   "n_evaluated": 16,
+   "n_errors": 0,
+   "errors": [],
+   "unexplained": [],
+   "wrong_op": [],
+   "rows": [
+    {
+     "col": "LocationName",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [
+      "normalize_categories"
+     ],
+     "offered": [
+      "normalize_categories"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Average Abnb Price (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average NumReviews (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bathrooms (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bedrooms (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Beds (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Guests (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Rating (by zipcode)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bathrooms",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Bedrooms",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Beds",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Count of Abnb",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Density of Abnb (%)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "LocationName",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumGuests",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumReviews",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Number of Homes",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Price",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "cost_living_index (US avg. = 100)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "land_area (sq.mi.)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "latitude",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "longitude",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median asking price for vacant for-sale home/condo",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median gross rent",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median house value",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median houshold income",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (no mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "drop_rows"
+     ],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (with mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "drop_rows"
+     ],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (no mortgage)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "drop_rows"
+     ],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (with mortgage",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "drop_rows"
+     ],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "number of females",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "number of males",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2000",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2010",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "pop2016",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "pop_density (people per mile)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "prop taxes paid 2016",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "unemployment (%)",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "water_area (sq.mi.)",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "zipcode",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Abnb Price (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average NumReviews (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bathrooms (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Bedrooms (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Beds (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Number of Guests (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Average Rating (by zipcode)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bathrooms",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Bedrooms",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Beds",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Count of Abnb",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Density of Abnb (%)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "NumGuests",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "NumReviews",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Number of Homes",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Price",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "cost_living_index (US avg. = 100)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "land_area (sq.mi.)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "latitude",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "longitude",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median asking price for vacant for-sale home/condo",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median gross rent",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median house value",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "median houshold income",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (no mortgage)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median monthly owner costs (with mortgage)",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (no mortgage)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "median taxes (with mortgage",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "number of females",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "number of males",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2000",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2010",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop2016",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "pop_density (people per mile)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "prop taxes paid 2016",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "unemployment (%)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "detector-miss",
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "water_area (sq.mi.)",
+     "typ": "outliers",
+     "expected": "commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "clip_outliers"
+     ],
+     "committed": []
+    },
+    {
+     "col": "zipcode",
+     "typ": "outliers",
+     "expected": "no commit",
+     "reachable": [
+      "clip_outliers"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    }
+   ],
+   "baseline": -0.2041,
+   "final": -0.2041
+  },
+  {
+   "file": "real_marketing_groq_401_eval_20261101T133354Z.json",
+   "dataset": "Marketing",
+   "planner": "groq",
+   "seed": 401,
+   "committed_ops": {},
+   "commit_deltas": {},
+   "n_evaluated": 5,
+   "n_errors": 1,
+   "errors": [
+    {
+     "iteration": 6,
+     "column": null,
+     "operation": null,
+     "error": "Planner chose (Person, fill_mode), which is not in remaining_options: [('Person', 'fill_unknown'), ('Person', 'drop_rows'), ('Language', 'fill_mode'), ('Language', 'fill_unknown'), ('Language', 'drop_rows'), ('Hometype', 'fill_mode'), ('Hometype', 'fill_unknown'), ('Hometype', 'drop_rows'), ('Householder', 'fill_mode'), ('Householder', 'fill_unknown'), ('Householder', 'drop_rows'), ('Marital', 'fill_mode'), ('Marital', 'fill_unknown'), ('Marital', 'drop_rows'), ('Occupation', 'fill_mode'), ('Occupation', 'fill_unknown'), ('Occupation', 'drop_rows'), ('Education', 'fill_mode'), ('Education', 'fill_unknown'), ('Education', 'drop_rows'), ('Ethnic', 'fill_mode'), ('Ethnic', 'fill_unknown'), ('Ethnic', 'drop_rows')]"
+    }
+   ],
+   "unexplained": [],
+   "wrong_op": [],
+   "rows": [
+    {
+     "col": "Age",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Dual",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Education",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Ethnic",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Hometype",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Householder",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Language",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Live",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Marital",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Occupation",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Person",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Person under 18",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Sex",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Age",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Dual",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Education",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Ethnic",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Hometype",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Householder",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Language",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Live",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Marital",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Occupation",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Person",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Person under 18",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Sex",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    }
+   ],
+   "baseline": -0.1556,
+   "final": -0.1556
+  },
+  {
+   "file": "real_marketing_groq_402_eval_20261101T133528Z.json",
+   "dataset": "Marketing",
+   "planner": "groq",
+   "seed": 402,
+   "committed_ops": {},
+   "commit_deltas": {},
+   "n_evaluated": 5,
+   "n_errors": 1,
+   "errors": [
+    {
+     "iteration": 6,
+     "column": null,
+     "operation": null,
+     "error": "Planner chose (Person, fill_mode), which is not in remaining_options: [('Person', 'fill_unknown'), ('Person', 'drop_rows'), ('Language', 'fill_mode'), ('Language', 'fill_unknown'), ('Language', 'drop_rows'), ('Hometype', 'fill_mode'), ('Hometype', 'fill_unknown'), ('Hometype', 'drop_rows'), ('Householder', 'fill_mode'), ('Householder', 'fill_unknown'), ('Householder', 'drop_rows'), ('Marital', 'fill_mode'), ('Marital', 'fill_unknown'), ('Marital', 'drop_rows'), ('Occupation', 'fill_mode'), ('Occupation', 'fill_unknown'), ('Occupation', 'drop_rows'), ('Education', 'fill_mode'), ('Education', 'fill_unknown'), ('Education', 'drop_rows'), ('Ethnic', 'fill_mode'), ('Ethnic', 'fill_unknown'), ('Ethnic', 'drop_rows')]"
+    }
+   ],
+   "unexplained": [],
+   "wrong_op": [],
+   "rows": [
+    {
+     "col": "Age",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Dual",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Education",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Ethnic",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Hometype",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Householder",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Language",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Live",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Marital",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Occupation",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Person",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Person under 18",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Sex",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Age",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Dual",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Education",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Ethnic",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Hometype",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Householder",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Language",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Live",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Marital",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Occupation",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Person",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Person under 18",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Sex",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    }
+   ],
+   "baseline": -0.1556,
+   "final": -0.1556
+  },
+  {
+   "file": "real_marketing_groq_403_eval_20261101T133945Z.json",
+   "dataset": "Marketing",
+   "planner": "groq",
+   "seed": 403,
+   "committed_ops": {},
+   "commit_deltas": {},
+   "n_evaluated": 16,
+   "n_errors": 0,
+   "errors": [],
+   "unexplained": [],
+   "wrong_op": [],
+   "rows": [
+    {
+     "col": "Age",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Dual",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Education",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Ethnic",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Hometype",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Householder",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Language",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Live",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Marital",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Occupation",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Person",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Person under 18",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Sex",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Age",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Dual",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Education",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Ethnic",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Hometype",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Householder",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Language",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Live",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Marital",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Occupation",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Person",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Person under 18",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Sex",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    }
+   ],
+   "baseline": -0.1556,
+   "final": -0.1556
+  },
+  {
+   "file": "real_marketing_rule_401_eval_20261101T133405Z.json",
+   "dataset": "Marketing",
+   "planner": "rule",
+   "seed": 401,
+   "committed_ops": {},
+   "commit_deltas": {},
+   "n_evaluated": 16,
+   "n_errors": 0,
+   "errors": [],
+   "unexplained": [],
+   "wrong_op": [],
+   "rows": [
+    {
+     "col": "Age",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Dual",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Education",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Ethnic",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Hometype",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Householder",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Language",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Live",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Marital",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Occupation",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Person",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Person under 18",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Sex",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Age",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Dual",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Education",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Ethnic",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Hometype",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Householder",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Language",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Live",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Marital",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Occupation",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Person",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Person under 18",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Sex",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    }
+   ],
+   "baseline": -0.1556,
+   "final": -0.1556
+  },
+  {
+   "file": "real_marketing_rule_402_eval_20261101T133436Z.json",
+   "dataset": "Marketing",
+   "planner": "rule",
+   "seed": 402,
+   "committed_ops": {},
+   "commit_deltas": {},
+   "n_evaluated": 16,
+   "n_errors": 0,
+   "errors": [],
+   "unexplained": [],
+   "wrong_op": [],
+   "rows": [
+    {
+     "col": "Age",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Dual",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Education",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Ethnic",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Hometype",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Householder",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Language",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Live",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Marital",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Occupation",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Person",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Person under 18",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Sex",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Age",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Dual",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Education",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Ethnic",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Hometype",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Householder",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Language",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Live",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Marital",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Occupation",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Person",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Person under 18",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Sex",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    }
+   ],
+   "baseline": -0.1556,
+   "final": -0.1556
+  },
+  {
+   "file": "real_marketing_rule_403_eval_20261101T133514Z.json",
+   "dataset": "Marketing",
+   "planner": "rule",
+   "seed": 403,
+   "committed_ops": {},
+   "commit_deltas": {},
+   "n_evaluated": 16,
+   "n_errors": 0,
+   "errors": [],
+   "unexplained": [],
+   "wrong_op": [],
+   "rows": [
+    {
+     "col": "Age",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Dual",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Education",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Ethnic",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Hometype",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Householder",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Language",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Live",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Marital",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Occupation",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Person",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Person under 18",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Sex",
+     "typ": "inconsistency",
+     "expected": "no commit",
+     "reachable": [
+      "normalize_categories"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Age",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Dual",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Education",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Ethnic",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Hometype",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Householder",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Language",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Live",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Marital",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Occupation",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "planner-miss",
+     "evaluated": [],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Person",
+     "typ": "missing",
+     "expected": "commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "miss",
+     "stage": "gate-reject",
+     "evaluated": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "offered": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "committed": []
+    },
+    {
+     "col": "Person under 18",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    },
+    {
+     "col": "Sex",
+     "typ": "missing",
+     "expected": "no commit",
+     "reachable": [
+      "fill_mode",
+      "fill_unknown",
+      "drop_rows"
+     ],
+     "obs": "correct no-commit",
+     "stage": null,
+     "evaluated": [],
+     "offered": [],
+     "committed": []
+    }
+   ],
+   "baseline": -0.1556,
+   "final": -0.1556
+  }
+ ]
+}

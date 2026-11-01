@@ -1,0 +1,9 @@
+{
+ "dataset": "Airbnb",
+ "split_seed": 20261101,
+ "rows": 33145,
+ "pilot": 6612,
+ "eval": 26533,
+ "pilot_idx_sha256": "f35694d531ba37f645d3e037f2914642ceda8c330109e088d79e53fb253bdf71",
+ "eval_idx_sha256": "4b26c7acddad72bf62b5cc410c405bf15b90f8689e45fe18c2892ef8c123bcdf"
+}

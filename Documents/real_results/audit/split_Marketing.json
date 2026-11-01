@@ -1,0 +1,9 @@
+{
+ "dataset": "Marketing",
+ "split_seed": 20261101,
+ "rows": 8993,
+ "pilot": 1772,
+ "eval": 7221,
+ "pilot_idx_sha256": "5deca288dc1b25443b4d28c0fcbf4dab3a226a2aa64941351989a21451f7f4d7",
+ "eval_idx_sha256": "dac16b23a6f08002cf9df78ccb725fd964a16d099041d6c9f9504033e8169082"
+}
