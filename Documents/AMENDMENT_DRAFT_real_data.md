@@ -1,6 +1,6 @@
 # DRAFT v2 - proposed PREREGISTRATION section 12 amendment: real-data evaluation (phase 3)
 
-**Status: DRAFT v2, Akira's decisions applied (2026-11-01). Not signed, not run. `PREREGISTRATION.md` is not edited.** Signing happens after P4 is tagged (section K). On signing, the accepted items become dated rows appended to section 12 by Akira (or on Akira's instruction). No dataset has been run or scored for this draft. Row counts and error types below come from CleanML's `DatasetDescriptions.pdf` metadata only.
+**Status: DRAFT v3, Akira's answers to Q1-Q6 applied (2026-11-01). Not signed, not run. `PREREGISTRATION.md` is not edited.** Signing happens after P4 is tagged (section K). On signing, the accepted items become dated rows appended to section 12 by Akira (or on Akira's instruction). No dataset has been run or scored for this draft. Row counts and error types below come from CleanML's `DatasetDescriptions.pdf` metadata only.
 
 Context read: PREREGISTRATION sections 1-13, RESULTS.md, BUILD_PLAN.md, CLAUDE.md. Facts used: the v1 study is synthetic damage on one dataset (Adult) and cannot claim anything about arbitrary real dirty tables (section 1). The only real-data result so far is real Adult `?` values: nothing commits under the Brier gate, which matches ground truth (section 12, 2026-09-30; BUILD_PLAN). Section 12 already narrowed the evaluator to LR alone (RF dropped); CLAUDE.md's RF/LR line is updated for real data (LR only; RF reproduces old numbers only).
 
@@ -21,20 +21,24 @@ Evaluator (`evaluator.py`, fixed 5x3 folds, Nadeau-Bengio corrected SE), LR with
 2. A tabular supervised target already defined by the source (binary or multiclass), no target engineering by us.
 3. At least 5,000 rows after dropping the target-missing rows (needed for the 5x3 CV with a usable SE; Adult pilot SE was ~0.0005-0.0017 at 6k-24k rows).
 4. At least one documented, natural data-quality issue (missing codes, mixed units, inconsistent categories, duplicates) stated by the source or by a published cleaning benchmark.
-5. Not Adult (already observed).
+5. Not Adult (already observed), and not any dataset of the Adult family: USCensus (UCI Census income, 32,561 rows, 14 attributes) is excluded on the same ground (Q4 resolved).
+6. At least 3 non-text feature columns (numeric or categorical; free-text columns do not count). **Added after viewing the CleanML dataset list (`DatasetDescriptions.pdf` metadata), before any dataset was opened or run.** The v1 op menu and LR evaluator are tabular; this rule is disclosed here as a post-listing addition (Q2 resolved).
 
 **C2. Picking among eligible tables (decided: N = 2).** Source = the CleanML benchmark (Li et al., https://arxiv.org/abs/1904.09483; repo https://github.com/chu-data-lab/CleanML). Order = the order of entries in the repo file `schema/dataset.py` (https://raw.githubusercontent.com/chu-data-lab/CleanML/master/schema/dataset.py), read by fetch: Citation, Marketing, Airbnb, Titanic, EEG, USCensus, Restaurant, Credit, Sensor, Movie, Company, University, then synthetic-mislabel variants (excluded: injected, not natural), BabyProduct, Clothing. The paper's Table 3 order could not be recovered from the HTML extraction (unverified), so the repo order is the written key. Take the first 2 datasets passing C1; if one fails for any reason (including rule 6 below), take the next in this order.
 
-**C1 rule 6 (proposed, before any run):** at least 3 feature columns, at least one numeric or low-cardinality categorical (the v1 op menu and LR evaluator are tabular). Mechanical application, from `DatasetDescriptions.pdf` metadata:
+**C1 rule 6 application (mechanical, from `DatasetDescriptions.pdf` metadata only; no dataset opened):**
 
 | Order | Dataset | Rows | Check | Result |
 |---|---|---|---|---|
 | 1 | Citation | 5,005 | titles only (single text column; duplicates): fails rule 6 | skipped |
-| 2 | Marketing | 8,993 | 14 demographic attrs, missing values, label income < $25k | **selected #1** |
-| 3 | Airbnb | 42,492 | 40 attrs; missing, outliers, duplicates; label rating = 5 | **selected #2** (licence/PII concern, section J) |
+| 2 | Marketing | 8,993 | 14 demographic attributes, label income < $25k, so 13 feature columns; the PDF describes them as demographic survey fields (not free text), so >= 3 non-text (unverified: per-column types not listed in the PDF; confirm when the file is first opened) | **selected #1** |
+| 3 | Airbnb | 42,492 | 40 attributes; label rating = 5; includes some free-text fields but also numeric and categorical listing attributes (price, counts, room type, city-data.com attributes), so >= 3 non-text (unverified: column list not in the PDF) | **selected #2**, conditional on Akira confirming the licence (Q3, section J); host name and host ID columns dropped before use |
 | 4 | Titanic | 891 | fails rule 3 (< 5,000 rows) | skipped |
-| 5 | EEG | 14,980 | 14 numeric attrs, outliers | **fallback #1** |
-| 6 | USCensus | 32,561 | UCI Census, 14 attrs (Adult-like; rule 5 question, Q-new-4) | **fallback #2 candidate** |
+| 5 | EEG | 14,980 | 14 numeric attributes, outliers; passes | **fallback #1** |
+| 6 | USCensus | 32,561 | Adult family; fails rule 5 | skipped (Q4) |
+| 7 | Restaurant | (unverified) | next in order after USCensus | **fallback #2 candidate**, to be checked against rules 1-6 if reached |
+
+Consistency check after the changes: rule 6 leaves Marketing and Airbnb eligible (subject to the two (unverified) column-type confirmations above), so the selection is unchanged and Citation is the only dataset skipped by rule 6. Removing USCensus means the fallback chain is EEG, then the next passing dataset in order (Restaurant onward); no entry depends on USCensus.
 
 If Airbnb is rejected on licence/PII grounds (Akira's call), the fallback is EEG, then the next passing dataset in order. Swaps are logged; a dataset is never replaced after its first run (C4).
 
@@ -42,8 +46,8 @@ If Airbnb is rejected on licence/PII grounds (Akira's call), the fallback is EEG
 
 ## D. Ground truth on real data (decided)
 
-- **Ground truth = the published cleaned version.** For CleanML this is the benchmark's cleaned file per error type. The paper abstract says the benchmark applies "multiple cleaning algorithms per error type", so the reference cleaned file must be named per dataset in the expected-outcome file before any run (Q-new-1).
-- **Hit** = the committed op targets a column and an error type that both appear in the dirty-vs-clean diff. **Miss** = the diff shows a menu-reachable defect and nothing commits for it. **Correct rollback** = no commit and no menu-reachable diff.
+- **Ground truth = the published cleaned version.** For CleanML the benchmark ships several cleaned files per error type (multiple cleaning algorithms). **Error cells for an error type = the union of the differing cells over all CleanML cleaned files for that error type** (Q1 resolved); the expected-outcome file lists the files used.
+- **Hit** = a commit on a column that contains error cells of type T, with the matching op class: missing values -> fill_* or drop_rows; outliers -> clip_outliers; inconsistency -> normalize_categories. **Miss** = the diff shows a menu-reachable defect and nothing commits for it. **Correct rollback** = no commit and no menu-reachable diff.
 - **Unexplained commit** = a commit on a column with no diff. Reported separately; not a hit, not a failure by itself.
 - **Wrong-op commit** (op type does not match the diff error type on that column) = failure.
 - Expectations are qualitative only (commit / no commit, per column), derived from the diff, not from scores, and written in the expected-outcome file (section K).
@@ -90,7 +94,7 @@ Dataset list and N; the selection and tie-break rule; expected outcomes; ground-
 | Dataset | Source | Licence | PII | Status |
 |---|---|---|---|---|
 | Marketing | https://sites.google.com/site/anhaidgroup/useful-stuff/data (per CleanML refs) | (unverified) | demographic survey records (sex, education, etc.); no identifiers described (unverified) | Akira to confirm |
-| Airbnb | CleanML-authored, scraped from Airbnb.com plus city-data.com attributes; "We will release this dataset in the code repository" (`DatasetDescriptions.pdf`) | (unverified); scraping terms of Airbnb.com may apply (unverified) | listing-level data; host or location fields may be present (unverified) | Akira to confirm; if rejected, fallback EEG |
+| Airbnb | CleanML-authored, scraped from Airbnb.com plus city-data.com attributes; "We will release this dataset in the code repository" (`DatasetDescriptions.pdf`) | (unverified); scraping terms of Airbnb.com may apply (unverified) | listing-level data; host or location fields may be present (unverified); host name and host ID columns are dropped before use (decided) | **Akira to confirm the Inside Airbnb licence** (kept only if confirmed); if rejected, fallback EEG |
 | EEG (fallback #1) | https://archive.ics.uci.edu/dataset/264/eeg+eye+state | CC BY 4.0 (stated on the UCI page) | UCI page has no PII statement; EEG channel recordings | Akira to confirm |
 | CleanML repo (code, cleaned files) | https://github.com/chu-data-lab/CleanML | GitHub API `license` = null (none declared) | n/a | Akira to confirm terms for using the data zip (Dropbox `CleanML-datasets-2020.zip`, per the README) |
 
@@ -101,13 +105,15 @@ Dataset list and N; the selection and tie-break rule; expected outcomes; ground-
 3. The file is committed. Its git commit hash and SHA-256 are recorded in the new section 12 row. No run may start before this commit exists.
 4. This amendment cites the TaskSpec release tag `v2-p4` (placeholder until P4 is tagged). It is signed only after P4 is tagged, and TaskSpec is then frozen for this study.
 
-## L. Open questions still needing Akira
+## L. Open questions (status after Akira's answers, 2026-11-01)
 
-- **Q-new-1:** CleanML ships cleaned files per cleaning method. Which is the reference per dataset?
-- **Q-new-2:** Add C1 rule 6 (at least 3 feature columns, one numeric or low-cardinality categorical)? It skips Citation. Without it Citation is #1 and Marketing #2.
-- **Q-new-3:** Airbnb licence/PII (section J): accept, or move to fallback EEG?
-- **Q-new-4:** Does USCensus count as Adult for rule 5 (UCI Census data, 32,561 records, 14 attributes)?
-- **Q-new-5:** Marketing licence and PII are unverified.
-- **Q-new-6:** The key is the repo order in `schema/dataset.py`; the paper's Table 3 order is unverified. Confirm the repo order.
+- **Q-new-1 (resolved):** error cells = union of all CleanML cleaned files for that error type; hit = commit on such a column with the matching op class (missing -> fill_*/drop_rows, outliers -> clip_outliers, inconsistency -> normalize_categories). Applied in section D.
+- **Q-new-2 (resolved):** rule 6 added, "at least 3 non-text feature columns", disclosed as added after viewing the dataset list and before any run. Applied in C1.
+- **Q-new-3 (resolved, conditional):** Airbnb kept, conditional on Akira confirming the Inside Airbnb licence; host name and host ID columns dropped before use. **Akira-to-confirm: Inside Airbnb licence.** If not confirmed, fallback EEG.
+- **Q-new-4 (resolved):** USCensus excluded (Adult family). Applied in C1 rule 5 and the C2 table.
+- **Q-new-5 (OPEN, Akira to confirm):** Marketing licence and PII (section J).
+- **Q-new-6 (resolved):** repo order in `schema/dataset.py` accepted as the key; the paper's Table 3 order is unverified and not used.
 
-Resolved by decisions (2026-11-01): N = 2 with next-in-order fallback; ground truth = published cleaned version; 20/80 split with pilot as pipeline check only; per-run Bonferroni primary, across-dataset secondary; seeds 401-403 both planners; LR only; Adult beyond `?` closed; descriptive k/n with wrong-op = failure; signing procedure and P4 dependency.
+Still open for Akira: Inside Airbnb licence (Q3), Marketing licence and PII (Q5), licence for the CleanML data zip (section J), (unverified) per-column types for rule 6 on Marketing and Airbnb.
+
+Resolved by earlier decisions (2026-11-01): N = 2 with next-in-order fallback; ground truth = published cleaned version; 20/80 split with pilot as pipeline check only; per-run Bonferroni primary, across-dataset secondary; seeds 401-403 both planners; LR only; Adult beyond `?` closed; descriptive k/n with wrong-op = failure; signing procedure and P4 dependency.
