@@ -2,7 +2,7 @@
 
 Real (not injected) data with natural defects. Separate from the synthetic C1-C5 study in `RESULTS.md`; never pooled with it. LR + Brier gate only (evaluator v1.1). Positive labels: Marketing `Income = 0`, Airbnb `Rating = Y`. Expectations come from CleanML-derived dirty-vs-clean diffs (signed `EXPECTED_OUTCOMES_real_data.md`), not from the real-world ground truth.
 
-Status of this file (2026-11-01): re-rendered after Groq hit API limits during P5. The rule-planner runs are the primary result and are reported first. Every Groq run with an API error is marked invalid (infrastructure failure) and carries no hit, miss or stage numbers. Two Groq runs ended on a planner-validation error that is not an API error; they are listed separately and not scored until Akira classifies them. No Groq-vs-rule comparison is made. No rerun has been done under the rerun rule (section 8).
+Status of this file (2026-11-01): re-rendered after Groq hit API limits during P5. The rule-planner runs are the primary result and are reported first. Every Groq run with an API error is marked invalid (infrastructure failure) and carries no hit, miss or stage numbers. Two Groq runs (Marketing 401, 402) ended on a planner-validation error that is not an API error; per Akira (2026-11-01) they are valid runs with outcome "terminated: planner violated menu constraint (re-proposed an evaluated pair)", reported under their own heading (section 6b) as a planner-reliability finding, and are not rerun. No Groq-vs-rule comparison is made until the three invalid Airbnb Groq runs are rerun under the rerun rule. No rerun has been done under the rerun rule (section 8).
 
 ## 1. Headline
 
@@ -10,7 +10,7 @@ Status of this file (2026-11-01): re-rendered after Groq hit API limits during P
 - H2 (positives, expected commit), rule planner: Marketing **0/9** hit; Airbnb **0/55** hit.
 - H1 (negatives, expected no commit), rule planner: Marketing **17/17** correct no-commit; Airbnb **23/23**. Positives and negatives are separate k/n, never pooled.
 - Miss stages, rule planner (detector / planner / gate): Marketing 0 / 4 / 5; Airbnb 28 / 23 / 4 (section 4).
-- Groq planner (6 runs): 1 valid, 3 invalid (infrastructure failure: API error), 2 pending Akira's classification (planner-validation error, not an API error). Details in section 6. Groq-vs-rule comparison waits until every Groq run is valid.
+- Groq planner (6 runs): 1 completed valid, 2 valid but terminated early (planner violated the menu constraint; section 6b), 3 invalid (infrastructure failure: API error; section 6a). Groq-vs-rule comparison waits until the invalid Airbnb Groq runs are rerun under the rerun rule.
 
 ## 2. What was run
 
@@ -63,7 +63,7 @@ Labels only (amendment section E); scoring is unchanged. Unit: one row per (data
 - **Marketing** (9 expected-commit rows, 0 hit), rule: 401: 0 detector-miss, 4 planner-miss, 5 gate-reject; 402: 0 detector-miss, 4 planner-miss, 5 gate-reject; 403: 0 detector-miss, 4 planner-miss, 5 gate-reject
 - **Airbnb** (55 expected-commit rows, 0 hit), rule: 401: 28 detector-miss, 23 planner-miss, 4 gate-reject; 402: 28 detector-miss, 23 planner-miss, 4 gate-reject; 403: 28 detector-miss, 23 planner-miss, 4 gate-reject
 
-**Sanity check (reconstruction): PASSED.** Offers were reconstructed after the runs by re-running `detect()` and the `remaining_options` logic, read-only, on the exact input of every logged iteration (the eval partition materialised with that iteration's committed ops; nothing committed, so it equals the eval partition), under the same TaskSpec settings, with no pipeline change. Every (column, op) the audit log shows as evaluated appeared in that iteration's reconstructed offers, in all 12 runs. A row is planner-miss if a reachable op was offered at any logged iteration but never evaluated; the `unclassified (error)` rule applied to no row. No stage counts are reported for invalid or pending Groq runs.
+**Sanity check (reconstruction): PASSED.** Offers were reconstructed after the runs by re-running `detect()` and the `remaining_options` logic, read-only, on the exact input of every logged iteration (the eval partition materialised with that iteration's committed ops; nothing committed, so it equals the eval partition), under the same TaskSpec settings, with no pipeline change. Every (column, op) the audit log shows as evaluated appeared in that iteration's reconstructed offers, in all 12 runs. A row is planner-miss if a reachable op was offered at any logged iteration but never evaluated; the `unclassified (error)` rule applied to no row. No stage counts are reported for invalid or terminated Groq runs.
 
 ## 5. Other outcomes (rule runs; valid Groq runs listed separately)
 
@@ -81,12 +81,12 @@ Labels only (amendment section E); scoring is unchanged. Unit: one row per (data
 
 ## 6. Groq-planner runs: validity (classified strictly from the audit logs)
 
-Rule used: a Groq run with any API error (HTTP status error from the Groq client: 429, 400 or other) is `invalid: infrastructure failure`; it gets no hit/miss/stage/delta numbers. A planner exception that is not an API error is listed under its own heading and is not scored until Akira rules. Error text is the audit-log `error` field of the last iteration, verbatim.
+Rule used: a Groq run with any API error (HTTP status error from the Groq client: 429, 400 or other) is `invalid: infrastructure failure`; it gets no hit/miss/stage/delta numbers. A planner exception that is not an API error is a valid run (Akira, 2026-11-01) and is listed under its own heading as a planner-reliability finding. Error text is the audit-log `error` field of the last iteration, verbatim.
 
 | Dataset | Seed | Status | Evaluations done before the error | Iteration of error | Error kind |
 |---|---|---|---|---|---|
-| Marketing | 401 | **planner error (not an API error) - Akira to classify** | 5 | 6 | planner raised ValueError (pair not in remaining_options) |
-| Marketing | 402 | **planner error (not an API error) - Akira to classify** | 5 | 6 | planner raised ValueError (pair not in remaining_options) |
+| Marketing | 401 | **valid - terminated: planner violated menu constraint (re-proposed an evaluated pair)** | 5 | 6 | planner raised ValueError (pair not in remaining_options) |
+| Marketing | 402 | **valid - terminated: planner violated menu constraint (re-proposed an evaluated pair)** | 5 | 6 | planner raised ValueError (pair not in remaining_options) |
 | Marketing | 403 | valid (16 iterations, no `error` entry in the audit log) | 16 | - | none |
 | Airbnb | 401 | **invalid: infrastructure failure** | 11 | 12 | API 400 json_validate_failed |
 | Airbnb | 402 | **invalid: infrastructure failure** | 8 | 9 | API 400 json_validate_failed |
@@ -99,10 +99,12 @@ Rule used: a Groq run with any API error (HTTP status error from the Groq client
 - **Airbnb Groq 403** (`real_airbnb_groq_403_eval_20261101T135401Z.json`): iteration 4, 3 evaluations completed before the error. Verbatim: `Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m3nh5yj0e3t989zj64nrgv7b` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 195832, Requested 5703. Please try again in 11m3.12s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}`
 - **Aborted first attempt, Airbnb Groq 401** (`ABORTED_attempt1_real_airbnb_groq_401_eval_20261101T133459Z.json`): iteration 1, 0 evaluations. Verbatim: `Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m3nh5yj0e3t989zj64nrgv7b` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 7585, Requested 4861. Please try again in 33.345s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}`
 
-### 6b. Planner error that is not an API error: Akira to classify. Not scored as hit/miss.
+### 6b. Valid, terminated early: planner violated menu constraint (re-proposed an evaluated pair). Planner-reliability finding.
 
-- **Marketing Groq 401** (`real_marketing_groq_401_eval_20261101T133354Z.json`): iteration 6, 5 evaluations completed before it. The Groq API call itself succeeded and returned a response; the planner's own validation (`planner.py`, `plan()`) then raised a `ValueError` because the returned (column, operation) pair is not in `remaining_options`. Verbatim: `Planner chose (Person, fill_mode), which is not in remaining_options: [('Person', 'fill_unknown'), ('Person', 'drop_rows'), ('Language', 'fill_mode'), ('Languag [...]`  (the message continues with the full remaining-options list; the pair `(Person, fill_mode)` had already been evaluated at iteration 5). The unchanged pipeline treats a planner exception as the end of the run. Under the rule as given (API errors only) this is not labelled invalid here. Whether it is a valid miss/no-result or invalid is Akira's decision.
-- **Marketing Groq 402** (`real_marketing_groq_402_eval_20261101T133528Z.json`): iteration 6, 5 evaluations completed before it. The Groq API call itself succeeded and returned a response; the planner's own validation (`planner.py`, `plan()`) then raised a `ValueError` because the returned (column, operation) pair is not in `remaining_options`. Verbatim: `Planner chose (Person, fill_mode), which is not in remaining_options: [('Person', 'fill_unknown'), ('Person', 'drop_rows'), ('Language', 'fill_mode'), ('Languag [...]`  (the message continues with the full remaining-options list; the pair `(Person, fill_mode)` had already been evaluated at iteration 5). The unchanged pipeline treats a planner exception as the end of the run. Under the rule as given (API errors only) this is not labelled invalid here. Whether it is a valid miss/no-result or invalid is Akira's decision.
+Akira's decision (2026-11-01): these two runs are VALID, not infrastructure failures, and are not rerun. Outcome label: "terminated: planner violated menu constraint (re-proposed an evaluated pair)". The Groq API call succeeded; the model returned a (column, operation) pair that had already been evaluated and so was not in `remaining_options`. The planner's menu check (`planner.py`, `plan()`) rejected it with a `ValueError`, which prevented any invalid op from executing; the unchanged pipeline treats a planner exception as the end of the run. Nothing committed in either run. This is a reliability finding about the Groq planner, reported here as observed, not as a hit or miss.
+
+- **Marketing Groq 401** (`real_marketing_groq_401_eval_20261101T133354Z.json`): ended at iteration 6 after 5 evaluations; no commit. Verbatim: `Planner chose (Person, fill_mode), which is not in remaining_options: [('Person', 'fill_unknown'), ('Person', 'drop_rows'), ('Language', 'fill_mode'), ('Languag [...]`  (the message continues with the full remaining-options list).
+- **Marketing Groq 402** (`real_marketing_groq_402_eval_20261101T133528Z.json`): ended at iteration 6 after 5 evaluations; no commit. Verbatim: `Planner chose (Person, fill_mode), which is not in remaining_options: [('Person', 'fill_unknown'), ('Person', 'drop_rows'), ('Language', 'fill_mode'), ('Languag [...]`  (the message continues with the full remaining-options list).
 
 ### 6c. Valid Groq run
 
@@ -145,7 +147,7 @@ Dated 2026-11-01. Written by the operator on Akira's instruction, before any rer
 3. On a 429, wait the server's retry-after time and retry, at most 5 retries per call; pause between calls to stay under the per-minute limit.
 4. A rerun replaces the invalid status only. The original invalid record stays listed in sections 6a and 7; an original is never deleted, overwritten or hidden. The rerun's own result, if valid, is reported as that run's result, with its start and end time.
 5. A rerun that again hits an API error is again invalid, is listed, and is subject to this rule after the next quota reset.
-6. The two runs in section 6b are not rerun under this rule unless Akira classifies them as API-error runs.
+6. The two runs in section 6b (Marketing Groq 401, 402) are valid terminated runs (Akira, 2026-11-01) and are not rerun.
 7. No change to the pipeline, detectors, ops, menu, gate, prompt, temperature, model or evaluator for a rerun. Seeds and partition are as originally registered.
 
 ## 9. Groq-vs-rule comparison
@@ -154,7 +156,7 @@ Groq-vs-rule comparison waits until every Groq run is valid.
 
 ## 10. Full per-row table
 
-Codes: **H** hit; **ok** correct no-commit (expected no commit, none occurred); **X** commit on an expected-no-commit row; misses: **D** detector-miss, **P** planner-miss, **G** gate-reject, **U** unclassified (error), **N** not separable. Columns: rule seeds 401/402/403, then the valid Groq run (Marketing 403 only; invalid and pending Groq runs have no per-row entries). "Reachable ops" are those of the signed file; any one committing is a hit.
+Codes: **H** hit; **ok** correct no-commit (expected no commit, none occurred); **X** commit on an expected-no-commit row; misses: **D** detector-miss, **P** planner-miss, **G** gate-reject, **U** unclassified (error), **N** not separable. Columns: rule seeds 401/402/403, then the valid Groq run (Marketing 403 only; invalid and terminated Groq runs have no per-row entries). "Reachable ops" are those of the signed file; any one committing is a hit.
 
 | Dataset | Column | Error type | Reachable ops | Expected | Rule 401 | 402 | 403 | Groq 403 |
 |---|---|---|---|---|---|---|---|---|
@@ -275,18 +277,31 @@ On 2026-11-01, before the amendment was signed, the unchanged pipeline was run o
 - Expectations are derived from CleanML dirty-vs-clean diffs (and the dirty file's NaN cells), not from the real-world ground truth. "Expected commit" means CleanML shows error cells there, not that repairing them helps a downstream LR.
 - Scoring is per run under per-run Bonferroni (alpha / 16). The numbers in section 3 are what the unchanged agent produced with LR + Brier on these tables for the rule planner; they are not evidence about whether the defects are harmless or whether the gate is right.
 - Many Airbnb misses are detector-misses and planner-misses: the detectors never offered some reachable ops, and a 16-iteration budget cannot reach 55 expected-commit rows. Both are properties of the unchanged agent.
-- The Groq side of the study is incomplete: of 6 Groq runs, 1 is valid, 3 are invalid (API errors) and 2 await Akira's classification. No Groq result other than the one valid run is reported, and no Groq-vs-rule statement is made.
+- The Groq side of the study is incomplete: of 6 Groq runs, 1 is completed and valid, 2 are valid but terminated early (planner menu-constraint violation, section 6b) and 3 are invalid (API errors, Airbnb) and await rerun. No Groq-vs-rule statement is made until the Airbnb reruns are done.
 - `Ethnic` in Marketing is a sensitive attribute; no per-group result is reported. The Airbnb file has 33,145 rows versus 42,492 in the CleanML description; the file was used as is.
 - Small N (2 datasets), one split seed, no family-wide correction in the commit rule. This file describes outcomes; it draws no conclusion about the pipeline's usefulness.
 
 ## 13. Open questions (for Akira)
 
 1. **`dedupe_rows` is in the v1 operation menu, but the signed amendment says no such op exists.** Read-only findings. `aeterna_qa/modules/config.py`, `OPERATION_MENU` contains `"dedupe_rows",           # drop exact duplicate rows from TRAINING only (column key "*")`. `aeterna_qa/modules/detectors.py` emits a finding with `"defect": "duplicates", "column": "*"` and `"candidate_ops": ["dedupe_rows"]`. `aeterna_qa/modules/executor.py` has `_ROW_LEVEL = {"dedupe_rows"}  # act on whole rows; column key is "*"` and `"dedupe_rows": _via_fit_and_apply("dedupe_rows")` in `_OPERATIONS`. The planner prompt also names it ("exact duplicate rows need dedupe_rows"). The amendment draft (`Documents/AMENDMENT_DRAFT_real_data.md`) says: "No dedupe op exists in the v1 menu; Marketing has 1,154 exact duplicate rows and Airbnb ships CleanML duplicate files. Duplicates are therefore outside the op menu for this study. The op is not added here." and `EXPECTED_OUTCOMES_real_data.md` says "R6 (duplicates). Outside the op menu (section M): no rows." What the logs show: the op was offered and evaluated as `*: dedupe_rows` in the runs (rule Marketing at iteration 1, rule Airbnb at iteration 2, and as iteration 1 of every Airbnb Groq run); it was rolled back every time, and no duplicate row is a scored row, so no k/n in this file is affected. Nothing was edited. The question is whether to record this discrepancy as a dated note (the signed text is not edited).
-2. Classification of the two Marketing Groq runs (401, 402) that ended on a planner-validation `ValueError` (section 6b): invalid, or a valid no-result?
-3. Rerun timing for the invalid Groq runs (section 8): approve the rule as written, including the quota-reset wait.
+2. Resolved (Akira, 2026-11-01): Marketing Groq 401 and 402 are valid terminated runs (section 6b); not rerun.
+3. Rerun timing for the three invalid Airbnb Groq runs (section 8): approve the rule as written, including the quota-reset wait.
 4. Section 11: nine local `exploratory_run_*.json` logs exist while the disclosure text says one run per dataset. Confirm the wording, or list the runs.
 
-## 14. Credit and licence
+## 14. Observations (not re-scoring)
+
+These are descriptive notes. They do not change any registered label or k/n.
+
+- (a) Largest real-data delta is +0.0001 against a Bonferroni bar of 0.0002 (rule runs, Marketing: `Householder` `fill_unknown` / `fill_mode`, `Hometype` `fill_mode`; checked against the audit logs of all 12 eval runs). On this evidence the defects did not measurably affect the LR gate score.
+- (b) Planner-miss is largely structural: Airbnb has 55 expected-commit rows against `MAX_ITERATIONS` = 16 (`config.py`), so the budget cannot reach every expected row even with a perfect planner.
+- (c) Detector-miss 28/55 on Airbnb is consistent with the documented IQR limit on skewed columns.
+- Registered k/n are unchanged.
+
+## 15. Product backlog (not this study)
+
+- On a planner `ValueError` (e.g. a re-proposed, already-evaluated pair), re-prompt the planner instead of ending the run. Not part of this study; the pipeline is unchanged here.
+
+## 16. Credit and licence
 
 - Marketing: CleanML benchmark (Li et al., https://arxiv.org/abs/1904.09483; https://github.com/chu-data-lab/CleanML); data originally Impact Resources, Inc. (Columbus, OH, 1987). No licence stated: academic use only, not redistributed, no per-ethnicity findings.
 - Airbnb data: Inside Airbnb (CC BY), via CleanML. The data files are in the gitignored `Dataset/real/` and are not committed.

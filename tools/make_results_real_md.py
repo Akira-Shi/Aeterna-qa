@@ -3,7 +3,8 @@
 
 Reporting rules (Akira, 2026-11-01): rule-planner runs are the primary result. A Groq run with any API error is
 "invalid: infrastructure failure" and carries no hit/miss/stage/delta numbers. A Groq run that ended on a planner
-validation error (not an API error) is listed as pending Akira's classification and is not scored. Reads only existing
+validation error (not an API error) is VALID (Akira, 2026-11-01), outcome "terminated: planner violated menu constraint
+(re-proposed an evaluated pair)", reported under its own heading as a planner-reliability finding; it is not rerun. Reads only existing
 logs and the derived scores; it runs no pipeline, no Groq call and no rerun.
 """
 import json, glob, re
@@ -15,7 +16,7 @@ RES = D["results"]
 AUD = {Path(f).name: json.load(open(f)) for f in glob.glob(str(ROOT / "Documents/real_results/audit/real_*_eval_*.json"))}
 ABORT = json.load(open(next(glob.iglob(str(ROOT / "Documents/real_results/audit/ABORTED_attempt1_*.json")))))
 CODE = {"gate-reject": "G", "planner-miss": "P", "detector-miss": "D", "unclassified (error)": "U"}
-PENDING = "planner error (not an API error) - Akira to classify"
+PENDING = "terminated: planner violated menu constraint (re-proposed an evaluated pair)"
 INVALID = "invalid: infrastructure failure"
 
 
@@ -73,13 +74,13 @@ L = []
 a = L.append
 a("# RESULTS_REAL - pre-registered real-data evaluation (CleanML Marketing and Airbnb)\n")
 a("Real (not injected) data with natural defects. Separate from the synthetic C1-C5 study in `RESULTS.md`; never pooled with it. LR + Brier gate only (evaluator v1.1). Positive labels: Marketing `Income = 0`, Airbnb `Rating = Y`. Expectations come from CleanML-derived dirty-vs-clean diffs (signed `EXPECTED_OUTCOMES_real_data.md`), not from the real-world ground truth.\n")
-a("Status of this file (2026-11-01): re-rendered after Groq hit API limits during P5. The rule-planner runs are the primary result and are reported first. Every Groq run with an API error is marked invalid (infrastructure failure) and carries no hit, miss or stage numbers. Two Groq runs ended on a planner-validation error that is not an API error; they are listed separately and not scored until Akira classifies them. No Groq-vs-rule comparison is made. No rerun has been done under the rerun rule (section 8).\n")
+a("Status of this file (2026-11-01): re-rendered after Groq hit API limits during P5. The rule-planner runs are the primary result and are reported first. Every Groq run with an API error is marked invalid (infrastructure failure) and carries no hit, miss or stage numbers. Two Groq runs (Marketing 401, 402) ended on a planner-validation error that is not an API error; per Akira (2026-11-01) they are valid runs with outcome \"terminated: planner violated menu constraint (re-proposed an evaluated pair)\", reported under their own heading (section 6b) as a planner-reliability finding, and are not rerun. No Groq-vs-rule comparison is made until the three invalid Airbnb Groq runs are rerun under the rerun rule. No rerun has been done under the rerun rule (section 8).\n")
 a("## 1. Headline\n")
 a("- **Primary result, rule planner (6 eval runs: Marketing and Airbnb, seeds 401-403; the three seeds are identical by construction)**: no run committed anything. Wrong-op commits: 0. Unexplained commits: 0.")
 a("- H2 (positives, expected commit), rule planner: Marketing **0/9** hit; Airbnb **0/55** hit.")
 a("- H1 (negatives, expected no commit), rule planner: Marketing **17/17** correct no-commit; Airbnb **23/23**. Positives and negatives are separate k/n, never pooled.")
 a("- Miss stages, rule planner (detector / planner / gate): Marketing 0 / 4 / 5; Airbnb 28 / 23 / 4 (section 4).")
-a(f"- Groq planner (6 runs): {len(VALID_GROQ)} valid, {len(INV)} invalid (infrastructure failure: API error), {len(PEN)} pending Akira's classification (planner-validation error, not an API error). Details in section 6. Groq-vs-rule comparison waits until every Groq run is valid.\n")
+a(f"- Groq planner (6 runs): {len(VALID_GROQ)} completed valid, {len(PEN)} valid but terminated early (planner violated the menu constraint; section 6b), {len(INV)} invalid (infrastructure failure: API error; section 6a). Groq-vs-rule comparison waits until the invalid Airbnb Groq runs are rerun under the rerun rule.\n")
 a("## 2. What was run\n")
 a("| Item | Value |\n|---|---|")
 a("| Code state when the runs started | HEAD `a24c16c9cb82695a3807a7e59ca8be9e47fda924` on main (signing commit `8136971`; section 12 row commit `1e68bc6`; frozen_check baseline commit `1e68bc6`, manifest committed in `a24c16c`) |")
@@ -125,7 +126,7 @@ for ds in ("Marketing", "Airbnb"):
         parts.append(f"{seed}: {st['detector-miss']} detector-miss, {st['planner-miss']} planner-miss, {st['gate-reject']} gate-reject")
     a(f"- **{ds}** ({n} expected-commit rows, 0 hit), rule: " + "; ".join(parts))
 a("")
-a(f"**Sanity check (reconstruction): {'PASSED' if D['sanity_ok'] else 'FAILED'}.** Offers were reconstructed after the runs by re-running `detect()` and the `remaining_options` logic, read-only, on the exact input of every logged iteration (the eval partition materialised with that iteration's committed ops; nothing committed, so it equals the eval partition), under the same TaskSpec settings, with no pipeline change. Every (column, op) the audit log shows as evaluated appeared in that iteration's reconstructed offers, in all 12 runs. A row is planner-miss if a reachable op was offered at any logged iteration but never evaluated; the `unclassified (error)` rule applied to no row. No stage counts are reported for invalid or pending Groq runs.\n")
+a(f"**Sanity check (reconstruction): {'PASSED' if D['sanity_ok'] else 'FAILED'}.** Offers were reconstructed after the runs by re-running `detect()` and the `remaining_options` logic, read-only, on the exact input of every logged iteration (the eval partition materialised with that iteration's committed ops; nothing committed, so it equals the eval partition), under the same TaskSpec settings, with no pipeline change. Every (column, op) the audit log shows as evaluated appeared in that iteration's reconstructed offers, in all 12 runs. A row is planner-miss if a reachable op was offered at any logged iteration but never evaluated; the `unclassified (error)` rule applied to no row. No stage counts are reported for invalid or terminated Groq runs.\n")
 
 a("## 5. Other outcomes (rule runs; valid Groq runs listed separately)\n")
 a("| Item | Result |\n|---|---|")
@@ -139,7 +140,7 @@ a("| H3 (no harm), rule runs | vacuous: 0 committed ops (details below) |\n")
 a("**H3 (rule runs only; no Groq data is used here).** Definition (amendment section E): every committed op has a final gate delta >= 0 on the held-out evaluation partition, and no collateral damage measurable against ground truth where G1 applies; a commit with negative delta on a partition not used for the commit decision is a failure of the gate. Evaluated as written for the six rule runs: there are 0 committed ops, so the first clause is vacuously satisfied (0 of 0 violate) and no gate failure occurred. Not computable without making a choice: (a) the \"partition not used for the commit decision\" is not named (the pilot is declared a pipeline check only, and the eval partition is where the commit decision is made), so no out-of-decision delta was computed; (b) \"ground truth where G1 applies\" is not defined in the amendment text, and there is no committed repair to compare in any case. Nothing was chosen for those two parts. (The earlier version of this file computed H3 from zero committed ops across all runs; it used no Groq-specific data, so the result is unchanged.)\n")
 
 a("## 6. Groq-planner runs: validity (classified strictly from the audit logs)\n")
-a("Rule used: a Groq run with any API error (HTTP status error from the Groq client: 429, 400 or other) is `invalid: infrastructure failure`; it gets no hit/miss/stage/delta numbers. A planner exception that is not an API error is listed under its own heading and is not scored until Akira rules. Error text is the audit-log `error` field of the last iteration, verbatim.\n")
+a("Rule used: a Groq run with any API error (HTTP status error from the Groq client: 429, 400 or other) is `invalid: infrastructure failure`; it gets no hit/miss/stage/delta numbers. A planner exception that is not an API error is a valid run (Akira, 2026-11-01) and is listed under its own heading as a planner-reliability finding. Error text is the audit-log `error` field of the last iteration, verbatim.\n")
 a("| Dataset | Seed | Status | Evaluations done before the error | Iteration of error | Error kind |\n|---|---|---|---|---|---|")
 for ds in ("Marketing", "Airbnb"):
     for seed in (401, 402, 403):
@@ -151,7 +152,7 @@ for ds in ("Marketing", "Airbnb"):
             e = r["errors"][0]
             kind = re.match(r"Error code: (\d+) - .*?'code': '([a-z_]+)'", e["error"], re.S)
             kind = f"API {kind.group(1)} {kind.group(2)}" if e["error"].startswith("Error code:") else "planner raised ValueError (pair not in remaining_options)"
-            a(f"| {ds} | {seed} | **{stt}** | {r['n_evaluated']} | {e['iteration']} | {kind} |")
+            a(f"| {ds} | {seed} | **{'valid - ' + stt if stt == PENDING else stt}** | {r['n_evaluated']} | {e['iteration']} | {kind} |")
 a("")
 a("### 6a. Invalid: infrastructure failure (API error). Reported as `invalid` only.\n")
 for r in INV:
@@ -159,10 +160,12 @@ for r in INV:
     a(f"- **{r['dataset']} Groq {r['seed']}** (`{r['file']}`): iteration {e['iteration']}, {r['n_evaluated']} evaluations completed before the error. Verbatim: `{full_err(r)}`")
 a(f"- **Aborted first attempt, Airbnb Groq 401** (`ABORTED_attempt1_real_airbnb_groq_401_eval_20261101T133459Z.json`): iteration {ABORT['iterations'][0]['iteration']}, 0 evaluations. Verbatim: `{ABORT['iterations'][0]['error']}`")
 a("")
-a("### 6b. Planner error that is not an API error: Akira to classify. Not scored as hit/miss.\n")
+a("### 6b. Valid, terminated early: planner violated menu constraint (re-proposed an evaluated pair). Planner-reliability finding.\n")
+a("Akira's decision (2026-11-01): these two runs are VALID, not infrastructure failures, and are not rerun. Outcome label: \"terminated: planner violated menu constraint (re-proposed an evaluated pair)\". The Groq API call succeeded; the model returned a (column, operation) pair that had already been evaluated and so was not in `remaining_options`. The planner's menu check (`planner.py`, `plan()`) rejected it with a `ValueError`, which prevented any invalid op from executing; the unchanged pipeline treats a planner exception as the end of the run. Nothing committed in either run. This is a reliability finding about the Groq planner, reported here as observed, not as a hit or miss.\n")
 for r in PEN:
     e = r["errors"][0]
-    a(f"- **{r['dataset']} Groq {r['seed']}** (`{r['file']}`): iteration {e['iteration']}, {r['n_evaluated']} evaluations completed before it. The Groq API call itself succeeded and returned a response; the planner's own validation (`planner.py`, `plan()`) then raised a `ValueError` because the returned (column, operation) pair is not in `remaining_options`. Verbatim: `{clip(full_err(r), 160)}`  (the message continues with the full remaining-options list; the pair `(Person, fill_mode)` had already been evaluated at iteration 5). The unchanged pipeline treats a planner exception as the end of the run. Under the rule as given (API errors only) this is not labelled invalid here. Whether it is a valid miss/no-result or invalid is Akira's decision.")
+    assert not r["committed_ops"]
+    a(f"- **{r['dataset']} Groq {r['seed']}** (`{r['file']}`): ended at iteration {e['iteration']} after {r['n_evaluated']} evaluations; no commit. Verbatim: `{clip(full_err(r), 160)}`  (the message continues with the full remaining-options list).")
 a("")
 a("### 6c. Valid Groq run\n")
 for r in VALID_GROQ:
@@ -193,14 +196,14 @@ a("1. Rerun **all** Groq runs that had an API error (every run listed in section
   "3. On a 429, wait the server's retry-after time and retry, at most 5 retries per call; pause between calls to stay under the per-minute limit.\n"
   "4. A rerun replaces the invalid status only. The original invalid record stays listed in sections 6a and 7; an original is never deleted, overwritten or hidden. The rerun's own result, if valid, is reported as that run's result, with its start and end time.\n"
   "5. A rerun that again hits an API error is again invalid, is listed, and is subject to this rule after the next quota reset.\n"
-  "6. The two runs in section 6b are not rerun under this rule unless Akira classifies them as API-error runs.\n"
+  "6. The two runs in section 6b (Marketing Groq 401, 402) are valid terminated runs (Akira, 2026-11-01) and are not rerun.\n"
   "7. No change to the pipeline, detectors, ops, menu, gate, prompt, temperature, model or evaluator for a rerun. Seeds and partition are as originally registered.\n")
 
 a("## 9. Groq-vs-rule comparison\n")
 a("Groq-vs-rule comparison waits until every Groq run is valid.\n")
 
 a("## 10. Full per-row table\n")
-a("Codes: **H** hit; **ok** correct no-commit (expected no commit, none occurred); **X** commit on an expected-no-commit row; misses: **D** detector-miss, **P** planner-miss, **G** gate-reject, **U** unclassified (error), **N** not separable. Columns: rule seeds 401/402/403, then the valid Groq run (Marketing 403 only; invalid and pending Groq runs have no per-row entries). \"Reachable ops\" are those of the signed file; any one committing is a hit.\n")
+a("Codes: **H** hit; **ok** correct no-commit (expected no commit, none occurred); **X** commit on an expected-no-commit row; misses: **D** detector-miss, **P** planner-miss, **G** gate-reject, **U** unclassified (error), **N** not separable. Columns: rule seeds 401/402/403, then the valid Groq run (Marketing 403 only; invalid and terminated Groq runs have no per-row entries). \"Reachable ops\" are those of the signed file; any one committing is a hit.\n")
 for ds in ("Marketing", "Airbnb"):
     gcols = [r for r in VALID_GROQ if r["dataset"] == ds]
     hdr = "| Dataset | Column | Error type | Reachable ops | Expected | Rule 401 | 402 | 403 |" + "".join(f" Groq {r['seed']} |" for r in gcols)
@@ -219,17 +222,25 @@ a("## 12. Honest limits\n")
 a("- Expectations are derived from CleanML dirty-vs-clean diffs (and the dirty file's NaN cells), not from the real-world ground truth. \"Expected commit\" means CleanML shows error cells there, not that repairing them helps a downstream LR.")
 a("- Scoring is per run under per-run Bonferroni (alpha / 16). The numbers in section 3 are what the unchanged agent produced with LR + Brier on these tables for the rule planner; they are not evidence about whether the defects are harmless or whether the gate is right.")
 a("- Many Airbnb misses are detector-misses and planner-misses: the detectors never offered some reachable ops, and a 16-iteration budget cannot reach 55 expected-commit rows. Both are properties of the unchanged agent.")
-a("- The Groq side of the study is incomplete: of 6 Groq runs, 1 is valid, 3 are invalid (API errors) and 2 await Akira's classification. No Groq result other than the one valid run is reported, and no Groq-vs-rule statement is made.")
+a("- The Groq side of the study is incomplete: of 6 Groq runs, 1 is completed and valid, 2 are valid but terminated early (planner menu-constraint violation, section 6b) and 3 are invalid (API errors, Airbnb) and await rerun. No Groq-vs-rule statement is made until the Airbnb reruns are done.")
 a("- `Ethnic` in Marketing is a sensitive attribute; no per-group result is reported. The Airbnb file has 33,145 rows versus 42,492 in the CleanML description; the file was used as is.")
 a("- Small N (2 datasets), one split seed, no family-wide correction in the commit rule. This file describes outcomes; it draws no conclusion about the pipeline's usefulness.\n")
 
 a("## 13. Open questions (for Akira)\n")
 a("1. **`dedupe_rows` is in the v1 operation menu, but the signed amendment says no such op exists.** Read-only findings. `aeterna_qa/modules/config.py`, `OPERATION_MENU` contains `\"dedupe_rows\",           # drop exact duplicate rows from TRAINING only (column key \"*\")`. `aeterna_qa/modules/detectors.py` emits a finding with `\"defect\": \"duplicates\", \"column\": \"*\"` and `\"candidate_ops\": [\"dedupe_rows\"]`. `aeterna_qa/modules/executor.py` has `_ROW_LEVEL = {\"dedupe_rows\"}  # act on whole rows; column key is \"*\"` and `\"dedupe_rows\": _via_fit_and_apply(\"dedupe_rows\")` in `_OPERATIONS`. The planner prompt also names it (\"exact duplicate rows need dedupe_rows\"). The amendment draft (`Documents/AMENDMENT_DRAFT_real_data.md`) says: \"No dedupe op exists in the v1 menu; Marketing has 1,154 exact duplicate rows and Airbnb ships CleanML duplicate files. Duplicates are therefore outside the op menu for this study. The op is not added here.\" and `EXPECTED_OUTCOMES_real_data.md` says \"R6 (duplicates). Outside the op menu (section M): no rows.\" What the logs show: the op was offered and evaluated as `*: dedupe_rows` in the runs (rule Marketing at iteration 1, rule Airbnb at iteration 2, and as iteration 1 of every Airbnb Groq run); it was rolled back every time, and no duplicate row is a scored row, so no k/n in this file is affected. Nothing was edited. The question is whether to record this discrepancy as a dated note (the signed text is not edited).")
-a("2. Classification of the two Marketing Groq runs (401, 402) that ended on a planner-validation `ValueError` (section 6b): invalid, or a valid no-result?")
-a("3. Rerun timing for the invalid Groq runs (section 8): approve the rule as written, including the quota-reset wait.")
+a("2. Resolved (Akira, 2026-11-01): Marketing Groq 401 and 402 are valid terminated runs (section 6b); not rerun.")
+a("3. Rerun timing for the three invalid Airbnb Groq runs (section 8): approve the rule as written, including the quota-reset wait.")
 a("4. Section 11: nine local `exploratory_run_*.json` logs exist while the disclosure text says one run per dataset. Confirm the wording, or list the runs.\n")
 
-a("## 14. Credit and licence\n")
+a("## 14. Observations (not re-scoring)\n")
+a("These are descriptive notes. They do not change any registered label or k/n.\n")
+a("- (a) Largest real-data delta is +0.0001 against a Bonferroni bar of 0.0002 (rule runs, Marketing: `Householder` `fill_unknown` / `fill_mode`, `Hometype` `fill_mode`; checked against the audit logs of all 12 eval runs). On this evidence the defects did not measurably affect the LR gate score.")
+a("- (b) Planner-miss is largely structural: Airbnb has 55 expected-commit rows against `MAX_ITERATIONS` = 16 (`config.py`), so the budget cannot reach every expected row even with a perfect planner.")
+a("- (c) Detector-miss 28/55 on Airbnb is consistent with the documented IQR limit on skewed columns.")
+a("- Registered k/n are unchanged.\n")
+a("## 15. Product backlog (not this study)\n")
+a("- On a planner `ValueError` (e.g. a re-proposed, already-evaluated pair), re-prompt the planner instead of ending the run. Not part of this study; the pipeline is unchanged here.\n")
+a("## 16. Credit and licence\n")
 a("- Marketing: CleanML benchmark (Li et al., https://arxiv.org/abs/1904.09483; https://github.com/chu-data-lab/CleanML); data originally Impact Resources, Inc. (Columbus, OH, 1987). No licence stated: academic use only, not redistributed, no per-ethnicity findings.")
 a("- Airbnb data: Inside Airbnb (CC BY), via CleanML. The data files are in the gitignored `Dataset/real/` and are not committed.")
 (ROOT / "Documents/RESULTS_REAL.md").write_text("\n".join(L) + "\n", encoding="utf-8", newline="\n")
