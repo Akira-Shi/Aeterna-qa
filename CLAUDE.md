@@ -49,6 +49,8 @@ Capstone: closed-loop data-cleaning agent (detect → plan → execute → verif
 - One branch per phase (phase/<n>-<name>). Merge to main with a tag only after I accept.
 - Changelog entry in Documents/Documentation.md for every change.
 - Be brief: report diffs and test results, not file dumps.
+- Decide autonomously on docs, Explain wording, tests and UI. Halt only for: frozen files, gate/commit rule, scenarios/models, pre-registration, schema/architecture changes, new research claims.
+- Timebox each phase. On overrun, log the remainder as a known issue and move on.
 
 ## Rules that stay on
 - Label every synthetic result "synthetic" (audit `scenario`, file names, console banner). **Exception (user decision 2026-10-04):** the Explain HTML report carries no synthetic banner or wording and uses the Steep style (light, serif headings, peach accent); synthetic status lives in the audit log, file names and docs only.

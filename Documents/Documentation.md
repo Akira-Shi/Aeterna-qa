@@ -371,6 +371,9 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - **(c) Known limitation (documented only, no detector change):** `outlier_count` uses an IQR rule, which is unreliable on heavily skewed columns. Example: `capital.gain` is zero for about 92% of rows, so Q1 = Q3 = 0, IQR = 0 and every nonzero value counts as an outlier (including real, ordinary gains). The detector's count there says little about genuine damage; the sentinel detector, not IQR, is what finds the 99999 or injected 9999999 codes. Changing it would alter study inputs, so it is unchanged.
 - **Not changed:** evaluator, gate, commit rule, pre-registration, detectors.
 
+### 2026-11-01
+- Guard work closed; v1.1 kept. Rejections 1-3 (060306Z iter 6, 8, 9: negative delta presented as equal to a positive bar) judged correct. Fallback is the safety net, not a failure; the fallback-rate limit is retired. No further guard changes.
+
 <!-- Add new entries above this line, most recent on top. Format:
 ### YYYY-MM-DD
 - What you built/changed
