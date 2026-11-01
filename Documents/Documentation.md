@@ -348,6 +348,12 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - **False passes (semantic):** sign blindness ("Delta -0.0006 equals bar 0.0006"), a staged-then-committed op described as "no measurable improvement", and "Contradicts:" used without a predicted improvement. Exact texts in `LOOP/reports/build-T2.md`.
 - **Not changed:** guard logic, evaluator, gate, commit rule, pre-registration. Guard changes need Akira's OK.
 
+### 2026-11-01 -- T3: minor cleanups (docs only; part b blocked, needs Akira)
+- **(a) Needs Akira:** `BUILD_PLAN.md` demo date is still blank ("fill in here: ______"). Left blank on purpose; no date invented.
+- **(b) Blocked, no code change:** `positive_control.py` lives at `aeterna_qa/_archive/positive_control.py` and is not part of the pipeline. Wiring in `audit.new_run` / `log_iteration` / `save` (scenario `synthetic_positive_control`) was tried and reverted. The script cannot run at all under the current frozen LR evaluator: the as-is baseline on MCAR-corrupted `education.num` passes NaN into `LogisticRegression` and raises `ValueError: Input X contains NaN` (the script dates from the RF era). Running it needs a decision on how the baseline handles NaN (an evaluation-policy choice), and it also uses relative imports that fail outside `modules/`. Both are beyond "add an audit call", so it was left untouched. The labelled synthetic positive controls that exist are C5 and the D1 demo, which already log `synthetic_*` scenarios.
+- **(c) Known limitation (documented only, no detector change):** `outlier_count` uses an IQR rule, which is unreliable on heavily skewed columns. Example: `capital.gain` is zero for about 92% of rows, so Q1 = Q3 = 0, IQR = 0 and every nonzero value counts as an outlier (including real, ordinary gains). The detector's count there says little about genuine damage; the sentinel detector, not IQR, is what finds the 99999 or injected 9999999 codes. Changing it would alter study inputs, so it is unchanged.
+- **Not changed:** evaluator, gate, commit rule, pre-registration, detectors.
+
 <!-- Add new entries above this line, most recent on top. Format:
 ### YYYY-MM-DD
 - What you built/changed
