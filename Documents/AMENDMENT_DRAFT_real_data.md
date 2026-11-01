@@ -1,6 +1,6 @@
 # DRAFT v2 - proposed PREREGISTRATION section 12 amendment: real-data evaluation (phase 3)
 
-**Status: DRAFT v4 (2026-11-01): evaluator v1.1, positive labels, licences, rule-6 type check applied. Not signed. No pre-registered run has been made. `PREREGISTRATION.md` is not edited.** Signing happens after P4 is tagged (section K). On signing, the accepted items become dated rows appended to section 12 by Akira (or on Akira's instruction). The datasets were downloaded and opened for P4 acceptance only (column types, row counts, label coding; one exploratory sandbox run on Marketing, never interpreted, no expectation derived from it). Error types come from CleanML's `DatasetDescriptions.pdf`.
+**Status: DRAFT v4, ready for Akira's signature (2026-11-01): evaluator v1.1, positive labels, licences, rule-6 type check applied. Not signed. No pre-registered run has been made. `PREREGISTRATION.md` is not edited.** Signing happens after P4 is tagged (section K). On signing, the accepted items become dated rows appended to section 12 by Akira (or on Akira's instruction). The datasets were downloaded and opened for P4 acceptance only (column types, row counts, label coding; one exploratory sandbox run on Marketing, never interpreted, no expectation derived from it). Error types come from CleanML's `DatasetDescriptions.pdf`.
 
 Context read: PREREGISTRATION sections 1-13, RESULTS.md, BUILD_PLAN.md, CLAUDE.md. Facts used: the v1 study is synthetic damage on one dataset (Adult) and cannot claim anything about arbitrary real dirty tables (section 1). The only real-data result so far is real Adult `?` values: nothing commits under the Brier gate, which matches ground truth (section 12, 2026-09-30; BUILD_PLAN). Section 12 already narrowed the evaluator to LR alone (RF dropped); CLAUDE.md's RF/LR line is updated for real data (LR only; RF reproduces old numbers only).
 
@@ -112,7 +112,7 @@ Dataset list and N; the selection and tie-break rule; expected outcomes; ground-
 1. After datasets are confirmed and before any run, `Documents/EXPECTED_OUTCOMES_real_data.md` is written from the dirty-vs-clean diff only (per dataset: reference cleaned file, columns and error types in the diff, expected commit / no commit per column, split seed). It uses no pilot or eval scores.
 2. Akira reviews and signs it (signature line left blank; Claude does not sign).
 3. The file is committed. Its git commit hash and SHA-256 are recorded in the new section 12 row. No run may start before this commit exists.
-4. This amendment cites the TaskSpec release tag `v2-p4`. It is signed only after P4 is tagged, and TaskSpec is then frozen for this study.
+4. This amendment cites the TaskSpec release tag `v2-p4` (git tag on commit 02f63d3, merge of phase/4-taskspec into main; evaluator v1.1 included). It is signed only after P4 is tagged, and TaskSpec is then frozen for this study.
 
 ## L. Open questions (status after Akira's answers, 2026-11-01)
 
