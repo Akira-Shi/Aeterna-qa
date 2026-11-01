@@ -104,13 +104,13 @@ def resolve_chain(run: dict, chain_id: int, new_status: str) -> None:
             entry["accepted"] = (new_status == "committed")
 
 
-def save(run: dict, baseline_f1: float, final_f1: float) -> str:
+def save(run: dict, baseline_f1: float, final_f1: float, prefix: str = "run_") -> str:
     run["baseline_f1"] = round(baseline_f1, 4)
     run["final_f1"] = round(final_f1, 4)
     run["finished_at"] = datetime.now(timezone.utc).isoformat()
 
     config.LOG_DIR.mkdir(parents=True, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    path = config.LOG_DIR / f"run_{ts}.json"
+    path = config.LOG_DIR / f"{prefix}{ts}.json"
     path.write_text(json.dumps(run, indent=2))
     return str(path)

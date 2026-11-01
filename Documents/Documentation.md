@@ -404,6 +404,18 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 ### 2026-11-01 (docs)
 - Committed `Documents/V2_PROMPTS.md` (phase prompts P4-P9 copied from the Claude Project; the P4 spec lives here).
 
+### 2026-11-01 (phase 4, TaskSpec + sandbox runner; branch phase/4-taskspec, not merged, not tagged)
+- New `modules/taskspec.py`: `TaskSpec(path, target, task_type in {binary, multiclass, regression}, positive_label, model_family, id_columns, drop_columns)`, `validate()` (target exists; binary has exactly 2 classes; warns on >50 MB, ID-like columns, columns >40% missing; errors on text columns with >300 distinct values, which the evaluator would one-hot), `load_dataset()`, `applied(spec)` and `adult_spec()`.
+- Design: v2 wraps v1. The frozen evaluator and detectors read `config.TARGET_COLUMN / POSITIVE_CLASS / DATA_PATH` at call time, so `taskspec.applied(spec)` sets those attributes for the duration of a run and restores them. `config.py`, `study.py`, `evaluator.py` untouched (frozen_check exit 0); no stop needed.
+- Small edits to non-watched v1 files, behaviour unchanged for Adult: `pipeline.run(task_meta=None, log_prefix="run_")` (audit meta for an exploratory run; default path identical), `audit.save(prefix="run_")`.
+- New `aeterna_qa/run.py` sandbox runner: `python -m aeterna_qa.run --csv <path> --target <col> [--task binary] [--positive L] [--id ..] [--drop ..] [--groq]`. Audit scenario `exploratory`; logs `exploratory_run_*.json`, `report_exploratory_run_*.html`, outputs `exploratory_<stem>_clean.csv/.manifest.json`; banner says never cited. Inputs go in `Dataset/sandbox/` (added to .gitignore). Rule planner by default, Groq with `--groq`.
+- Non-binary task: detection only, prints and records "gate not supported" (`exploratory_<stem>_detect.json`); no gate invented. Gate stays LR + Brier on binary.
+- Default positive label for binary when none is given: the minority class, recorded in the audit meta (`positive_label_used`). Brier is symmetric in this choice, F1 is not.
+- Tests: `modules/taskspec_tests.py` (spec enums, every validation rule, loader, config restore, Adult-via-TaskSpec equals `load_raw_dataset`, runner end to end); `tests/test_reproduce_v1.py` re-runs C5/201 (hit), C3/203 (correct rollback), C4/201 (false commit) on the full eval partition through the TaskSpec path and matches RESULTS.md to 4 decimals (and eval.json to 1e-9 when present); `REPRO_FULL=1` runs all 15 rows.
+- Exploratory check on a non-Adult CSV: a locally generated churn table (not Marketing; the CleanML Marketing file is not downloaded and its licence/PII is still an open Akira-confirm item), `Dataset/sandbox/synth_churn.csv`, ran end to end (committed sentinel_to_median on the injected -999 column). Exploratory, not a result.
+- Known issue (frozen-evaluator limitation, not edited): the LR evaluator one-hot encodes only text columns, so a numeric feature with NaN crashes LR at the baseline. The loader treats numeric columns with NaN and <= 20 distinct values (coded survey fields) as categorical, recorded in the audit meta (`prep.coerced_to_categorical`); a continuous numeric column with NaN raises a clear error asking to exclude it. So fill_median/fill_mean on continuous NaN columns cannot be evaluated in the sandbox. Real fix would need an evaluator change (frozen; needs Akira and a re-run of the leak tests); not proposed here.
+- Known issue: the "any CSV" assumption set is small (CSV only, comma separator, UTF-8 or latin-1, '?' and blanks are the only extra NA markers); multiclass/regression get detection only.
+
 ### YYYY-MM-DD
 - What you built/changed
 - Any numbers worth keeping (F1 before/after, time spent, what broke)
