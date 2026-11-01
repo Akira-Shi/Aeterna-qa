@@ -265,6 +265,83 @@ def _identifier_problems(text: str, idents: set) -> list[str]:
     return problems
 
 
+# --- semantic guards (2026-11-01): sign and verdict consistency -------------
+
+def _signed_facts(it: dict, facts: dict) -> list:
+    """Signed values a note may quote with an explicit sign (delta, ratio, z keep their sign)."""
+    out = []
+    for k in ("f1_before", "f1_after", "delta", "threshold", "se", "std_before", "std_after"):
+        if it.get(k) is not None:
+            out.append(it[k])
+    if it.get("ratio") is not None:
+        out += [it["ratio"], it["ratio"] * 100]
+    if it.get("z") is not None:
+        out.append(it["z"])
+    for k in ("baseline", "final"):
+        if facts.get(k) is not None:
+            out.append(facts[k])
+    return out
+
+
+def _sign_problems(text: str, signed: list) -> list[str]:
+    """An explicit '+' or '-' in front of a number must match the sign of a fact of that size."""
+    problems = []
+    for m in _NUM_RE.finditer(text or ""):
+        i = m.start()
+        sign = text[i - 1] if i > 0 and text[i - 1] in "+-−" else None
+        if sign is None or (i > 1 and text[i - 2].isalnum()):
+            continue  # unsigned, or a hyphen inside a word/range such as "5-10"
+        neg = sign in "-−"
+        tok, pct = m.group(1), m.group(2)
+        x = float(tok)
+        d = len(tok.split(".")[1]) if "." in tok else 0
+        tol = 0.5 * 10 ** (-d) + 1e-9
+        same_size = [v for v in signed if abs(abs(v) - x) <= tol]
+        if same_size and not any((v < 0) == neg or abs(v) <= tol for v in same_size):
+            problems.append(f"sign of {sign}{tok}{pct} contradicts the log")
+    return problems
+
+
+_REACH_RE = re.compile(r"\b(equals?|equal to|matches|meets|reaches|reached|exceeds?|exceeded|clears?|cleared)\b", re.I)
+_NEGATION_RE = re.compile(r"\b(no (?:measurable |real |meaningful |clear |significant )?(?:improvement|effect|gain|benefit)|"
+                          r"rolled back|rolled-back|did not help|didn't help|not helpful)", re.I)
+_CLAIM_RE = re.compile(r"\b(improved|improves|helped|helps|(?:reduced|lowered|cut)\s+(?:the\s+)?brier)", re.I)
+_NEG_BEFORE = re.compile(r"(?:\bno|\bnot|n't|\bnever|\bwithout|\bnor)\s+(?:\w+\s+)?$", re.I)
+
+
+_REACH_NEG = re.compile(r"\b(?:no|not|never)\b|n't", re.I)
+
+
+def _reach_claims(text: str) -> bool:
+    """True if a reach verb (equals/meets/exceeds ...) appears without no/not/n't/never in the
+    3 tokens before it (Akira, 2026-11-01). 'does not exceed the bar' is exempt."""
+    for m in _REACH_RE.finditer(text or ""):
+        window = re.findall(r"[\w']+", text[:m.start()])[-3:]
+        if not any(_REACH_NEG.search(w) for w in window):
+            return True
+    return False
+
+
+def _verdict_problems(text: str, it: dict) -> list[str]:
+    """Wording must not contradict the code-computed verdict or the signed numbers."""
+    problems = []
+    code = (it.get("verdict") or {}).get("code")
+    d, thr = it.get("delta"), it.get("threshold")
+    if (d is not None and thr is not None and round(d, 4) < round(thr, 4) and code != "commit_with_chain"
+            and _reach_claims(text)):
+        problems.append("says delta reaches/equals/exceeds the bar but delta is below it")
+    if code in ("commit", "commit_with_chain"):
+        m = _NEGATION_RE.search(text or "")
+        if m:
+            problems.append(f"'{m.group(0)}' contradicts the COMMIT verdict")
+    elif code in ("rollback", "noise"):
+        for m in _CLAIM_RE.finditer(text or ""):
+            if not _NEG_BEFORE.search(text[:m.start()]):
+                problems.append(f"'{m.group(0)}' claims improvement but the verdict is ROLLBACK")
+                break
+    return problems
+
+
 def guard_note(text: str, it: dict, facts: dict) -> list[str]:
     """Return a list of problems (empty = note passes)."""
     problems = []
@@ -281,6 +358,11 @@ def guard_note(text: str, it: dict, facts: dict) -> list[str]:
             if int(tok) not in ints:
                 problems.append(f"number {tok} not in log")
     problems += _identifier_problems(text, idents)
+    problems += _sign_problems(text, _signed_facts(it, facts))
+    problems += _verdict_problems(text, it)
+    # Akira 2026-11-01 (option c): facts carry no predicted-improvement field, so "Contradicts" is never justified.
+    if re.search(r"contradicts", text or "", re.I):
+        problems.append("'Contradicts' is not allowed (facts hold no predicted improvement)")
     return problems
 
 
@@ -296,7 +378,7 @@ computed by code).
 
 For each iteration write ONE sentence, at most 30 words, describing what the measurement \
 shows. The planner's reason is a hypothesis about what the defect is, NOT a promise of a score \
-gain: say 'contradicts' only if the reason explicitly predicted an improvement. Also write a 'summary' of at most two \
+gain. Never use the word 'Contradicts' or begin a note with a label; just state what the measurement shows. Keep the sign of every number exactly as given (a negative delta is negative and is below a positive bar). If a chain was staged and later committed, do not say the operation had no effect. Also write a 'summary' of at most two \
 sentences about what the whole run shows.
 
 Hard rules: use ONLY numbers that appear in the input; never invent numbers, percentages, \
@@ -400,6 +482,8 @@ def add_notes(facts: dict, interpret_fn=None) -> dict:
             elif int(tok) not in ints:
                 bad.append(f"number {tok} not in log")
         bad += _identifier_problems(summary, idents)
+        signed = [v for i in evaluated for v in _signed_facts(i, facts)]
+        bad += _sign_problems(summary, signed)
         if bad:
             stats["rejected"].append({"iteration": "summary", "why": bad, "note": summary})
         else:

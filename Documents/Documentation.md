@@ -342,6 +342,35 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - **Tests before commit:** evaluator_tests, ops_tests, explain_tests and demo_tests all pass.
 - **Not changed:** evaluator, gate, commit rule, pre-registration.
 
+### 2026-11-01 -- Explain guard: sign, verdict, reach-verb and "Contradicts" rules (explain.py only)
+- **Sign and verdict checks:** an explicit +/- before a number must match the sign of a log fact of that size; a note may not say "no improvement/effect" for a COMMIT or commit-with-chain iteration, nor "improved/reduced Brier" for a ROLLBACK/noise iteration (unless negated).
+- **Reach-verb rule (approved retroactively by Akira):** reject a note that says the delta equals/meets/reaches/exceeds/clears the bar when the signed delta is below it (not for commit_with_chain). Negation exemption: a no/not/n't/never within the 3 tokens before the verb exempts it ("does not exceed the bar" passes). Negation further back does not.
+- **"Contradicts" (decision 2, option c):** any note containing "Contradicts" (case-insensitive) is rejected and falls back to the deterministic sentence. The word was removed from the Groq prompt, which now says never to use it (fallback rate does not rise). Rule changed from "only when the reason predicts an improvement" to "never", because the facts have no predicted-improvement field. Revisit if the planner ever emits one.
+- **Tests:** `explain_tests` covers all three known false passes (sign blindness, chain-commit "no improvement", "Contradicts" 093717Z iter 1), the three false rejections (112347Z iter 2/7/10) and the 3-token window edge. Updated the earlier test that asserted the "Contradicts" note passed.
+- **Live re-run:** see `LOOP/reports/build-guard.md`.
+- **Not changed:** evaluator, gate, commit rule, pre-registration, scenarios, models.
+
+### 2026-11-01 -- T2: Explain guard check on live Groq (report only, no code change)
+- **Run:** Explain with Groq notes on 4 existing logs: `run_20260930T060306Z` (real_adult), `run_20260930T093717Z` (synthetic, study C3), `run_20260930T112347Z` (synthetic injection), `run_20261004T141619Z` (synthetic D1 demo). HTML not written.
+- **Result:** 43/43 per-iteration notes and 4/4 summaries passed the number/identifier guard; 0 rejected, so no false rejections.
+- **False passes (semantic):** sign blindness ("Delta -0.0006 equals bar 0.0006"), a staged-then-committed op described as "no measurable improvement", and "Contradicts:" used without a predicted improvement. Exact texts in `LOOP/reports/build-T2.md`.
+- **Not changed:** guard logic, evaluator, gate, commit rule, pre-registration. Guard changes need Akira's OK.
+
+### 2026-11-01 -- T3b: `_archive/positive_control.py` superseded (won't fix, docs only)
+- **Status:** `aeterna_qa/_archive/positive_control.py` is superseded by C5 and the D1 demo (both log `synthetic_*` scenarios). Won't fix.
+- **Reasons:** (1) under the frozen LR evaluator the as-is baseline on MCAR NaN `education.num` raises `ValueError: Input X contains NaN`; fixing it needs an evaluation-policy choice on NaN handling; (2) it uses relative imports that fail outside `modules/`.
+- **Citations of `Documents/positive_control_results.png` as a result (audit, nothing edited):**
+  - `Documents/AETERNA_QA_50pct_Review.pptx`, slide 19 ("Positive Control & Next Steps"): embeds the image (`ppt/media/image2.png`, byte-identical to the PNG) and quotes "Control v1 ... best repair +0.0013 vs threshold 0.0207. No commit", framed as a kept negative control (RF-era numbers).
+  - `Documents/AETERNA_QA_50pct_Review_v2.pptx`, `_v3.pptx` and `AETERNA_QA_Project_Proposal_Akira.pptx`: no match to the PNG bytes and no slide text with 0.0207 or "Control v1".
+  - Markdown: no file references `positive_control_results.png` by name. `Documents/BUILD_PLAN.md` lines 14 and 22 cite the same +0.0013 / 0.0207 result as a negative example in prose.
+- **Not changed:** any code, deck, evaluator, gate, commit rule, pre-registration.
+
+### 2026-11-01 -- T3: minor cleanups (docs only; part b blocked, needs Akira)
+- **(a) Needs Akira:** `BUILD_PLAN.md` demo date is still blank ("fill in here: ______"). Left blank on purpose; no date invented.
+- **(b) Blocked, no code change:** `positive_control.py` lives at `aeterna_qa/_archive/positive_control.py` and is not part of the pipeline. Wiring in `audit.new_run` / `log_iteration` / `save` (scenario `synthetic_positive_control`) was tried and reverted. The script cannot run at all under the current frozen LR evaluator: the as-is baseline on MCAR-corrupted `education.num` passes NaN into `LogisticRegression` and raises `ValueError: Input X contains NaN` (the script dates from the RF era). Running it needs a decision on how the baseline handles NaN (an evaluation-policy choice), and it also uses relative imports that fail outside `modules/`. Both are beyond "add an audit call", so it was left untouched. The labelled synthetic positive controls that exist are C5 and the D1 demo, which already log `synthetic_*` scenarios.
+- **(c) Known limitation (documented only, no detector change):** `outlier_count` uses an IQR rule, which is unreliable on heavily skewed columns. Example: `capital.gain` is zero for about 92% of rows, so Q1 = Q3 = 0, IQR = 0 and every nonzero value counts as an outlier (including real, ordinary gains). The detector's count there says little about genuine damage; the sentinel detector, not IQR, is what finds the 99999 or injected 9999999 codes. Changing it would alter study inputs, so it is unchanged.
+- **Not changed:** evaluator, gate, commit rule, pre-registration, detectors.
+
 <!-- Add new entries above this line, most recent on top. Format:
 ### YYYY-MM-DD
 - What you built/changed
@@ -360,6 +389,7 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - `pipeline` CLI does not write a cleaned CSV (only `study.py` does). A `--write-clean` option is a possible add.
 - One dataset, damage authored by us; no result yet on genuinely dirty real data.
 - IQR outlier_count is unreliable on skewed columns (carried forward); `clip_outliers` is not the planner's primary lever.
+- Explain guard limits (2026-11-01): the guard is keyword/regex based (reach verbs, "no improvement", "improved"), so paraphrases can slip through or be rejected; a negative delta described as "equal to the bar" by magnitude is rejected by design. Groq output is nondeterministic (temperature 0.2), so fallback rate and exact rejections vary between runs; the 4-log sample is not a rate estimate.
 - Superseded (history only): the F1-gate/RF-era issues, the "2.0x SE" threshold, the leaky ~0.688 F1, and the "no positive control yet" item. A positive control now exists (C5 and the age trial).
 
 ## Cost tracking
