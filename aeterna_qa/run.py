@@ -40,8 +40,6 @@ def run_spec(spec: TaskSpec, groq: bool = False, explain: bool = True) -> dict:
     print(BANNER)
     for w in prep["warnings"]:
         print(f"  WARNING: {w}")
-    for c in prep["coerced_to_categorical"]:
-        print(f"  note: numeric column {c!r} has missing values and few distinct values; treated as categorical")
     out, stem = _paths(Path(spec.path))
     print(f"  {len(df)} rows x {df.shape[1]} columns, target={spec.target!r}, task={spec.task_type}\n")
 
@@ -61,9 +59,12 @@ def run_spec(spec: TaskSpec, groq: bool = False, explain: bool = True) -> dict:
         return res
 
     pos = taskspec.resolve_positive_label(spec, df)
-    meta = {"scenario": "exploratory", "label": BANNER, "task_spec": spec.to_dict(),
-            "positive_label_used": pos, "positive_label_explicit": spec.positive_label is not None,
+    explicit = spec.positive_label is not None
+    pos_txt = pos if explicit else f"{pos} (defaulted)"
+    meta = {"scenario": "exploratory", "label": f"{BANNER}; positive label: {pos_txt}", "task_spec": spec.to_dict(),
+            "positive_label_used": pos, "positive_label_explicit": explicit, "positive_label_text": pos_txt,
             "prep": prep}
+    print(f"  positive label: {pos_txt}")
     config.EXPLAIN_USE_LLM = bool(groq)
     with taskspec.applied(spec, positive_label=pos):
         res = pipeline.run(raw_df=df, offline_planner=not groq, task_meta=meta,

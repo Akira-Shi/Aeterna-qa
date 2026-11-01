@@ -8,6 +8,12 @@ by temporarily setting those config attributes (`applied(spec)`, restored on exi
 LR + Brier and exists for binary targets only; for multiclass / regression Stage 1 is detection only
 and reports "gate not supported" (no gate is invented).
 
+Numeric columns with NaN are passed through as-is: since evaluator v1.1 (2026-11-01) the LR evaluator fits a
+median imputer on each fold's TRAINING rows, so the earlier workaround (few-valued numeric NaN columns recoded as
+categorical, continuous ones rejected) is gone. Remaining input limit: a text column with more than
+MAX_ONEHOT_LEVELS (300) distinct values is an ERROR (the evaluator one-hot encodes every text column and would
+explode the matrix); exclude it with drop_columns / id_columns. This limit is kept on purpose.
+
 Exploratory use only: results on arbitrary CSVs have no pre-registered ground truth and are never cited.
 """
 from __future__ import annotations
@@ -28,7 +34,6 @@ GATE_TASKS = ("binary",)
 MAX_FILE_MB = 50
 MAX_MISSING_FRAC = 0.40
 MAX_ONEHOT_LEVELS = 300     # the evaluator one-hot encodes every text column; more levels than this explodes the matrix
-LOW_CARD_NUMERIC = 20       # numeric columns with NaN and <= this many distinct values are treated as categorical
 _ID_NAME = re.compile(r"(^|[_\s.-])(id|uuid|guid|index|idx)$|^(id|uuid|guid)([_\s.-]|$)", re.I)
 
 
@@ -187,7 +192,7 @@ def load_dataset(spec: TaskSpec) -> tuple[pd.DataFrame, dict]:
     if not v.ok:
         raise SpecError("; ".join(v.errors))
     dropped = [*spec.id_columns, *spec.drop_columns]
-    prep: dict = {"dropped_columns": dropped, "coerced_to_categorical": [], "rows_dropped_missing_target": 0,
+    prep: dict = {"dropped_columns": dropped, "rows_dropped_missing_target": 0,
                   "warnings": list(v.warnings)}
     df = raw.drop(columns=dropped)
     ytxt = _as_text(df[spec.target])
@@ -196,19 +201,6 @@ def load_dataset(spec: TaskSpec) -> tuple[pd.DataFrame, dict]:
     df = df.loc[keep].reset_index(drop=True)
     if spec.task_type != "regression":
         df[spec.target] = ytxt.loc[keep].reset_index(drop=True).astype(object)
-    for c in [c for c in df.columns if c != spec.target]:
-        s = df[c]
-        if pd.api.types.is_numeric_dtype(s) and s.isna().any():
-            if s.nunique(dropna=True) <= LOW_CARD_NUMERIC:
-                # The frozen LR evaluator cannot score numeric NaN, but it handles NaN in text columns (one-hot NaN
-                # indicator). Few-valued coded columns (e.g. survey codes) are therefore treated as categories.
-                df[c] = _as_text(s).astype(object)
-                prep["coerced_to_categorical"].append(c)
-            elif spec.gate_supported:
-                raise SpecError(
-                    f"numeric column {c!r} has missing values and {s.nunique()} distinct values: the frozen evaluator "
-                    f"cannot score numeric NaN (it would crash). Exclude it with drop_columns. "
-                    f"(Known limitation, see Documentation.md P4.)")
     return df, prep
 
 

@@ -64,19 +64,14 @@ def main():
         out, prep = taskspec.load_dataset(TaskSpec(path=_csv(tmp, d4, "q.csv"), target="y", id_columns=["row_id"]))
         assert "row_id" not in out.columns and out["grp"].isna().sum() == 10, out["grp"].isna().sum()
         assert "nan" not in set(out["grp"].dropna())
-        # numeric NaN: coded column -> categorical; wide continuous -> clear error instead of an evaluator crash
+        # numeric NaN (evaluator v1.1): passed through untouched, no coercion, no error
         d5 = df.copy()
         d5["code"] = np.random.RandomState(1).choice([1.0, 2.0, 3.0], len(d5))
         d5.loc[:20, "code"] = np.nan
+        d5.loc[:20, "x"] = np.nan
         out, prep = taskspec.load_dataset(TaskSpec(path=_csv(tmp, d5, "c.csv"), target="y", id_columns=["row_id"]))
-        assert prep["coerced_to_categorical"] == ["code"] and set(out["code"].dropna()) == {"1", "2", "3"}
-        d6 = df.copy()
-        d6.loc[:20, "x"] = np.nan
-        try:
-            taskspec.load_dataset(TaskSpec(path=_csv(tmp, d6, "n.csv"), target="y", id_columns=["row_id"]))
-            raise AssertionError("numeric NaN column accepted")
-        except SpecError as e:
-            assert "numeric" in str(e)
+        assert "coerced_to_categorical" not in prep
+        assert out["code"].isna().sum() == 21 and out["x"].isna().sum() == 21 and pd.api.types.is_numeric_dtype(out["x"])
         # missing-target rows dropped
         d7 = df.copy()
         d7.loc[:3, "y"] = np.nan
@@ -122,6 +117,15 @@ def main():
                 reg = runner.run_spec(TaskSpec(path=bp, target="a", task_type="regression"))
             assert res["mode"] == "gated"
             lg = Path(res["log_path"])
+            m = json.loads(lg.read_text())["meta"]                      # defaulted positive label is flagged everywhere
+            assert m["positive_label_explicit"] is False and m["positive_label_text"].endswith("(defaulted)")
+            assert "(defaulted)" in m["label"]
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                ex = runner.run_spec(TaskSpec(path=bp, target="t", positive_label="1"), explain=False)
+            assert "positive label: 1" in buf.getvalue() and "(defaulted)" not in buf.getvalue()
+            m2 = json.loads(Path(ex["log_path"]).read_text())["meta"]
+            assert m2["positive_label_explicit"] is True and "(defaulted)" not in m2["label"]
             assert lg.name.startswith("exploratory_run_") and json.loads(lg.read_text())["meta"]["scenario"] == "exploratory"
             assert Path(res["clean_path"]).name.startswith("exploratory_")
             assert reg["mode"] == "detection_only" and reg["gate"] == "gate not supported"
