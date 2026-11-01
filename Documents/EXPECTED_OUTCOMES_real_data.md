@@ -12,7 +12,7 @@ Status: **NOT SIGNED.** No pre-registered run may start until Akira signs and th
 - Marketing `raw.csv`: 8,993 rows x 14 columns; Airbnb `raw.csv`: 33,145 rows x 40 columns
 - Rule text, verbatim from this script:
 
-> Section D rules (Akira, 2026-11-01). (R1) Missing-value error cells = the NaN cells of the DIRTY file (`raw/raw.csv` of each dataset) as loaded by the TaskSpec loader convention: `pandas.read_csv` defaults, column names stripped, text cells stripped, and '?' and empty text mapped to NaN. Cleaned files are never used to locate missing-value errors. (R2) Missing-value op class = fill_mode, fill_unknown, drop_rows; fill_mean and fill_median are outside the class (section B: on a continuous numeric column with NaN they are expected 'no commit'). The executor (`executor.fit_and_apply`) rejects only the ops in its _NUMERIC_ONLY set (fill_mean, fill_median, clip_outliers, sentinel_to_median, rescale_units) on non-numeric columns and the op in its _TEXT_ONLY set (normalize_categories) on numeric columns; fill_mode, fill_unknown and drop_rows are in neither set, so all three are applicable to every dtype and none is excluded. A commit by any op of the class on a column with NaN cells = hit (expected 'commit'); on a column with no NaN cell = expected 'no commit'. (R3) Outlier error cells = the union, over the CleanML outlier cleaned files that pass the alignment test, of the cells where dirty != clean (NaN-aware, exact, positional row alignment; train file rows then test file rows; a file shipped with 0 rows contributes no cells). Matching op class: clip_outliers on a numeric column with such cells -> expected 'commit', otherwise 'no commit'. (R4) Inconsistency: no CleanML inconsistency cleaned file ships for either dataset, so normalize_categories -> expected 'no commit' on every text column. (R5) Alignment test: a cleaned file is used only if its positional diff against its dirty file has the same shape and columns and is zero cells on the label column and on every identifier-like column of the dirty file. Identifier-like = the taskspec.py validate() rule: the column name matches `(^|[_\s.-])(id|uuid|guid|index|idx)$|^(id|uuid|guid)([_\s.-]|$)` (case-insensitive), or the file has more than 50 rows and the column's distinct count >= 0.98 x its non-null count and the column is not a float dtype. 'ALL cleaned files' in Q1 means all cleaned files that pass this test. (R6) Duplicates are outside the op menu (amendment section M): no rows.
+> Section D rules (Akira, 2026-11-01). (R1) Missing-value error cells = the NaN cells of the DIRTY file (`raw/raw.csv` of each dataset) as loaded by the TaskSpec loader convention: `pandas.read_csv` defaults, column names stripped, text cells stripped, and '?' and empty text mapped to NaN. Cleaned files are never used to locate missing-value errors. (R2) Reachable ops. An op counts toward an expectation only if the detector/planner menu can offer it for that column's dtype, taken from the code at commit d6ee33e (quoted in amendment section D): `detectors.detect_missing` offers fill_median, fill_mean, drop_rows on numeric columns and fill_mode, fill_unknown, drop_rows on non-numeric columns; fill_mean and fill_median are excluded from the missing-value class (section B), so a numeric NaN column has drop_rows as its only reachable op and a non-numeric NaN column has fill_mode, fill_unknown, drop_rows. clip_outliers is offered only by `detect_spikes` (numeric columns) and normalize_categories only by `detect_category_variants` (non-numeric columns); both detectors are data-dependent and are NOT evaluated here (no detector is run on CleanML data), so reachability for these two is by dtype only. Scoring unit: one row per (dataset, column, error type); Hit = any reachable op in the class commits. (R3) Outlier error cells = the union, over the CleanML outlier cleaned files that pass the alignment test, of the cells where dirty != clean (NaN-aware, exact, positional row alignment; train file rows then test file rows; a file shipped with 0 rows contributes no cells). Matching op class: clip_outliers on a numeric column with such cells -> expected 'commit', otherwise 'no commit'. (R4) Inconsistency: no CleanML inconsistency cleaned file ships for either dataset, so normalize_categories -> expected 'no commit' on every text column. (R5) Alignment test: a cleaned file is used only if its positional diff against its dirty file has the same shape and columns and is zero cells on the label column and on every identifier-like column of the dirty file. Identifier-like = the taskspec.py validate() rule: the column name matches `(^|[_\s.-])(id|uuid|guid|index|idx)$|^(id|uuid|guid)([_\s.-]|$)` (case-insensitive), or the file has more than 50 rows and the column's distinct count >= 0.98 x its non-null count and the column is not a float dtype. 'ALL cleaned files' in Q1 means all cleaned files that pass this test. (R6) Duplicates are outside the op menu (amendment section M): no rows.
 
 Input files (relative to `Dataset/real/`, sha256 of file bytes):
 
@@ -52,207 +52,53 @@ Cleaned files used:
 
 | Dataset | Rows in main table | Expected commit | Expected no commit | Ambiguous rows |
 |---|---|---|---|---|
-| Marketing | 52 | 27 | 25 | 0 |
-| Airbnb | 232 | 99 | 133 | 0 |
+| Marketing | 26 | 9 | 17 | 0 |
+| Airbnb | 78 | 55 | 23 | 0 |
 
-## Expected outcomes (every row)
+## Expected outcomes (one row per dataset, column, error type)
 
-| Dataset | Column | Error type | Op class | Expected | Evidence |
+| Dataset | Column | Error type | Reachable ops (any one committing = hit) | Expected | Evidence |
 |---|---|---|---|---|---|
 | Airbnb | LocationName | inconsistency | normalize_categories | no commit | no CleanML inconsistency cleaned file ships; no diff |
 | Airbnb | Average Abnb Price (by zipcode) | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average Abnb Price (by zipcode) | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average Abnb Price (by zipcode) | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average Abnb Price (by zipcode) | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average Abnb Price (by zipcode) | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | Average NumReviews (by zipcode) | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average NumReviews (by zipcode) | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average NumReviews (by zipcode) | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average NumReviews (by zipcode) | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average NumReviews (by zipcode) | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | Average Number of Bathrooms (by zipcode) | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average Number of Bathrooms (by zipcode) | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average Number of Bathrooms (by zipcode) | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average Number of Bathrooms (by zipcode) | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average Number of Bathrooms (by zipcode) | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | Average Number of Bedrooms (by zipcode) | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average Number of Bedrooms (by zipcode) | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average Number of Bedrooms (by zipcode) | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average Number of Bedrooms (by zipcode) | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average Number of Bedrooms (by zipcode) | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | Average Number of Beds (by zipcode) | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average Number of Beds (by zipcode) | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average Number of Beds (by zipcode) | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average Number of Beds (by zipcode) | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average Number of Beds (by zipcode) | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | Average Number of Guests (by zipcode) | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average Number of Guests (by zipcode) | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average Number of Guests (by zipcode) | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average Number of Guests (by zipcode) | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average Number of Guests (by zipcode) | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | Average Rating (by zipcode) | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average Rating (by zipcode) | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average Rating (by zipcode) | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Average Rating (by zipcode) | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | Average Rating (by zipcode) | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | Bathrooms | missing | drop_rows | commit | NaN cells in dirty file=448 |
-| Airbnb | Bathrooms | missing | fill_mean | no commit | NaN cells in dirty file=448; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Bathrooms | missing | fill_median | no commit | NaN cells in dirty file=448; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Bathrooms | missing | fill_mode | commit | NaN cells in dirty file=448 |
-| Airbnb | Bathrooms | missing | fill_unknown | commit | NaN cells in dirty file=448 |
 | Airbnb | Bedrooms | missing | drop_rows | commit | NaN cells in dirty file=3327 |
-| Airbnb | Bedrooms | missing | fill_mean | no commit | NaN cells in dirty file=3327; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Bedrooms | missing | fill_median | no commit | NaN cells in dirty file=3327; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Bedrooms | missing | fill_mode | commit | NaN cells in dirty file=3327 |
-| Airbnb | Bedrooms | missing | fill_unknown | commit | NaN cells in dirty file=3327 |
 | Airbnb | Beds | missing | drop_rows | commit | NaN cells in dirty file=314 |
-| Airbnb | Beds | missing | fill_mean | no commit | NaN cells in dirty file=314; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Beds | missing | fill_median | no commit | NaN cells in dirty file=314; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Beds | missing | fill_mode | commit | NaN cells in dirty file=314 |
-| Airbnb | Beds | missing | fill_unknown | commit | NaN cells in dirty file=314 |
 | Airbnb | Count of Abnb | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | Count of Abnb | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Count of Abnb | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Count of Abnb | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | Count of Abnb | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | Density of Abnb (%) | missing | drop_rows | commit | NaN cells in dirty file=42 |
-| Airbnb | Density of Abnb (%) | missing | fill_mean | no commit | NaN cells in dirty file=42; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Density of Abnb (%) | missing | fill_median | no commit | NaN cells in dirty file=42; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Density of Abnb (%) | missing | fill_mode | commit | NaN cells in dirty file=42 |
-| Airbnb | Density of Abnb (%) | missing | fill_unknown | commit | NaN cells in dirty file=42 |
-| Airbnb | LocationName | missing | drop_rows | commit | NaN cells in dirty file=319 |
-| Airbnb | LocationName | missing | fill_mode | commit | NaN cells in dirty file=319 |
-| Airbnb | LocationName | missing | fill_unknown | commit | NaN cells in dirty file=319 |
+| Airbnb | LocationName | missing | fill_mode, fill_unknown, drop_rows | commit | NaN cells in dirty file=319 |
 | Airbnb | NumGuests | missing | drop_rows | commit | NaN cells in dirty file=314 |
-| Airbnb | NumGuests | missing | fill_mean | no commit | NaN cells in dirty file=314; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | NumGuests | missing | fill_median | no commit | NaN cells in dirty file=314; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | NumGuests | missing | fill_mode | commit | NaN cells in dirty file=314 |
-| Airbnb | NumGuests | missing | fill_unknown | commit | NaN cells in dirty file=314 |
 | Airbnb | NumReviews | missing | drop_rows | commit | NaN cells in dirty file=316 |
-| Airbnb | NumReviews | missing | fill_mean | no commit | NaN cells in dirty file=316; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | NumReviews | missing | fill_median | no commit | NaN cells in dirty file=316; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | NumReviews | missing | fill_mode | commit | NaN cells in dirty file=316 |
-| Airbnb | NumReviews | missing | fill_unknown | commit | NaN cells in dirty file=316 |
 | Airbnb | Number of Homes | missing | drop_rows | commit | NaN cells in dirty file=42 |
-| Airbnb | Number of Homes | missing | fill_mean | no commit | NaN cells in dirty file=42; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Number of Homes | missing | fill_median | no commit | NaN cells in dirty file=42; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Number of Homes | missing | fill_mode | commit | NaN cells in dirty file=42 |
-| Airbnb | Number of Homes | missing | fill_unknown | commit | NaN cells in dirty file=42 |
 | Airbnb | Price | missing | drop_rows | commit | NaN cells in dirty file=638 |
-| Airbnb | Price | missing | fill_mean | no commit | NaN cells in dirty file=638; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Price | missing | fill_median | no commit | NaN cells in dirty file=638; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | Price | missing | fill_mode | commit | NaN cells in dirty file=638 |
-| Airbnb | Price | missing | fill_unknown | commit | NaN cells in dirty file=638 |
 | Airbnb | cost_living_index (US avg. = 100) | missing | drop_rows | commit | NaN cells in dirty file=42 |
-| Airbnb | cost_living_index (US avg. = 100) | missing | fill_mean | no commit | NaN cells in dirty file=42; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | cost_living_index (US avg. = 100) | missing | fill_median | no commit | NaN cells in dirty file=42; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | cost_living_index (US avg. = 100) | missing | fill_mode | commit | NaN cells in dirty file=42 |
-| Airbnb | cost_living_index (US avg. = 100) | missing | fill_unknown | commit | NaN cells in dirty file=42 |
 | Airbnb | land_area (sq.mi.) | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | land_area (sq.mi.) | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | land_area (sq.mi.) | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | land_area (sq.mi.) | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | land_area (sq.mi.) | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | latitude | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | latitude | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | latitude | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | latitude | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | latitude | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | longitude | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | longitude | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | longitude | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | longitude | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | longitude | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | median asking price for vacant for-sale home/condo | missing | drop_rows | commit | NaN cells in dirty file=118 |
-| Airbnb | median asking price for vacant for-sale home/condo | missing | fill_mean | no commit | NaN cells in dirty file=118; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median asking price for vacant for-sale home/condo | missing | fill_median | no commit | NaN cells in dirty file=118; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median asking price for vacant for-sale home/condo | missing | fill_mode | commit | NaN cells in dirty file=118 |
-| Airbnb | median asking price for vacant for-sale home/condo | missing | fill_unknown | commit | NaN cells in dirty file=118 |
 | Airbnb | median gross rent | missing | drop_rows | commit | NaN cells in dirty file=166 |
-| Airbnb | median gross rent | missing | fill_mean | no commit | NaN cells in dirty file=166; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median gross rent | missing | fill_median | no commit | NaN cells in dirty file=166; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median gross rent | missing | fill_mode | commit | NaN cells in dirty file=166 |
-| Airbnb | median gross rent | missing | fill_unknown | commit | NaN cells in dirty file=166 |
 | Airbnb | median house value | missing | drop_rows | commit | NaN cells in dirty file=3333 |
-| Airbnb | median house value | missing | fill_mean | no commit | NaN cells in dirty file=3333; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median house value | missing | fill_median | no commit | NaN cells in dirty file=3333; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median house value | missing | fill_mode | commit | NaN cells in dirty file=3333 |
-| Airbnb | median house value | missing | fill_unknown | commit | NaN cells in dirty file=3333 |
 | Airbnb | median houshold income | missing | drop_rows | commit | NaN cells in dirty file=64 |
-| Airbnb | median houshold income | missing | fill_mean | no commit | NaN cells in dirty file=64; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median houshold income | missing | fill_median | no commit | NaN cells in dirty file=64; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median houshold income | missing | fill_mode | commit | NaN cells in dirty file=64 |
-| Airbnb | median houshold income | missing | fill_unknown | commit | NaN cells in dirty file=64 |
 | Airbnb | median monthly owner costs (no mortgage) | missing | drop_rows | commit | NaN cells in dirty file=3494 |
-| Airbnb | median monthly owner costs (no mortgage) | missing | fill_mean | no commit | NaN cells in dirty file=3494; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median monthly owner costs (no mortgage) | missing | fill_median | no commit | NaN cells in dirty file=3494; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median monthly owner costs (no mortgage) | missing | fill_mode | commit | NaN cells in dirty file=3494 |
-| Airbnb | median monthly owner costs (no mortgage) | missing | fill_unknown | commit | NaN cells in dirty file=3494 |
 | Airbnb | median monthly owner costs (with mortgage) | missing | drop_rows | commit | NaN cells in dirty file=3361 |
-| Airbnb | median monthly owner costs (with mortgage) | missing | fill_mean | no commit | NaN cells in dirty file=3361; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median monthly owner costs (with mortgage) | missing | fill_median | no commit | NaN cells in dirty file=3361; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median monthly owner costs (with mortgage) | missing | fill_mode | commit | NaN cells in dirty file=3361 |
-| Airbnb | median monthly owner costs (with mortgage) | missing | fill_unknown | commit | NaN cells in dirty file=3361 |
 | Airbnb | median taxes (no mortgage) | missing | drop_rows | commit | NaN cells in dirty file=3527 |
-| Airbnb | median taxes (no mortgage) | missing | fill_mean | no commit | NaN cells in dirty file=3527; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median taxes (no mortgage) | missing | fill_median | no commit | NaN cells in dirty file=3527; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median taxes (no mortgage) | missing | fill_mode | commit | NaN cells in dirty file=3527 |
-| Airbnb | median taxes (no mortgage) | missing | fill_unknown | commit | NaN cells in dirty file=3527 |
 | Airbnb | median taxes (with mortgage | missing | drop_rows | commit | NaN cells in dirty file=3621 |
-| Airbnb | median taxes (with mortgage | missing | fill_mean | no commit | NaN cells in dirty file=3621; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median taxes (with mortgage | missing | fill_median | no commit | NaN cells in dirty file=3621; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | median taxes (with mortgage | missing | fill_mode | commit | NaN cells in dirty file=3621 |
-| Airbnb | median taxes (with mortgage | missing | fill_unknown | commit | NaN cells in dirty file=3621 |
 | Airbnb | number of females | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | number of females | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | number of females | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | number of females | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | number of females | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | number of males | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | number of males | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | number of males | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | number of males | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | number of males | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | pop2000 | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | pop2000 | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | pop2000 | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | pop2000 | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | pop2000 | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | pop2010 | missing | drop_rows | commit | NaN cells in dirty file=42 |
-| Airbnb | pop2010 | missing | fill_mean | no commit | NaN cells in dirty file=42; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | pop2010 | missing | fill_median | no commit | NaN cells in dirty file=42; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | pop2010 | missing | fill_mode | commit | NaN cells in dirty file=42 |
-| Airbnb | pop2010 | missing | fill_unknown | commit | NaN cells in dirty file=42 |
 | Airbnb | pop2016 | missing | drop_rows | commit | NaN cells in dirty file=42 |
-| Airbnb | pop2016 | missing | fill_mean | no commit | NaN cells in dirty file=42; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | pop2016 | missing | fill_median | no commit | NaN cells in dirty file=42; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | pop2016 | missing | fill_mode | commit | NaN cells in dirty file=42 |
-| Airbnb | pop2016 | missing | fill_unknown | commit | NaN cells in dirty file=42 |
 | Airbnb | pop_density (people per mile) | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | pop_density (people per mile) | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | pop_density (people per mile) | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | pop_density (people per mile) | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | pop_density (people per mile) | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | prop taxes paid 2016 | missing | drop_rows | commit | NaN cells in dirty file=87 |
-| Airbnb | prop taxes paid 2016 | missing | fill_mean | no commit | NaN cells in dirty file=87; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | prop taxes paid 2016 | missing | fill_median | no commit | NaN cells in dirty file=87; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | prop taxes paid 2016 | missing | fill_mode | commit | NaN cells in dirty file=87 |
-| Airbnb | prop taxes paid 2016 | missing | fill_unknown | commit | NaN cells in dirty file=87 |
 | Airbnb | unemployment (%) | missing | drop_rows | commit | NaN cells in dirty file=109 |
-| Airbnb | unemployment (%) | missing | fill_mean | no commit | NaN cells in dirty file=109; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | unemployment (%) | missing | fill_median | no commit | NaN cells in dirty file=109; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | unemployment (%) | missing | fill_mode | commit | NaN cells in dirty file=109 |
-| Airbnb | unemployment (%) | missing | fill_unknown | commit | NaN cells in dirty file=109 |
 | Airbnb | water_area (sq.mi.) | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | water_area (sq.mi.) | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | water_area (sq.mi.) | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | water_area (sq.mi.) | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | water_area (sq.mi.) | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | zipcode | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Airbnb | zipcode | missing | fill_mean | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | zipcode | missing | fill_median | no commit | NaN cells in dirty file=0; outside the op class (section B: v1.1 in-fold median imputation) |
-| Airbnb | zipcode | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Airbnb | zipcode | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
 | Airbnb | Average Abnb Price (by zipcode) | outliers | clip_outliers | commit | outlier diff cells (passing files): clean_HC_impute_holoclean_{train+test}.csv=1225, clean_SD_impute_mean_dummy_test.csv=108 |
 | Airbnb | Average NumReviews (by zipcode) | outliers | clip_outliers | commit | outlier diff cells (passing files): clean_HC_impute_holoclean_{train+test}.csv=238, clean_SD_impute_mean_dummy_test.csv=31 |
 | Airbnb | Average Number of Bathrooms (by zipcode) | outliers | clip_outliers | commit | outlier diff cells (passing files): clean_HC_impute_holoclean_{train+test}.csv=246, clean_SD_impute_mean_dummy_test.csv=70 |
@@ -304,45 +150,19 @@ Cleaned files used:
 | Marketing | Person | inconsistency | normalize_categories | no commit | no CleanML inconsistency cleaned file ships; no diff |
 | Marketing | Person under 18 | inconsistency | normalize_categories | no commit | no CleanML inconsistency cleaned file ships; no diff |
 | Marketing | Sex | inconsistency | normalize_categories | no commit | no CleanML inconsistency cleaned file ships; no diff |
-| Marketing | Age | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Marketing | Age | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Marketing | Age | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
-| Marketing | Dual | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Marketing | Dual | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Marketing | Dual | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
-| Marketing | Education | missing | drop_rows | commit | NaN cells in dirty file=86 |
-| Marketing | Education | missing | fill_mode | commit | NaN cells in dirty file=86 |
-| Marketing | Education | missing | fill_unknown | commit | NaN cells in dirty file=86 |
-| Marketing | Ethnic | missing | drop_rows | commit | NaN cells in dirty file=68 |
-| Marketing | Ethnic | missing | fill_mode | commit | NaN cells in dirty file=68 |
-| Marketing | Ethnic | missing | fill_unknown | commit | NaN cells in dirty file=68 |
-| Marketing | Hometype | missing | drop_rows | commit | NaN cells in dirty file=357 |
-| Marketing | Hometype | missing | fill_mode | commit | NaN cells in dirty file=357 |
-| Marketing | Hometype | missing | fill_unknown | commit | NaN cells in dirty file=357 |
-| Marketing | Householder | missing | drop_rows | commit | NaN cells in dirty file=240 |
-| Marketing | Householder | missing | fill_mode | commit | NaN cells in dirty file=240 |
-| Marketing | Householder | missing | fill_unknown | commit | NaN cells in dirty file=240 |
-| Marketing | Language | missing | drop_rows | commit | NaN cells in dirty file=359 |
-| Marketing | Language | missing | fill_mode | commit | NaN cells in dirty file=359 |
-| Marketing | Language | missing | fill_unknown | commit | NaN cells in dirty file=359 |
-| Marketing | Live | missing | drop_rows | commit | NaN cells in dirty file=913 |
-| Marketing | Live | missing | fill_mode | commit | NaN cells in dirty file=913 |
-| Marketing | Live | missing | fill_unknown | commit | NaN cells in dirty file=913 |
-| Marketing | Marital | missing | drop_rows | commit | NaN cells in dirty file=160 |
-| Marketing | Marital | missing | fill_mode | commit | NaN cells in dirty file=160 |
-| Marketing | Marital | missing | fill_unknown | commit | NaN cells in dirty file=160 |
-| Marketing | Occupation | missing | drop_rows | commit | NaN cells in dirty file=136 |
-| Marketing | Occupation | missing | fill_mode | commit | NaN cells in dirty file=136 |
-| Marketing | Occupation | missing | fill_unknown | commit | NaN cells in dirty file=136 |
-| Marketing | Person | missing | drop_rows | commit | NaN cells in dirty file=375 |
-| Marketing | Person | missing | fill_mode | commit | NaN cells in dirty file=375 |
-| Marketing | Person | missing | fill_unknown | commit | NaN cells in dirty file=375 |
-| Marketing | Person under 18 | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Marketing | Person under 18 | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Marketing | Person under 18 | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
-| Marketing | Sex | missing | drop_rows | no commit | NaN cells in dirty file=0 |
-| Marketing | Sex | missing | fill_mode | no commit | NaN cells in dirty file=0 |
-| Marketing | Sex | missing | fill_unknown | no commit | NaN cells in dirty file=0 |
+| Marketing | Age | missing | fill_mode, fill_unknown, drop_rows | no commit | NaN cells in dirty file=0 |
+| Marketing | Dual | missing | fill_mode, fill_unknown, drop_rows | no commit | NaN cells in dirty file=0 |
+| Marketing | Education | missing | fill_mode, fill_unknown, drop_rows | commit | NaN cells in dirty file=86 |
+| Marketing | Ethnic | missing | fill_mode, fill_unknown, drop_rows | commit | NaN cells in dirty file=68 |
+| Marketing | Hometype | missing | fill_mode, fill_unknown, drop_rows | commit | NaN cells in dirty file=357 |
+| Marketing | Householder | missing | fill_mode, fill_unknown, drop_rows | commit | NaN cells in dirty file=240 |
+| Marketing | Language | missing | fill_mode, fill_unknown, drop_rows | commit | NaN cells in dirty file=359 |
+| Marketing | Live | missing | fill_mode, fill_unknown, drop_rows | commit | NaN cells in dirty file=913 |
+| Marketing | Marital | missing | fill_mode, fill_unknown, drop_rows | commit | NaN cells in dirty file=160 |
+| Marketing | Occupation | missing | fill_mode, fill_unknown, drop_rows | commit | NaN cells in dirty file=136 |
+| Marketing | Person | missing | fill_mode, fill_unknown, drop_rows | commit | NaN cells in dirty file=375 |
+| Marketing | Person under 18 | missing | fill_mode, fill_unknown, drop_rows | no commit | NaN cells in dirty file=0 |
+| Marketing | Sex | missing | fill_mode, fill_unknown, drop_rows | no commit | NaN cells in dirty file=0 |
 
 ## Ambiguous - Akira decides
 

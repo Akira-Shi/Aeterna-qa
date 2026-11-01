@@ -24,13 +24,7 @@ Q1_RULE = (
     "Section D rules (Akira, 2026-11-01). (R1) Missing-value error cells = the NaN cells of the DIRTY file "
     "(`raw/raw.csv` of each dataset) as loaded by the TaskSpec loader convention: `pandas.read_csv` defaults, column names "
     "stripped, text cells stripped, and '?' and empty text mapped to NaN. Cleaned files are never used to locate "
-    "missing-value errors. (R2) Missing-value op class = fill_mode, fill_unknown, drop_rows; fill_mean and fill_median are "
-    "outside the class (section B: on a continuous numeric column with NaN they are expected 'no commit'). The executor "
-    "(`executor.fit_and_apply`) rejects only the ops in its _NUMERIC_ONLY set (fill_mean, fill_median, clip_outliers, "
-    "sentinel_to_median, rescale_units) on non-numeric columns and the op in its _TEXT_ONLY set (normalize_categories) on "
-    "numeric columns; fill_mode, fill_unknown and drop_rows are in neither set, so all three are applicable to every dtype "
-    "and none is excluded. A commit by any op of the class on a column with NaN cells = hit (expected 'commit'); on a "
-    "column with no NaN cell = expected 'no commit'. (R3) Outlier error cells = the union, over the CleanML outlier "
+    "missing-value errors. (R2) Reachable ops. An op counts toward an expectation only if the detector/planner menu can offer it for that column's dtype, taken from the code at commit d6ee33e (quoted in amendment section D): `detectors.detect_missing` offers fill_median, fill_mean, drop_rows on numeric columns and fill_mode, fill_unknown, drop_rows on non-numeric columns; fill_mean and fill_median are excluded from the missing-value class (section B), so a numeric NaN column has drop_rows as its only reachable op and a non-numeric NaN column has fill_mode, fill_unknown, drop_rows. clip_outliers is offered only by `detect_spikes` (numeric columns) and normalize_categories only by `detect_category_variants` (non-numeric columns); both detectors are data-dependent and are NOT evaluated here (no detector is run on CleanML data), so reachability for these two is by dtype only. Scoring unit: one row per (dataset, column, error type); Hit = any reachable op in the class commits. (R3) Outlier error cells = the union, over the CleanML outlier "
     "cleaned files that pass the alignment test, of the cells where dirty != clean (NaN-aware, exact, positional row "
     "alignment; train file rows then test file rows; a file shipped with 0 rows contributes no cells). Matching op class: "
     "clip_outliers on a numeric column with such cells -> expected 'commit', otherwise 'no commit'. (R4) Inconsistency: no "
@@ -162,17 +156,18 @@ def main():
                 out_union.setdefault(c, []).append((name.split("/")[-1], n))
 
     # ---- rows ----
-    rows = []         # (dataset, column, error type, op class, expected, evidence)
-    amb = []          # (dataset, column, error type, op class, reason)
+    rows = []         # (dataset, column, error type, reachable ops, expected, evidence)
+    amb = []          # (dataset, column, error type, reachable ops, reason)
+    # Row-listing rule (deterministic): every feature column gets a "missing" row; numeric feature columns also get an
+    # "outliers" row; non-numeric feature columns also get an "inconsistency" row. Label column excluded.
     for ds, feats, nums, nans in (("Marketing", feats_mk, num_mk, nan_mk), ("Airbnb", feats_ab, num_ab, nan_ab)):
         for c in feats:
             n = nans[c]
-            for op in ["fill_mode", "fill_unknown", "drop_rows"]:
-                rows.append((ds, c, "missing", op, "commit" if n else "no commit", f"NaN cells in dirty file={n}"))
-            if c in nums:
-                for op in ["fill_mean", "fill_median"]:
-                    rows.append((ds, c, "missing", op, "no commit",
-                                 f"NaN cells in dirty file={n}; outside the op class (section B: v1.1 in-fold median imputation)"))
+            numeric = c in nums
+            # reachable ops (code at d6ee33e): detect_missing menu minus fill_mean/fill_median (section B)
+            miss_ops = ["drop_rows"] if numeric else ["fill_mode", "fill_unknown", "drop_rows"]
+            rows.append((ds, c, "missing", ", ".join(miss_ops), "commit" if n else "no commit", f"NaN cells in dirty file={n}"))
+            if numeric:
                 u = out_union.get(c, []) if ds == "Airbnb" else []
                 if u:
                     ev = "outlier diff cells (passing files): " + ", ".join(f"{f}={k}" for f, k in u)
@@ -184,7 +179,7 @@ def main():
             else:
                 rows.append((ds, c, "inconsistency", "normalize_categories", "no commit",
                              "no CleanML inconsistency cleaned file ships; no diff"))
-    rows.sort(key=lambda r: (r[0], r[2], r[1], r[3]))
+    rows.sort(key=lambda r: (r[0], r[2], r[1]))
 
     def counts(ds):
         r = [x for x in rows if x[0] == ds]
@@ -242,9 +237,9 @@ def main():
         t, c, n = counts(ds)
         L.append(f"| {ds} | {t} | {c} | {n} | {sum(1 for a in amb if a[0] == ds)} |")
     L.append("")
-    L.append("## Expected outcomes (every row)")
+    L.append("## Expected outcomes (one row per dataset, column, error type)")
     L.append("")
-    L.append("| Dataset | Column | Error type | Op class | Expected | Evidence |")
+    L.append("| Dataset | Column | Error type | Reachable ops (any one committing = hit) | Expected | Evidence |")
     L.append("|---|---|---|---|---|---|")
     for r in rows:
         L.append("| " + " | ".join(r) + " |")
@@ -252,7 +247,7 @@ def main():
     L.append("## Ambiguous - Akira decides")
     L.append("")
     if amb:
-        L.append("| Dataset | Column | Error type | Op class | Reason |")
+        L.append("| Dataset | Column | Error type | Reachable ops | Reason |")
         L.append("|---|---|---|---|---|")
         for r in amb:
             L.append("| " + " | ".join(r) + " |")
