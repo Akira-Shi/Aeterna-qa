@@ -387,6 +387,9 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 ### 2026-11-01 (CLAUDE.md, docs only)
 - Added "planner-critic: not novel, see Documents/NOVELTY.md" after the Pending list. No planner-critic item existed in Pending (P7 is FastAPI backend), so nothing was removed.
 
+### 2026-11-01 (phase 3, real-data amendment DRAFT; docs only)
+- Added `Documents/AMENDMENT_DRAFT_real_data.md`: a draft of a PREREGISTRATION section 12 amendment for real-data evaluation (selection rule, ground-truth options, hypotheses, Bonferroni family, seeds, k/n reporting, frozen list, 12 open questions). All items are proposals for Akira. PREREGISTRATION.md not edited; no dataset run or opened; branch phase/3-real-data-amendment, not merged, not pushed.
+
 ### YYYY-MM-DD
 - What you built/changed
 - Any numbers worth keeping (F1 before/after, time spent, what broke)
