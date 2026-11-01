@@ -79,10 +79,11 @@ from . import audit
 
 def run(use_injection: bool = False, offline_planner: bool = False, raw_df=None, manifest=None,
         label: str | None = None, scenario_meta: dict | None = None, run_explain: bool = True,
-        scenario_name: str | None = None) -> dict:
+        scenario_name: str | None = None, task_meta: dict | None = None, log_prefix: str = "run_") -> dict:
     """use_injection: corrupt the data with injection.DECLARED_SPEC first (SYNTHETIC,
     labelled as such everywhere). offline_planner: use the rule-based planner instead
-    of Groq. Real-data runs use neither."""
+    of Groq. Real-data runs use neither. task_meta (P4): audit meta for a TaskSpec run on an arbitrary CSV
+    (scenario 'exploratory'); log_prefix names the audit file."""
     external = raw_df is not None   # study.py passes an already-injected partition + its manifest
     if external:
         use_injection = manifest is not None
@@ -107,13 +108,15 @@ def run(use_injection: bool = False, offline_planner: bool = False, raw_df=None,
     committed = calculate_f1_candidate(raw_df, folds, committed_ops)
     committed_f1, committed_scores = committed["mean"], committed["scores"]
     print(f"Evaluator: {config.EVALUATOR.upper()}")
-    print(f"Baseline {config.METRIC_LABEL} ({'SYNTHETIC-injected' if use_injection else 'real data'}, as-is), fixed-fold: "
+    print(f"Baseline {config.METRIC_LABEL} ({'SYNTHETIC-injected' if use_injection else 'exploratory data' if task_meta else 'real data'}, as-is), fixed-fold: "
           f"{committed_f1:.4f} +/- {committed['std']:.4f}   [F1 {committed['f1_mean']:.4f}]\n")
 
     if use_injection:
         log_meta = {"scenario": scenario_name or "synthetic_injection",
                     "label": label or "SYNTHETIC INJECTION (declared corruption on Adult - not real data)",
                     "declared_spec": scenario_meta if external else DECLARED_SPEC}
+    elif task_meta is not None:
+        log_meta = dict(task_meta)
     else:
         log_meta = {"scenario": "real_adult", "label": "REAL DATA (Adult Census, real '?' missingness)"}
     log_meta["evaluator"] = config.EVALUATOR
@@ -251,6 +254,7 @@ def run(use_injection: bool = False, offline_planner: bool = False, raw_df=None,
         log,
         baseline_f1=log["iterations"][0]["f1_before"] if log["iterations"] else committed_f1,
         final_f1=committed_f1,
+        prefix=log_prefix,
     )
     print(f"Final {config.METRIC_LABEL}: {committed_f1:.4f}   [F1 {committed['f1_mean']:.4f}]")
     print(f"Committed operations: {committed_ops if committed_ops else '(none)'}")

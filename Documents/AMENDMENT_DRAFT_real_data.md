@@ -1,6 +1,6 @@
 # DRAFT v2 - proposed PREREGISTRATION section 12 amendment: real-data evaluation (phase 3)
 
-**Status: DRAFT v3, Akira's answers to Q1-Q6 applied (2026-11-01). Not signed, not run. `PREREGISTRATION.md` is not edited.** Signing happens after P4 is tagged (section K). On signing, the accepted items become dated rows appended to section 12 by Akira (or on Akira's instruction). No dataset has been run or scored for this draft. Row counts and error types below come from CleanML's `DatasetDescriptions.pdf` metadata only.
+**Status: DRAFT v4 (2026-11-01): evaluator v1.1, positive labels, licences, rule-6 type check applied. Not signed. No pre-registered run has been made. `PREREGISTRATION.md` is not edited.** Signing happens after P4 is tagged (section K). On signing, the accepted items become dated rows appended to section 12 by Akira (or on Akira's instruction). The datasets were downloaded and opened for P4 acceptance only (column types, row counts, label coding; one exploratory sandbox run on Marketing, never interpreted, no expectation derived from it). Error types come from CleanML's `DatasetDescriptions.pdf`.
 
 Context read: PREREGISTRATION sections 1-13, RESULTS.md, BUILD_PLAN.md, CLAUDE.md. Facts used: the v1 study is synthetic damage on one dataset (Adult) and cannot claim anything about arbitrary real dirty tables (section 1). The only real-data result so far is real Adult `?` values: nothing commits under the Brier gate, which matches ground truth (section 12, 2026-09-30; BUILD_PLAN). Section 12 already narrowed the evaluator to LR alone (RF dropped); CLAUDE.md's RF/LR line is updated for real data (LR only; RF reproduces old numbers only).
 
@@ -11,6 +11,10 @@ Context read: PREREGISTRATION sections 1-13, RESULTS.md, BUILD_PLAN.md, CLAUDE.m
 - Outcome of interest is the gate decision and its audit trail, not a leaderboard score.
 
 ## B. Frozen, reused unchanged (not up for amendment)
+
+**Evaluator version: v1.1** (2026-11-01, signed off by Akira; changelog entry "evaluator v1.1" in `Documentation.md`). v1.1 adds one thing to v1: in each CV fold, numeric columns containing NaN are median-imputed by a `SimpleImputer` fitted on that fold's TRAINING rows only (a no-op when no NaN is present, so every v1 Adult/C1-C5 number reproduces exactly: 15/15 runs matched RESULTS.md). Nothing else changed.
+
+**Consequence for expected outcomes on continuous-NaN columns:** because the evaluator already median-imputes numeric NaN inside every fold, `fill_median` / `fill_mean` on a continuous numeric column is, to the gate, equivalent to doing nothing, so the expected outcome for those ops is **no commit** (paired delta approximately 0, below the bar). A commit there is an "unexplained commit", reported separately. `drop_rows`, `fill_unknown` and categorical fills are unaffected by this note. Expected-outcome files (section K) apply this rule per column.
 
 Evaluator (`evaluator.py`, fixed 5x3 folds, Nadeau-Bengio corrected SE), LR with in-fold StandardScaler, gate = Brier with F1 reported beside every decision, commit rule `delta > 0 and delta >= bar` at Bonferroni alpha = 0.05 / (candidate ops in that run), staging rule (25% of own bar), op menu, detectors, planner menu constraint, planner blindness. Scenarios C1-C5 are untouched and keep their synthetic labels.
 
@@ -31,16 +35,16 @@ Evaluator (`evaluator.py`, fixed 5x3 folds, Nadeau-Bengio corrected SE), LR with
 | Order | Dataset | Rows | Check | Result |
 |---|---|---|---|---|
 | 1 | Citation | 5,005 | titles only (single text column; duplicates): fails rule 6 | skipped |
-| 2 | Marketing | 8,993 | 14 demographic attributes, label income < $25k, so 13 feature columns; the PDF describes them as demographic survey fields (not free text), so >= 3 non-text (unverified: per-column types not listed in the PDF; confirm when the file is first opened) | **selected #1** |
-| 3 | Airbnb | 42,492 | 40 attributes; label rating = 5; includes some free-text fields but also numeric and categorical listing attributes (price, counts, room type, city-data.com attributes), so >= 3 non-text (unverified: column list not in the PDF) | **selected #2**, conditional on Akira confirming the licence (Q3, section J); host name and host ID columns dropped before use |
+| 2 | Marketing | 8,993 | 14 demographic attributes, label income < $25k, so 13 feature columns; the PDF describes them as demographic survey fields (not free text), so >= 3 non-text. **Verified from `raw/raw.csv` (8,993 rows x 14 columns): 13 feature columns, all categorical text-coded demographics (Sex, Marital, Age brackets, Education, Occupation, Live, Dual, Person, Person under 18, Householder, Hometype, Ethnic, Language), 2-10 levels each, none free text, 0.8%-10.2% missing; 1,154 exact duplicate rows.** Rule 6 passes | **selected #1** |
+| 3 | Airbnb | 42,492 | 40 attributes; label rating = 5; includes some free-text fields but also numeric and categorical listing attributes (price, counts, room type, city-data.com attributes), so >= 3 non-text. **Verified from `raw/raw.csv` (33,145 rows x 40 columns; the PDF says 42,492, the file is what is used): 39 feature columns, 38 numeric (listing counts, price, latitude/longitude, zipcode, city-data.com demographics) and 1 categorical (LocationName, 276 levels); no free-text column; no host name or host ID column exists in the file, so nothing needs dropping.** Rules 3 and 6 pass | **selected #2** (licence confirmed by Akira, section J) |
 | 4 | Titanic | 891 | fails rule 3 (< 5,000 rows) | skipped |
 | 5 | EEG | 14,980 | 14 numeric attributes, outliers; passes | **fallback #1** |
 | 6 | USCensus | 32,561 | Adult family; fails rule 5 | skipped (Q4) |
 | 7 | Restaurant | (unverified) | next in order after USCensus | **fallback #2 candidate**, to be checked against rules 1-6 if reached |
 
-Consistency check after the changes: rule 6 leaves Marketing and Airbnb eligible (subject to the two (unverified) column-type confirmations above), so the selection is unchanged and Citation is the only dataset skipped by rule 6. Removing USCensus means the fallback chain is EEG, then the next passing dataset in order (Restaurant onward); no entry depends on USCensus.
+Consistency check after the changes: rule 6 leaves Marketing and Airbnb eligible (column types now verified from the files), so the selection is unchanged and Citation is the only dataset skipped by rule 6. Removing USCensus means the fallback chain is EEG, then the next passing dataset in order (Restaurant onward); no entry depends on USCensus.
 
-If Airbnb is rejected on licence/PII grounds (Akira's call), the fallback is EEG, then the next passing dataset in order. Swaps are logged; a dataset is never replaced after its first run (C4).
+Airbnb's licence was confirmed by Akira (section J), so no swap is needed. Had it been rejected, the fallback would be EEG, then the next passing dataset in order. Swaps are logged; a dataset is never replaced after its first run (C4).
 
 **C4. No dataset is added, dropped or swapped after the first run on any dataset.** A dataset that errors out for engineering reasons (parse failure) is logged as "not evaluated" with the reason; it is not replaced.
 
@@ -51,6 +55,11 @@ If Airbnb is rejected on licence/PII grounds (Akira's call), the fallback is EEG
 - **Unexplained commit** = a commit on a column with no diff. Reported separately; not a hit, not a failure by itself.
 - **Wrong-op commit** (op type does not match the diff error type on that column) = failure.
 - Expectations are qualitative only (commit / no commit, per column), derived from the diff, not from scores, and written in the expected-outcome file (section K).
+- **Positive label (the class scored by F1 and used as the Brier target), stated per dataset before any run:**
+  - **Marketing: `Income = 0`.** CleanML's README defines the task as predicting annual household income `<= 4` (bracket codes 1-9; 1-4 = below $25k). Checked row by row against `raw/orgin.csv`: original brackets 1-4 (4,000 rows) are exactly `Income = 0` in `raw.csv`; brackets 5-9 (4,993 rows) are `Income = 1`. The positive class is the low-income class, which is also the minority class (the TaskSpec default would give the same answer).
+  - **Airbnb: `Rating = Y`.** CleanML states the task as "predict rating = 5 or not"; `Y` is the file's coding for rating = 5 (22,437 Y vs 10,708 N). The coding is inferred from the PDF wording and the Y/N column, not from a documented codebook. **Akira to confirm.** `Y` is the majority class, so it differs from the TaskSpec minority default and must be passed explicitly (`--positive Y`).
+  - The Brier gate is symmetric in this choice; F1 (reported beside every decision) is not.
+  - Runner output, the audit meta and the Explain label print "(defaulted)" next to the positive label whenever it was not given explicitly; in the registered runs it is always explicit.
 - **Split:** 20/80 pilot/eval. The pilot only checks that the pipeline runs end to end; it sets no expectations and tunes nothing.
 
 ## E. Hypotheses and success/failure criteria (stated in advance; proposal)
@@ -93,27 +102,27 @@ Dataset list and N; the selection and tie-break rule; expected outcomes; ground-
 
 | Dataset | Source | Licence | PII | Status |
 |---|---|---|---|---|
-| Marketing | https://sites.google.com/site/anhaidgroup/useful-stuff/data (per CleanML refs) | (unverified) | demographic survey records (sex, education, etc.); no identifiers described (unverified) | Akira to confirm |
-| Airbnb | CleanML-authored, scraped from Airbnb.com plus city-data.com attributes; "We will release this dataset in the code repository" (`DatasetDescriptions.pdf`) | (unverified); scraping terms of Airbnb.com may apply (unverified) | listing-level data; host or location fields may be present (unverified); host name and host ID columns are dropped before use (decided) | **Akira to confirm the Inside Airbnb licence** (kept only if confirmed); if rejected, fallback EEG |
+| Marketing | https://sites.google.com/site/anhaidgroup/useful-stuff/data (per CleanML refs); originally Impact Resources, Inc., Columbus, OH (1987) | No licence stated. **Confirmed by Akira (2026-11-01): academic use only, no redistribution, no per-ethnicity findings.** | demographic survey records; no identifier column in the file (checked); `Ethnic` is a sensitive attribute, kept as a feature, never reported per group | **Confirmed by Akira** |
+| Airbnb | CleanML-authored, scraped from Airbnb.com plus city-data.com attributes; "We will release this dataset in the code repository" (`DatasetDescriptions.pdf`) | CC BY (Inside Airbnb); **confirmed by Akira (2026-11-01)**; credit Inside Airbnb in docs | listing-level data; latitude/longitude and zipcode are present and kept as features; no host name or host ID column in the file (checked; would be dropped if present) | **Confirmed by Akira** |
 | EEG (fallback #1) | https://archive.ics.uci.edu/dataset/264/eeg+eye+state | CC BY 4.0 (stated on the UCI page) | UCI page has no PII statement; EEG channel recordings | Akira to confirm |
-| CleanML repo (code, cleaned files) | https://github.com/chu-data-lab/CleanML | GitHub API `license` = null (none declared) | n/a | Akira to confirm terms for using the data zip (Dropbox `CleanML-datasets-2020.zip`, per the README) |
+| CleanML repo (code, cleaned files) | https://github.com/chu-data-lab/CleanML | GitHub API `license` = null (none declared) | n/a | **Still open:** terms for using the data zip (Dropbox `CleanML-datasets-2020.zip`, per the README). Fetched by `tools/fetch_real_data.py` (prints URL and sha256; archive sha256 `d640bdb0fd6aa9420fa61852b38a78aa05ae7a886341750be38b1cb5aa6cb053`); data lives in gitignored `Dataset/real/` and is never committed |
 
 ## K. Procedure: expected-outcome file, signing, P4 dependency
 
 1. After datasets are confirmed and before any run, `Documents/EXPECTED_OUTCOMES_real_data.md` is written from the dirty-vs-clean diff only (per dataset: reference cleaned file, columns and error types in the diff, expected commit / no commit per column, split seed). It uses no pilot or eval scores.
 2. Akira reviews and signs it (signature line left blank; Claude does not sign).
 3. The file is committed. Its git commit hash and SHA-256 are recorded in the new section 12 row. No run may start before this commit exists.
-4. This amendment cites the TaskSpec release tag `v2-p4` (placeholder until P4 is tagged). It is signed only after P4 is tagged, and TaskSpec is then frozen for this study.
+4. This amendment cites the TaskSpec release tag `v2-p4`. It is signed only after P4 is tagged, and TaskSpec is then frozen for this study.
 
 ## L. Open questions (status after Akira's answers, 2026-11-01)
 
 - **Q-new-1 (resolved):** error cells = union of all CleanML cleaned files for that error type; hit = commit on such a column with the matching op class (missing -> fill_*/drop_rows, outliers -> clip_outliers, inconsistency -> normalize_categories). Applied in section D.
 - **Q-new-2 (resolved):** rule 6 added, "at least 3 non-text feature columns", disclosed as added after viewing the dataset list and before any run. Applied in C1.
-- **Q-new-3 (resolved, conditional):** Airbnb kept, conditional on Akira confirming the Inside Airbnb licence; host name and host ID columns dropped before use. **Akira-to-confirm: Inside Airbnb licence.** If not confirmed, fallback EEG.
+- **Q-new-3 (resolved):** Airbnb kept; Inside Airbnb licence (CC BY) confirmed by Akira 2026-11-01; credit Inside Airbnb in docs.
 - **Q-new-4 (resolved):** USCensus excluded (Adult family). Applied in C1 rule 5 and the C2 table.
-- **Q-new-5 (OPEN, Akira to confirm):** Marketing licence and PII (section J).
+- **Q-new-5 (resolved):** Marketing: no licence stated; academic use only, no redistribution, no per-ethnicity findings (confirmed by Akira 2026-11-01).
 - **Q-new-6 (resolved):** repo order in `schema/dataset.py` accepted as the key; the paper's Table 3 order is unverified and not used.
 
-Still open for Akira: Inside Airbnb licence (Q3), Marketing licence and PII (Q5), licence for the CleanML data zip (section J), (unverified) per-column types for rule 6 on Marketing and Airbnb.
+Still open for Akira before signing: (1) licence/terms for the CleanML data zip (section J); (2) confirm the Airbnb positive label `Rating = Y` (section D); (3) choose the split seed before any run (section F); (4) review and sign `EXPECTED_OUTCOMES_real_data.md` once written (section K). Resolved this round: evaluator v1.1 and the continuous-NaN expectation (section B), rule-6 column types (section C2), Marketing positive label (section D), licences (section J).
 
 Resolved by earlier decisions (2026-11-01): N = 2 with next-in-order fallback; ground truth = published cleaned version; 20/80 split with pilot as pipeline check only; per-run Bonferroni primary, across-dataset secondary; seeds 401-403 both planners; LR only; Adult beyond `?` closed; descriptive k/n with wrong-op = failure; signing procedure and P4 dependency.
