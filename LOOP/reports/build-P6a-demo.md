@@ -120,3 +120,28 @@ Rule change decided on dev data only; the Adult x linear ablation chose which ru
 | Marketing x tree_ensemble | -0.1597 | -0.1604 | -0.0007 +/- 0.0014 | -0.0029 +/- 0.0041 | recommended |
 
 Acceptance (default never better than the final recommendation by more than 2 SE): PASS in all four combos; the fallback did not fire. The earlier tables above (Adult x linear with Yeo-Johnson, -0.0046) are the pre-change run, kept for the record. Not a general claim about the recommender.
+
+
+## IMB-1 removal (class_weight=balanced not emitted under a Brier gate)
+
+Decision (Akira, 2026-11-02, changelog entry before any code): IMB-1 is not emitted when the gate metric is Brier. Provenance: the decision rests on the bank-marketing dev set (-0.0491 +/- 0.0008 neg-Brier vs default, F1 +0.10) plus the calibration mechanism (balanced weights shift predicted probabilities; a Brier gate penalises that by construction). credit-g is a second dev check (IMB-1 never fires there, so it is unchanged and is not evidence either way). Adult and Marketing were not used to choose the change. Acceptance combos where IMB-1 never fired are unchanged and are not evidence either way; IMB-1 fired in none of the four, so the acceptance table below is a regression check only. The side observation about IMB-1 in the SCL-S1 errata came from the same bank-marketing run, so the Adult x linear diagnosis overlaps with the origin of this lead, but the Adult numbers did not decide anything here. Implementation: `stage2/rules.py` reads `modules.config.GATE_METRIC` (read only, no frozen file touched); `constants.PROBABILITY_GATES` lists gates that score probabilities. Calibration (CalibratedClassifierCV, in-fold) is future work, not built.
+
+### Dev before / after (linear, same 15 fixed folds, recommended minus default, NB-corrected SE)
+
+| dataset | IMB-1 in steps (before / after) | neg-Brier diff before | neg-Brier diff after | F1 diff before | F1 diff after |
+|---|---|---|---|---|---|
+| credit-g | no / no | -0.0000 +/- 0.0000 | -0.0000 +/- 0.0000 | +0.0000 +/- 0.0000 | +0.0000 +/- 0.0000 |
+| bank-marketing | yes / no | -0.0491 +/- 0.0008 | -0.0000 +/- 0.0000 | +0.1014 +/- 0.0082 | +0.0000 +/- 0.0000 |
+
+After the change the bank-marketing recommendation equals the default pipeline (no IMB-1, SCL-G1 and ENC-L1 only), so the diff is zero by construction. The F1 gain (+0.10) is given up; F1 is reported, not gated. Before: fallback fired on bank-marketing (final = default); after: it does not.
+
+### Acceptance (report only, run once, untuned)
+
+| dataset x family | IMB-1 fired before | default neg-Brier | recommended neg-Brier | diff +/- SE | F1 diff +/- SE | fallback after | final |
+|---|---|---|---|---|---|---|---|
+| Adult x linear | no | -0.1027 | -0.1021 | +0.0005 +/- 0.0002 | +0.0036 +/- 0.0013 | no | recommended |
+| Adult x tree_ensemble | no | -0.1031 | -0.1003 | +0.0028 +/- 0.0004 | +0.0034 +/- 0.0037 | no | recommended |
+| Marketing x linear | no | -0.1561 | -0.1560 | +0.0001 +/- 0.0001 | +0.0007 +/- 0.0010 | no | recommended |
+| Marketing x tree_ensemble | no | -0.1597 | -0.1604 | -0.0007 +/- 0.0014 | -0.0029 +/- 0.0041 | no | recommended |
+
+All four are identical to the pre-change run (IMB-1 never fired), so they are neither evidence for nor against the change. Not a general claim about the recommender.

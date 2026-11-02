@@ -100,13 +100,24 @@ def test_family_rules():
 def test_imbalance_rules():
     df = make_df(imbalance=True)
     X, y = df.drop(columns="y"), df["y"]
-    for fam, rid in (("linear", "IMB-1"), ("tree_ensemble", "IMB-1"), ("distance", "IMB-2"), ("neural", "IMB-2")):
-        assert by(rules.recommend("binary", fam, X, y), "imbalance").keys() == {rid}, fam
-    assert by(rules.recommend("multiclass", "linear", X, y.where(df.index % 10 == 0, "yes")), "imbalance")
+    # gate under test is the real one from config (brier): IMB-1 is withheld, IMB-2 (no-op) unchanged
+    assert rules.config.GATE_METRIC in rules.PROBABILITY_GATES
+    for fam in ("linear", "tree_ensemble"):
+        assert not by(rules.recommend("binary", fam, X, y), "imbalance"), fam
+        assert not any(s.rule_id == "IMB-1" for s in rules.recommend("binary", fam, X, y)), fam
+    for fam in ("distance", "neural"):
+        assert by(rules.recommend("binary", fam, X, y), "imbalance").keys() == {"IMB-2"}, fam
+    assert not any(s.rule_id == "IMB-1" for s in rules.recommend("multiclass", "linear", X, y.where(df.index % 10 == 0, "yes")))
+    # rule otherwise triggered (imbalanced, supported family) under a non-probability gate: still emitted
+    for fam in ("linear", "tree_ensemble"):
+        assert by(rules.recommend("binary", fam, X, y, gate_metric="f1"), "imbalance").keys() == {"IMB-1"}, fam
+    assert by(rules.recommend("multiclass", "linear", X, y.where(df.index % 10 == 0, "yes"), gate_metric="f1"), "imbalance")
     assert not by(rules.recommend("regression", "linear", X, np.arange(len(X))), "imbalance")
     bal = make_df()
     assert not by(rules.recommend("binary", "linear", bal.drop(columns="y"), bal["y"]), "imbalance")
     pipe = build.build_pipeline(rules.recommend("binary", "linear", X, y), "binary", "linear")
+    assert pipe.named_steps["model"].class_weight is None          # Brier gate: no balanced weights
+    pipe = build.build_pipeline(rules.recommend("binary", "linear", X, y, gate_metric="f1"), "binary", "linear")
     assert pipe.named_steps["model"].class_weight == "balanced"
     print("  PASS: imbalance step by family / task")
 

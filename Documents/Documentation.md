@@ -517,6 +517,11 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 ### 2026-11-02 decision (Akira): IMB-1 not emitted under a Brier gate; no code change in this entry
 - IMB-1 (class_weight=balanced) is not emitted when the gate metric is Brier. Reason: balanced weighting shifts predicted probabilities and degrades calibration, which a Brier gate penalises by construction. Evidence: bank-marketing dev set (-0.0491 +/- 0.0008 neg-Brier vs default, F1 +0.10), plus that mechanism. Adult and Marketing were not used for this decision. Calibration (CalibratedClassifierCV, fit in-fold) is logged as future work, not built.
 
+### 2026-11-02 (phase 6, P6a-IMB1: IMB-1 withheld under a probability gate; no frozen/gate/commit-rule change)
+- Implements the decision entry above. `stage2/rules.py` imports `modules.config` read-only and does not emit IMB-1 when `GATE_METRIC` is in `constants.PROBABILITY_GATES` (("brier",)); `recommend(..., gate_metric=None)` takes an optional override (used by tests only). IMB-2 (no-op for distance/neural) unchanged. No frozen file, gate or commit rule touched.
+- Tests: `test_imbalance_rules` now asserts IMB-1 absent under the Brier gate (binary and multiclass, linear and tree_ensemble, and no class_weight on the built pipeline) and still emitted under gate_metric="f1".
+- Dev, linear, 15 folds: bank-marketing neg-Brier diff -0.0491 +/- 0.0008 -> -0.0000 +/- 0.0000 (recommendation now equals default; F1 diff +0.1014 -> 0, F1 not gated); credit-g unchanged (IMB-1 never fired). Acceptance combos unchanged (IMB-1 never fired in any, fallback did not fire). Details and provenance: `LOOP/reports/build-P6a-demo.md`, section "IMB-1 removal".
+
 ## Known issues / open questions (rewritten 2026-09-30)
 
 - Evaluator v1.1 (2026-11-01): numeric NaN is median-imputed inside each fold, so fill_median/fill_mean on a continuous NaN column cannot beat the baseline (delta about 0, expected outcome "no commit"). Text columns with more than 300 distinct values are rejected by TaskSpec (one-hot blow-up); drop or ID-exclude them. The Airbnb positive label `Rating=Y` is inferred from the CleanML wording, pending Akira's confirmation.

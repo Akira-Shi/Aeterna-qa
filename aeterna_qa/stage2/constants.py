@@ -24,3 +24,9 @@ MISSING_INFORMATIVE = 0.05
 # Rationale: a 1:4 minority-to-majority ratio is a round-number cut-off. Product default, not tuned on any study
 # dataset; no literature source claimed.
 IMBALANCE_RATIO = 0.25
+
+# Gate metrics that score predicted probabilities. class_weight='balanced' shifts predicted probabilities and degrades
+# calibration, so IMB-1 is not emitted when the study gate (modules/config.GATE_METRIC) is in this set.
+# Decision (Akira, 2026-11-02): bank-marketing dev set -0.0491 +/- 0.0008 neg-Brier vs default, plus the mechanism.
+# Adult and Marketing were not used. Calibrating in-fold (CalibratedClassifierCV) is future work, not built.
+PROBABILITY_GATES = ("brier",)
