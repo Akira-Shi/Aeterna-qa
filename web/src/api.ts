@@ -23,6 +23,7 @@ export interface JobStatus {
   planner: string;
   message: string | null;
   warnings: string[];
+  queue_position: number;
   can_rerun_with_rule: boolean;
   stage2: { suggested: boolean; approved: boolean };
 }
@@ -138,6 +139,7 @@ export const uploadDataset = (file: File) => {
 };
 export const startStage1 = (b: TaskBody) => request<JobStarted>("/jobs/stage1", json("POST", b));
 export const rerun = (id: string) => request<JobStarted>(`/jobs/${id}/rerun`, json("POST", { planner: "rule" }));
+export const cancelJob = (id: string) => request<{ cancelled: boolean }>(`/jobs/${id}`, { method: "DELETE" });
 export const getJob = (id: string) => request<JobStatus>(`/jobs/${id}`);
 export const getStage1 = (id: string) => request<Stage1>(`/jobs/${id}/stage1`);
 export const suggest = (id: string) => request<Suggest>(`/jobs/${id}/stage2/suggest`, { method: "POST" });

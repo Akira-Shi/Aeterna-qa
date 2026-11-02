@@ -50,7 +50,7 @@ function CheckGroup({ legend, help, columns, value, onChange, disabled }: {
   );
 }
 
-export default function Upload({ onStarted }: { onStarted: (s: Session) => void }) {
+export default function Upload({ onStarted, busy }: { onStarted: (s: Session) => void; busy: boolean }) {
   const [file, setFile] = useState<File | null>(null);
   const [text, setText] = useState("");
   const [ds, setDs] = useState<Dataset | null>(null);
@@ -67,6 +67,7 @@ export default function Upload({ onStarted }: { onStarted: (s: Session) => void 
   const [starting, setStarting] = useState(false);
   const [startErr, setStartErr] = useState<string[]>([]);
   const errRef = useRef<HTMLDivElement>(null);
+  const submitting = useRef(false); // handler-level guard against double clicks and Enter repeats
 
   const cols = ds?.columns.map((c) => c.name) ?? [];
   const labels = useMemo(() => (text && target ? distinctValues(text, target) : { values: [], capped: false }), [text, target]);
@@ -104,7 +105,8 @@ export default function Upload({ onStarted }: { onStarted: (s: Session) => void 
 
   const submit = async (ev: React.FormEvent) => {
     ev.preventDefault();
-    if (!ds) return;
+    if (!ds || busy || submitting.current) return;
+    submitting.current = true;
     setStartErr([]);
     setStarting(true);
     try {
@@ -113,10 +115,11 @@ export default function Upload({ onStarted }: { onStarted: (s: Session) => void 
         positive_label: taskType === "binary" && positive !== "" ? positive : null,
         model_family: family, id_columns: ids, drop_columns: drops, planner,
       });
-      onStarted({ jobId: r.job_id, warnings: r.warnings });
+      onStarted({ jobId: r.job_id, warnings: r.warnings, rows: ds.rows });
     } catch (e) {
       setStartErr(e instanceof ApiError ? e.messages : ["Could not start the job."]);
       setStarting(false);
+      submitting.current = false;
       setTimeout(() => errRef.current?.focus(), 0);
     }
   };
@@ -201,10 +204,11 @@ export default function Upload({ onStarted }: { onStarted: (s: Session) => void 
 
           <div ref={errRef} tabIndex={-1} className="errwrap"><Errors items={startErr} /></div>
           <div className="actions">
-            <button className="btn primary" type="submit" disabled={!target || starting}>
-              {starting ? "Starting" : "Start cleaning"}
+            <button className="btn primary" type="submit" disabled={!target || starting || busy}>
+              {starting ? "Starting" : busy ? "A job is in progress" : "Start cleaning"}
             </button>
-            {!target && <span className="help">Choose a target column to continue.</span>}
+            {!target && !busy && <span className="help">Choose a target column to continue.</span>}
+            {busy && <span className="help">Your current job has to finish, fail or be cancelled before another can start.</span>}
           </div>
         </form>
       )}

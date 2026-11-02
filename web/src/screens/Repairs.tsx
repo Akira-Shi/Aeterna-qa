@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ApiError, getJob, getStage1, rerun } from "../api";
+import { ApiError, cancelJob, getJob, getStage1, rerun } from "../api";
 import type { JobStatus, Repair, Stage1 } from "../api";
 import type { Session } from "../App";
 import { Errors } from "./Upload";
@@ -57,14 +57,19 @@ function Card({ r }: { r: Repair }) {
   );
 }
 
-export default function Repairs({ session, onDone, onNext, onRerun }: {
-  session: Session; onDone: () => void; onNext: () => void; onRerun: (s: Session) => void;
+const estimate = (rows: number) =>
+  rows < 5000 ? "about a minute" : rows <= 20000 ? "about 2 to 3 minutes" : "about 3 to 5 minutes";
+
+export default function Repairs({ session, onDone, onSettled, onCancelled, onNext, onRerun }: {
+  session: Session; onDone: () => void; onSettled: () => void; onCancelled: () => void; onNext: () => void;
+  onRerun: (s: Session) => void;
 }) {
   const [job, setJob] = useState<JobStatus | null>(null);
   const [res, setRes] = useState<Stage1 | null>(null);
   const [err, setErr] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const loaded = useRef(false);
+  const acting = useRef(false); // guards rerun and cancel against double clicks
 
   const fetchResult = useCallback(async () => {
     try {
@@ -89,6 +94,7 @@ export default function Repairs({ session, onDone, onNext, onRerun }: {
           return;
         }
         if (j.status === "queued" || j.status === "running") timer = setTimeout(tick, POLL_MS);
+        else onSettled();
       } catch (e) {
         if (stop) return;
         setErr(e instanceof ApiError ? e.messages : ["Lost contact with the API."]);
@@ -97,16 +103,33 @@ export default function Repairs({ session, onDone, onNext, onRerun }: {
     };
     tick();
     return () => { stop = true; clearTimeout(timer); };
-  }, [session.jobId, fetchResult]);
+  }, [session.jobId, fetchResult, onSettled]);
+
+  const doCancel = async () => {
+    if (acting.current) return;
+    acting.current = true;
+    setBusy(true);
+    try {
+      await cancelJob(session.jobId);
+      onCancelled();
+    } catch (e) {
+      setErr(e instanceof ApiError ? e.messages : ["Could not cancel the job."]);
+      setBusy(false);
+      acting.current = false;
+    }
+  };
 
   const doRerun = async () => {
+    if (acting.current) return;
+    acting.current = true;
     setBusy(true);
     try {
       const r = await rerun(session.jobId);
-      onRerun({ jobId: r.job_id, warnings: r.warnings });
+      onRerun({ jobId: r.job_id, warnings: r.warnings, rows: session.rows });
     } catch (e) {
       setErr(e instanceof ApiError ? e.messages : ["Could not rerun."]);
       setBusy(false);
+      acting.current = false;
     }
   };
 
@@ -125,11 +148,22 @@ export default function Repairs({ session, onDone, onNext, onRerun }: {
 
       {running && !err.length && (
         <section className="progress" aria-live="polite">
-          <h2>{job?.status === "queued" || !job ? "Waiting to start" : `Evaluating repair ${Math.min(n + 1, of)} of ${of}`}</h2>
-          <p className="help">{n} of {of} steps finished. This usually takes a minute or two.</p>
-          <div className={`bar${n === 0 ? " idle" : ""}`} role="progressbar" aria-valuemin={0} aria-valuemax={of} aria-valuenow={n} aria-label="Repair progress">
-            <i style={{ width: `${(n / of) * 100}%` }} />
-          </div>
+          {job?.status === "queued" ? (
+            <>
+              <h2>{job.queue_position > 0 ? `Queued: ${job.queue_position} ${job.queue_position === 1 ? "job" : "jobs"} ahead of yours` : "Starting"}</h2>
+              <p className="help">Runs one at a time. Yours starts automatically; expect {estimate(session.rows)} once it does.</p>
+              <div className="bar idle" role="progressbar" aria-label="Waiting in the queue"><i /></div>
+              <button className="btn small" onClick={doCancel} disabled={busy} style={{ marginTop: 12 }}>{busy ? "Cancelling" : "Cancel this job"}</button>
+            </>
+          ) : (
+            <>
+              <h2>{!job ? "Connecting" : n === 0 ? "Measuring the baseline..." : `Evaluating repair ${Math.min(n + 1, of)} of ${of}`}</h2>
+              <p className="help">{n} of {of} steps finished. Expect {estimate(session.rows)} in total.</p>
+              <div className={`bar${n === 0 ? " idle" : ""}`} role="progressbar" aria-valuemin={0} aria-valuemax={of} aria-valuenow={n} aria-label="Repair progress">
+                <i style={{ width: `${(n / of) * 100}%` }} />
+              </div>
+            </>
+          )}
         </section>
       )}
 

@@ -10,6 +10,7 @@ const STEPS = ["Upload and task", "Repairs", "Pipeline and download"];
 export interface Session {
   jobId: string;
   warnings: string[];
+  rows: number;
 }
 
 export default function App() {
@@ -17,12 +18,21 @@ export default function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [suggestion, setSuggestion] = useState<Suggest | null>(null);
   const [stage1Done, setStage1Done] = useState(false);
+  const [jobActive, setJobActive] = useState(false); // a stage 1 job is queued or running
 
   const start = (s: Session) => {
     setSession(s);
     setSuggestion(null);
     setStage1Done(false);
+    setJobActive(true);
     setScreen(2);
+  };
+
+  const settled = useCallback(() => setJobActive(false), []);
+  const cancelled = () => {
+    setSession(null);
+    setJobActive(false);
+    setScreen(1);
   };
 
   const markDone = useCallback(() => setStage1Done(true), []);
@@ -46,6 +56,7 @@ export default function App() {
                       type="button"
                       onClick={() => setScreen(n)}
                       disabled={!reachable(n) || n === screen}
+                      aria-label={`Step ${n}: ${label}`}
                       aria-current={n === screen ? "step" : undefined}
                     >
                       <span className="dot" aria-hidden="true">{n}</span>
@@ -59,9 +70,9 @@ export default function App() {
         </div>
       </header>
       <main id="main" tabIndex={-1}>
-        {screen === 1 && <Upload onStarted={start} />}
+        {screen === 1 && <Upload onStarted={start} busy={jobActive} />}
         {screen === 2 && session && (
-          <Repairs key={session.jobId} session={session} onDone={markDone} onNext={() => setScreen(3)} onRerun={start} />
+          <Repairs key={session.jobId} session={session} onDone={markDone} onSettled={settled} onCancelled={cancelled} onNext={() => setScreen(3)} onRerun={start} />
         )}
         {screen === 3 && session && (
           <Stage2 key={session.jobId} session={session} suggestion={suggestion} setSuggestion={setSuggestion} onBack={() => setScreen(2)} />
