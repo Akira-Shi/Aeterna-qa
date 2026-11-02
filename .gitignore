@@ -11,3 +11,4 @@ Dataset/sandbox/
 Dataset/real/
 .claude/
 Resources/*.pdf
+aeterna_qa/api_data/
