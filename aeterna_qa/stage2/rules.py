@@ -17,7 +17,8 @@ import pandas as pd
 TASK_TYPES = ("binary", "multiclass", "regression")
 FAMILIES = ("linear", "tree_ensemble", "distance", "neural")
 
-from .constants import SKEW_LIMIT, HIGH_CARD, MISSING_INFORMATIVE, IMBALANCE_RATIO  # noqa: E402,F401  (see constants.py)
+from modules import config                                                                # noqa: E402  (read-only: GATE_METRIC)
+from .constants import SKEW_LIMIT, HIGH_CARD, MISSING_INFORMATIVE, IMBALANCE_RATIO, PROBABILITY_GATES  # noqa: E402,F401  (see constants.py)
 
 
 class UnsupportedModel(ValueError):
@@ -146,7 +147,7 @@ COLUMN_RULES = [
 _STAGE_ORDER = {"imputation": 0, "encoding": 1, "scaling": 2}
 
 
-def _imbalance_step(task_type, family, y):
+def _imbalance_step(task_type, family, y, gate_metric=None):
     if task_type == "regression" or y is None:
         return None
     counts = pd.Series(y).value_counts()
@@ -155,6 +156,8 @@ def _imbalance_step(task_type, family, y):
     share = counts.min() / counts.max()
     alt = "resample (needs imbalanced-learn, not a dependency)"
     if family in ("linear", "tree_ensemble"):
+        if (config.GATE_METRIC if gate_metric is None else gate_metric) in PROBABILITY_GATES:
+            return None   # IMB-1 withheld: balanced weights degrade calibration, which this gate scores
         return Step("imbalance", (), "class_weight_balanced", "IMB-1",
                     f"Smallest class is {share:.0%} of the largest (below {IMBALANCE_RATIO:.0%}): weight classes inversely to their frequency.",
                     alt, {"class_weight": "balanced"})
@@ -163,8 +166,9 @@ def _imbalance_step(task_type, family, y):
                 alt)
 
 
-def recommend(task_type: str, family: str, X: pd.DataFrame, y=None) -> list:
-    """Deterministic steps for the feature frame X (target, id and dropped columns already removed) and target y."""
+def recommend(task_type: str, family: str, X: pd.DataFrame, y=None, gate_metric=None) -> list:
+    """Deterministic steps for the feature frame X (target, id and dropped columns already removed) and target y.
+    gate_metric defaults to modules.config.GATE_METRIC; under a probability-scoring gate IMB-1 is not emitted."""
     if task_type not in TASK_TYPES:
         raise ValueError(f"task_type must be one of {TASK_TYPES}, got {task_type!r}")
     if family not in FAMILIES:
@@ -182,7 +186,7 @@ def recommend(task_type: str, family: str, X: pd.DataFrame, y=None) -> list:
     for stage, rid in sorted(groups, key=lambda k: (_STAGE_ORDER[k[0]], k[1])):
         method, reason, alt = meta[(stage, rid)]
         steps.append(Step(stage, tuple(groups[(stage, rid)]), method, rid, reason, alt))
-    imb = _imbalance_step(task_type, family, y)
+    imb = _imbalance_step(task_type, family, y, gate_metric)
     if imb is not None:
         steps.append(imb)
     return steps

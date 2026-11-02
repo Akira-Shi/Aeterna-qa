@@ -46,7 +46,7 @@ Capstone: closed-loop data-cleaning agent (detect → plan → execute → verif
 
 ## v2 rules
 - v2 wraps v1. Never edit evaluator.py, evaluator_tests.py, PREREGISTRATION.md §1-11, gate metric, commit rule, scenarios.
-- Before every commit: frozen_check exit 0 and the 3 test suites pass. Exit 2 = stop and ask me.
+- Before every commit: frozen_check exit 0 and the standing suites pass: evaluator_tests, ops_tests, explain_tests, taskspec_tests (all `python -m modules.<name>` from `aeterna_qa/`), `tests/test_stage2_leak.py`, `tests/test_stage2_rules.py`. Exit 2 = stop and ask me.
 - One branch per phase (phase/<n>-<name>). Merge to main with a tag only after I accept.
 - Changelog entry in Documents/Documentation.md for every change.
 - Be brief: report diffs and test results, not file dumps.
