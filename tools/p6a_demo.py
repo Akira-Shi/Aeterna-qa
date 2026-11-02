@@ -34,6 +34,7 @@ def main(ds, fam):
           f"diff (rec - default) {r['mean_diff']:+.4f} +/- {r['se_corrected']:.4f} (NB-corrected SE)")
     print(f"- F1: default {r['f1_default_mean']:.4f}, recommended {r['f1_recommended_mean']:.4f}, "
           f"diff {r['f1_mean_diff']:+.4f} +/- {r['f1_se_corrected']:.4f}")
+    print(f"- final recommendation: {r['final']}" + (f" ({r['fallback_note']})" if r["fallback"] else ""))
     print(f"- {r['n_folds']} fixed folds; report only, no gate, no commit decision. ({time.time()-t:.0f}s)\n")
 
 

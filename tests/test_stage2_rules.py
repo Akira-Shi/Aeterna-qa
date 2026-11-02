@@ -80,8 +80,8 @@ def test_family_rules():
     lin = rules.recommend("binary", "linear", X, y)
     assert by(lin, "imputation")["IMP-N2"].columns == ("x_skew",)          # skewed -> median
     assert by(lin, "imputation")["IMP-N3"].columns == ("x_sym",)           # symmetric -> mean
-    assert by(lin, "scaling")["SCL-S1"].columns == ("x_skew",)             # yeo-johnson
-    assert by(lin, "scaling")["SCL-G1"].columns == ("x_sym",)
+    assert "SCL-S1" not in by(lin, "scaling")                              # yeo-johnson removed in P6a
+    assert set(by(lin, "scaling")["SCL-G1"].columns) == {"x_sym", "x_skew"}
     assert by(lin, "imputation")["IMP-C1"].columns == ("cat_miss",)        # 20% missing -> own level
     assert by(lin, "encoding")["ENC-H1"].columns == ("cat_hi",)            # capped one-hot
     assert set(by(lin, "encoding")["ENC-L1"].columns) == {"cat_lo", "cat_miss"}
@@ -92,7 +92,7 @@ def test_family_rules():
     dist = rules.recommend("binary", "distance", X, y)
     assert by(dist, "scaling")["SCL-D1"].method == "robust"
     neu = rules.recommend("binary", "neural", X, y)
-    assert by(neu, "scaling")["SCL-S1"].method == "yeo_johnson"
+    assert by(neu, "scaling")["SCL-G1"].method == "standard"
     print("  PASS: per-family rule choices")
 
 
@@ -161,6 +161,33 @@ def test_compare():
         else:
             raise AssertionError("expected CompareNotSupported")
     print("  PASS: compare (binary, all families; non-binary unsupported), report only")
+
+
+def test_fallback_to_default():
+    base = {"steps": [], "note": "report only"}
+    worse = compare._decide({**base, "mean_diff": -0.0046, "se_corrected": 0.0002})        # -23 SE
+    assert worse["fallback"] and worse["final"] == "default"
+    assert "fallback: default outperformed recommendation" in worse["note"] and worse["fallback_note"] == compare.FALLBACK_TEXT
+    edge = compare._decide({**base, "mean_diff": -0.0040, "se_corrected": 0.0020})         # exactly -2 SE: not beyond
+    assert not edge["fallback"] and edge["final"] == "recommended" and "fallback_note" not in edge
+    better = compare._decide({**base, "mean_diff": 0.003, "se_corrected": 0.0001})
+    assert not better["fallback"] and better["final"] == "recommended"
+    r = {**base, "model_family": "linear", "n_folds": 15, "metric": "m", "mean_diff": -1.0, "se_corrected": 0.1,
+         "f1_mean_diff": 0.0, "f1_se_corrected": 0.0, "fallback": True}
+    assert "fallback: default outperformed recommendation" in compare.format_report(r)
+    # end to end: a deliberately harmful recommendation (informative-missing numeric column dropped to a constant is
+    # not available, so force harm by a recommender that scales nothing but one-hot-encodes a unique-id-like column)
+    rng = np.random.default_rng(5)
+    n = 600
+    sig = rng.normal(size=n)
+    df = pd.DataFrame({"sig": sig, "uid": [f"u{i}" for i in range(n)],
+                       "y": np.where(sig + rng.normal(scale=0.5, size=n) > 0, "yes", "no")})
+    spec = TaskSpec(path="x.csv", target="y", task_type="binary", positive_label="yes", model_family="linear")
+    bad = [rules.Step("encoding", ("uid",), "onehot", "TEST-BAD", "forced", "none"),
+           rules.Step("scaling", ("sig",), "none", "TEST-BAD2", "forced", "standard")]
+    out = compare.compare(df, spec, steps=bad)
+    assert out["final"] in ("default", "recommended") and out["fallback"] == (out["mean_diff"] < -2 * out["se_corrected"])
+    print("  PASS: fallback to default when recommendation is worse by > 2 SE")
 
 
 if __name__ == "__main__":

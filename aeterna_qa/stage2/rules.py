@@ -137,9 +137,7 @@ COLUMN_RULES = [
     # scaling (numeric)
     ("SCL-T1", "scaling", lambda t, f, p: _num(p) and f == "tree_ensemble",
      "none", "Trees are invariant to monotone scaling; leave the column as is.", "standard scaling"),
-    ("SCL-S1", "scaling", lambda t, f, p: _num(p) and _skewed(p) and f in ("linear", "neural"),
-     "yeo_johnson", "Skewed numeric column and a model that prefers roughly symmetric inputs: Yeo-Johnson, then standardise (handles zeros and negatives).",
-     "standard scaling"),
+    # SCL-S1 (Yeo-Johnson for skewed numerics, linear/neural) REMOVED in P6a: ablation + 2 dev datasets, see LOOP/reports/build-P6a-demo.md
     ("SCL-D1", "scaling", lambda t, f, p: _num(p) and _skewed(p) and f == "distance",
      "robust", "Skewed column and a distance model: median/IQR scaling stops a long tail from dominating distances.", "standard scaling"),
     ("SCL-G1", "scaling", lambda t, f, p: _num(p),
