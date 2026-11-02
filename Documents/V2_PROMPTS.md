@@ -28,7 +28,8 @@ Branch phase/6-recommender. Build aeterna_qa/stage2/ (no LLM in this step):
 - Unsupported model -> nearest family with a warning, else raise UnsupportedModel.
 - Tests: tests/test_stage2_rules.py covering every family x task type.
 
-## P6b — Intent parser + audit
+## P6b — DROPPED (Akira, 2026-11-02): list picker replaces the intent parser; the Stage 2 audit fields (decided_by, rule_id, user_edit) move to P7.
+Original scope, kept for history:
 - stage2/parse_intent.py: Groq via the existing config path turns free text into TaskSpec JSON restricted to the allowed enums. Return spec + per-field confidence. Nothing runs until the user confirms.
 - List-picker path builds the same TaskSpec with no LLM.
 - stage2/explain_pipeline.py: LLM explanation passed through Explain's guard.
@@ -37,7 +38,7 @@ Branch phase/6-recommender. Build aeterna_qa/stage2/ (no LLM in this step):
 
 ## P7 — FastAPI backend [PLAN]
 Branch phase/7-api. FastAPI app in aeterna_qa/api/:
-- POST /datasets (CSV upload -> profile + columns); POST /taskspec/parse
+- POST /datasets (CSV upload -> profile + columns)
 - POST /jobs/stage1; GET /jobs/{id} (status, progress); GET /jobs/{id}/stage1
 - POST /jobs/{id}/stage2/suggest; POST /jobs/{id}/stage2/approve
 - GET /jobs/{id}/artifacts (cleaned CSV, pipeline.joblib, report.html, audit.json, 20-row before/after preview)
@@ -47,7 +48,10 @@ Branch phase/7-api. FastAPI app in aeterna_qa/api/:
 Enable first: /plugin enable frontend-design@claude-plugins-official
 Branch phase/8-web. Use the frontend-design skill.
 - web/ with Vite + React + TypeScript, plain CSS. Steep style (light, serif headings, peach accent); reuse the Explain report's tokens.
-- Screens: 1 Upload; 2 Task (list picker | free text -> parsed spec to confirm); 3 Stage 1 (per repair: verdict, effect ± SE, committed/rolled back, plain reason); 4 Stage 2 (per step: rule, reason, alternative, accept/edit); 5 Download.
+- Screens (3):
+  1. Upload & task: CSV upload, then a list picker for target column, positive label and model family (no free-text intent). Show TaskSpec validation errors inline.
+  2. Stage 1 repairs: one card per evaluated repair, showing verdict, effect ± SE, committed or rolled back, and the plain-language reason. Reuse the Explain report's Steep tokens (light, serif headings, peach accent). No synthetic banner.
+  3. Stage 2 & download: one card per pipeline step (rule_id, reason, alternative, accept/edit control, fallback note if the fallback fired), then download buttons for cleaned CSV, pipeline.joblib, audit.json and report.html.
 - Poll job progress. No synthetic banner in the UI (decision 2026-10-04).
 - Playwright screenshots at desktop and 390px. Commit per screen.
 Afterwards: /plugin disable frontend-design@claude-plugins-official
@@ -55,7 +59,7 @@ Afterwards: /plugin disable frontend-design@claude-plugins-official
 ## P9 — Release
 Branch phase/9-release.
 - Code-review plugin on the diff since v1-study-frozen; fix real issues only.
-- Playwright end-to-end: Adult + one real dataset through all 5 screens.
+- Playwright end-to-end: Adult + one real dataset through all 3 screens.
 - Update README (Windows run steps), Documentation.md, BUILD_PLAN.md (ask Akira for the demo date). List deck slides needing changes; do not edit .pptx.
 - Merge, tag v2.0.
 

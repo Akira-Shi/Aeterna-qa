@@ -522,8 +522,12 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - Tests: `test_imbalance_rules` now asserts IMB-1 absent under the Brier gate (binary and multiclass, linear and tree_ensemble, and no class_weight on the built pipeline) and still emitted under gate_metric="f1".
 - Dev, linear, 15 folds: bank-marketing neg-Brier diff -0.0491 +/- 0.0008 -> -0.0000 +/- 0.0000 (recommendation now equals default; F1 diff +0.1014 -> 0, F1 not gated); credit-g unchanged (IMB-1 never fired). Acceptance combos unchanged (IMB-1 never fired in any, fallback did not fire). Details and provenance: `LOOP/reports/build-P6a-demo.md`, section "IMB-1 removal".
 
+### 2026-11-02 (docs only; no code, frozen, gate or commit-rule change)
+- `V2_PROMPTS.md`: P8 trimmed from 5 screens to 3 (Upload & task, Stage 1 repairs, Stage 2 & download); P6b marked DROPPED (list picker replaces the intent parser; Stage 2 audit fields decided_by, rule_id, user_edit move to P7); `POST /taskspec/parse` removed from P7; P9 end-to-end now covers 3 screens. Planner candidate ranking (option 1) logged as deferred in Known issues. Suite list in CLAUDE.md updated earlier (merge of phase/6-imb1, tag v2-p6a.1).
+
 ## Known issues / open questions (rewritten 2026-09-30)
 
+- Planner candidate ranking by expected impact (option 1): deferred until after the v2.0 release. Needs a v3 amendment and fresh CleanML datasets. Airbnb and Marketing are dev-only for it; their registered 0/9 and 0/55 stand.
 - Evaluator v1.1 (2026-11-01): numeric NaN is median-imputed inside each fold, so fill_median/fill_mean on a continuous NaN column cannot beat the baseline (delta about 0, expected outcome "no commit"). Text columns with more than 300 distinct values are rejected by TaskSpec (one-hot blow-up); drop or ID-exclude them. The Airbnb positive label `Rating=Y` is inferred from the CleanML wording, pending Akira's confirmation.
 - The study's "false commit" count (7/15) is a labelling artifact: the pilot set expected outcomes that the eval partition contradicted for C2/C3/C4, and the eval damage in C1 was smaller than the pilot estimated. The registered labels are kept; the reading is in `RESULTS.md`. Pilot SE ignores partition-to-partition variation.
 - `age` carries only 0.00096 Brier; corruption of `age` cannot clear the bar by design headroom, so C2/C3 sit near the bar (0.0011-0.0012 vs ~0.0009). C5 (`capital.gain`) was added post-pilot to test a strongly detectable defect.
