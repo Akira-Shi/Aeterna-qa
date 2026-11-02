@@ -12,3 +12,7 @@ Dataset/real/
 .claude/
 Resources/*.pdf
 aeterna_qa/api_data/
+
+# web frontend (P8)
+web/node_modules/
+web/dist/

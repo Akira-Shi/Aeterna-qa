@@ -81,3 +81,34 @@ def get_job(job_id):
 
 def mark_interrupted():
     _run("UPDATE jobs SET status='failed', message='interrupted by a server restart' WHERE status IN ('queued','running')")
+
+
+def _rowcount(sql, args=()):
+    with _LOCK:
+        c = _conn()
+        try:
+            n = c.execute(sql, args).rowcount
+            c.commit()
+            return n
+        finally:
+            c.close()
+
+
+def queue_position(job_id) -> int:
+    """Jobs ahead of this one: the running job plus older queued ones; 0 for any job that is not queued."""
+    r = _run("SELECT COUNT(*) AS n FROM jobs WHERE status IN ('queued','running') AND (created < (SELECT created FROM jobs WHERE id=?) "
+             "OR (created = (SELECT created FROM jobs WHERE id=?) AND rowid < (SELECT rowid FROM jobs WHERE id=?)))",
+             (job_id, job_id, job_id))
+    j = _run("SELECT status FROM jobs WHERE id=?", (job_id,))
+    return int(r[0]["n"]) if j and j[0]["status"] == "queued" else 0
+
+
+def claim_job(job_id) -> bool:
+    """queued -> running, atomically; False if the job was cancelled (or already claimed)."""
+    return _rowcount("UPDATE jobs SET status='running', iteration=0, updated=? WHERE id=? AND status='queued'",
+                     (time.time(), job_id)) == 1
+
+
+def cancel_queued(job_id) -> bool:
+    """Delete a job only while it is still queued (atomic); True if it was removed."""
+    return _rowcount("DELETE FROM jobs WHERE id=? AND status='queued'", (job_id,)) == 1

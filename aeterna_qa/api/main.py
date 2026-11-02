@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import io
 import json
+import shutil
 import sys
 import uuid
 from pathlib import Path
@@ -129,8 +130,20 @@ def job_status(job_id: str):
     j = _job_or_404(job_id)
     return {"job_id": j["id"], "status": j["status"], "progress": {"iteration": j["iteration"], "of": j["total"]},
             "planner": j["planner"], "message": j["message"], "warnings": j["warnings"], "scenario": "exploratory",
+            "queue_position": store.queue_position(job_id),
             "can_rerun_with_rule": j["status"] == "planner_unavailable",
             "stage2": {"suggested": bool(j["stage2"]), "approved": bool(j["stage2"] and j["stage2"].get("approved"))}}
+
+
+@app.delete("/jobs/{job_id}")
+def cancel_job(job_id: str):
+    j = _job_or_404(job_id)
+    if j["status"] != "queued":
+        raise HTTPException(409, f"only a queued job can be cancelled; this one is {j['status']!r}")
+    if not store.cancel_queued(job_id):                    # raced with the worker claiming it
+        raise HTTPException(409, "the job has just started and cannot be cancelled")
+    shutil.rmtree(store.data_dir() / "jobs" / job_id, ignore_errors=True)
+    return {"job_id": job_id, "cancelled": True}
 
 
 @app.get("/jobs/{job_id}/stage1")
