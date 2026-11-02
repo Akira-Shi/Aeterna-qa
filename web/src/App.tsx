@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { Suggest } from "./api";
 import Upload from "./screens/Upload";
 import Repairs from "./screens/Repairs";
@@ -24,6 +24,8 @@ export default function App() {
     setStage1Done(false);
     setScreen(2);
   };
+
+  const markDone = useCallback(() => setStage1Done(true), []);
 
   const reachable = (n: Screen) => n === 1 || (n === 2 && session !== null) || (n === 3 && stage1Done);
 
@@ -59,7 +61,7 @@ export default function App() {
       <main id="main" tabIndex={-1}>
         {screen === 1 && <Upload onStarted={start} />}
         {screen === 2 && session && (
-          <Repairs key={session.jobId} session={session} onDone={() => setStage1Done(true)} onNext={() => setScreen(3)} onRerun={start} />
+          <Repairs key={session.jobId} session={session} onDone={markDone} onNext={() => setScreen(3)} onRerun={start} />
         )}
         {screen === 3 && session && (
           <Stage2 key={session.jobId} session={session} suggestion={suggestion} setSuggestion={setSuggestion} onBack={() => setScreen(2)} />

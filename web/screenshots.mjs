@@ -35,11 +35,6 @@ for (const [name, viewport] of Object.entries(sizes)) {
   await page.locator("details.opt summary").click();
   await page.click('button[type="submit"]');
 
-  if (want.includes("2")) {
-    await page.waitForSelector(".progress");
-    await page.waitForTimeout(6000);
-    await shot("2a-progress", false);
-  }
   if (!want.includes("2") && !want.includes("3")) { await ctx.close(); continue; }
   await page.waitForSelector("ul.repairs", { timeout: 300000 });
   if (want.includes("2")) {
