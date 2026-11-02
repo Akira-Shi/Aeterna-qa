@@ -550,6 +550,11 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - Verification: `npm run build` (tsc + vite) clean; Playwright screenshots at 1280x800 and 390 px in `web/screenshots/` against the real API on a 500-row Adult sample (screens 2a and 2c use mocked job status for mid-run and planner-unavailable states). All standing suites and `frozen_check` exit 0.
 - Known: the Stage 1 headline text comes from the API and counts chain evaluations, so its number can differ from the number of repair cards; the UI shows its own counts in the tiles. No committed repair appeared on the Adult sample, so the committed pill is not in a screenshot.
 
+### 2026-11-02 (phase 8 follow-up, user-approved: queue position, cancel, run-button guard, time estimate; one small additive API change; no frozen/gate/commit-rule/pipeline.py/explain.py change)
+- API (`aeterna_qa/api/` only): `GET /jobs/{id}` now returns `queue_position` (running job plus older queued jobs ahead; 0 when running or not queued). New `DELETE /jobs/{id}`: queued jobs only (409 for running or finished, 404 unknown), removes the row and job folder atomically. `run_stage1` now claims the job with an atomic queued-to-running update, so a cancelled job's late worker is a no-op. No existing assertion changed; `test_queue_position_and_cancel` added to `tests/test_api.py`.
+- UI: screen 2 shows "Queued: N job(s) ahead of yours" with a Cancel button, "Measuring the baseline..." at iteration 0, and a time estimate by row count (under 5,000 rows "about a minute"; 5,000 to 20,000 "about 2 to 3 minutes"; over 20,000 "about 3 to 5 minutes"). The start button is guarded in the handler (ref) and disabled while a job is queued or running; the rerun and cancel buttons have the same guard. Step navigation buttons now carry an aria-label (they were unnamed at 390 px).
+- Screenshots `2d-queued-desktop/mobile.png` come from the real API with a 12,000-row job holding the run lock and a second job submitted through the UI (double-click created one job).
+
 ## Known issues / open questions (rewritten 2026-09-30)
 
 - API is single-user with serialized runs: one pipeline run at a time under a lock (v1 reads module-level config); further jobs wait in "queued".

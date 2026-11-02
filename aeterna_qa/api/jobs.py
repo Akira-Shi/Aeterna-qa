@@ -32,11 +32,12 @@ def _wjson(path: Path, obj):
 
 # ---------------------------------------------------------------- Stage 1
 def run_stage1(job_id: str) -> None:
-    job = store.get_job(job_id)
-    spec = TaskSpec.from_dict(job["spec"])
-    jd = store.job_dir(job_id)
     with RUN_LOCK:
-        store.update_job(job_id, status="running", iteration=0)
+        if not store.claim_job(job_id):                        # cancelled while queued
+            return
+        job = store.get_job(job_id)
+        spec = TaskSpec.from_dict(job["spec"])
+        jd = store.job_dir(job_id)
         api_error = {}
         orig_log, orig_plan, orig_llm = audit.log_iteration, pipeline.plan, config.EXPLAIN_USE_LLM
         groq = job["planner"] == "groq"

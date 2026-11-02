@@ -7,6 +7,8 @@ import json
 import os
 import sys
 import tempfile
+import time
+import uuid
 import warnings
 from pathlib import Path
 
@@ -23,7 +25,7 @@ os.environ["AETERNA_API_DATA"] = str(Path(_TMP.name) / "api_data")
 
 from fastapi.testclient import TestClient            # noqa: E402
 
-from api import main as api_main, recipe, store    # noqa: E402
+from api import jobs, main as api_main, recipe, store    # noqa: E402
 from modules import config, planner                  # noqa: E402
 
 client = TestClient(api_main.app)
@@ -262,6 +264,31 @@ def test_store_and_labels():
     assert j["planner"] == "rule" and j["spec"]["target"] == "income"
     assert client.get("/jobs/" + "f" * 32).status_code == 404
     print("  PASS: SQLite job store round-trip")
+
+
+def test_queue_position_and_cancel():
+    ds = upload()
+    spec = {"target": "income", "task_type": "binary", "positive_label": ">50K", "model_family": "linear",
+            "id_columns": ["fnlwgt"], "drop_columns": []}
+    ids = [uuid.uuid4().hex for _ in range(3)]
+    for i, jid in enumerate(ids):                       # TestClient runs background tasks inline, so queue directly
+        store.add_job(jid, ds["dataset_id"], "rule", spec, config.MAX_ITERATIONS, [])
+        time.sleep(0.01)
+    store.update_job(ids[0], status="running")
+    pos = [client.get(f"/jobs/{j}").json()["queue_position"] for j in ids]
+    assert pos == [0, 1, 2], pos                         # running job counts as one job ahead
+    assert client.delete(f"/jobs/{ids[0]}").status_code == 409          # running: refused
+    assert store.get_job(ids[0])["status"] == "running"
+    assert client.delete("/jobs/" + "f" * 32).status_code == 404
+    r = client.delete(f"/jobs/{ids[1]}")
+    assert r.status_code == 200 and r.json()["cancelled"] is True
+    assert client.get(f"/jobs/{ids[1]}").status_code == 404 and store.get_job(ids[1]) is None
+    assert client.get(f"/jobs/{ids[2]}").json()["queue_position"] == 1  # moved up
+    assert not (store.data_dir() / "jobs" / ids[1]).exists()
+    assert jobs.run_stage1(ids[1]) is None                              # a late worker for a cancelled job is a no-op
+    store.update_job(ids[0], status="done")
+    assert client.delete(f"/jobs/{ids[0]}").status_code == 409          # finished: refused
+    print("  PASS: queue_position (1 job ahead), cancel queued only (409 running/finished, 404 unknown)")
 
 
 if __name__ == "__main__":
