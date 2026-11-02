@@ -1,0 +1,23 @@
+/* Steep tokens, copied from the Explain report (aeterna_qa/modules/explain.py, _CSS and _CSS_PLAIN)
+   so the app and the downloaded report match. Do not diverge without changing both. */
+:root {
+  --bg: #ffffff;
+  --card: #f2f2f3;
+  --fog: #fafafb;
+  --ink: #17191c;
+  --mute: #777b86;
+  --ash: #979799;
+  --line: #ececec;
+  --peach: #fbe1d1;
+  --brown: #5d2a1a;
+  --track: #ececec;
+  --accent: #5d2a1a;
+  --serif: 'Source Serif 4', 'Signifier', ui-serif, Georgia, serif;
+  --sans: 'Inter', 'Sohne', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --float: 0 0 0 1px rgba(4, 23, 43, .05), 0 20px 25px -5px rgba(0, 0, 0, .1), 0 8px 10px -6px rgba(0, 0, 0, .1);
+
+  --r-card: 24px;
+  --r-tile: 16px;
+  --r-pill: 9999px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
