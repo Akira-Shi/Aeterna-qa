@@ -46,6 +46,7 @@ for (const [name, viewport] of Object.entries(sizes)) {
     await page.getByRole("button", { name: /Continue to pipeline/ }).click();
     await page.waitForSelector(".step-card", { timeout: 300000 });
     await page.waitForTimeout(500);
+    await page.locator(".step-card").first().getByLabel("Edit").check();
     await shot("3a-suggest");
     await page.getByRole("button", { name: /Approve/ }).click();
     await page.waitForSelector("table.preview", { timeout: 300000 });
