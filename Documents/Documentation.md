@@ -506,10 +506,10 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 
 ### 2026-11-02 (phase 6, P6a finish: SCL-S1 removed, 2-SE fallback; no frozen/gate/commit-rule change)
 - Diagnosis (per-rule ablation, same 15 folds, Adult x linear): SCL-S1 (Yeo-Johnson on skewed numerics for linear/neural) caused the loss to default (-0.0046 +/- 0.0002 with it, +0.0005 +/- 0.0002 without). IMP-C1 helps slightly, ENC-H1 neutral. Written to `LOOP/reports/build-P6a-demo.md` before any change.
-- Rule change validated on two non-study dev datasets (OpenML credit-g, bank-marketing; data outside the repo): removing SCL-S1 is equal or better on neg-Brier and F1 in both. SCL-S1 removed from `stage2/rules.py` (skewed numerics now get SCL-G1 standard scaling). Adult and Marketing were not used to choose it. Tests updated.
+- Rule change validated on two non-study dev datasets (OpenML credit-g, bank-marketing; data outside the repo): removing SCL-S1 is equal or better on neg-Brier and F1 in both. SCL-S1 removed from `stage2/rules.py` (skewed numerics now get SCL-G1 standard scaling). Provenance: the Adult x linear ablation chose which rule to examine (SCL-S1); the two dev sets alone decided the change. Adult x linear acceptance is therefore NOT independent evidence for the change. Adult tree_ensemble and Marketing x both families were not used to choose anything. Tests updated.
 - Side observation, no change: IMB-1 (class_weight balanced) costs neg-Brier on bank-marketing (one dev set).
 - `stage2/compare.py`: fallback. If recommended < default by more than 2 corrected SE on neg-Brier, `final` = "default" and "fallback: default outperformed recommendation" is recorded (`fallback_note`, `note`, `format_report`). New test `test_fallback_to_default`. Report-only compare otherwise unchanged; no gate or commit rule touched.
-- Acceptance (Adult, Marketing x linear, tree_ensemble): default never better than the final recommendation by > 2 SE; fallback did not fire (numbers in the demo report). frozen_check exit 0; evaluator_tests, ops_tests, stage2 leak and rules tests pass.
+- Acceptance (Adult, Marketing x linear, tree_ensemble; Adult x linear is not independent, see provenance above): default never better than the final recommendation by > 2 SE; fallback did not fire (numbers in the demo report). frozen_check exit 0; evaluator_tests, ops_tests, stage2 leak and rules tests pass.
 
 ## Known issues / open questions (rewritten 2026-09-30)
 

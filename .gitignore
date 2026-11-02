@@ -9,3 +9,4 @@ aeterna_qa/logs/
 _scratch/
 Dataset/sandbox/
 Dataset/real/
+.claude/

@@ -93,6 +93,7 @@ def test_family_rules():
     assert by(dist, "scaling")["SCL-D1"].method == "robust"
     neu = rules.recommend("binary", "neural", X, y)
     assert by(neu, "scaling")["SCL-G1"].method == "standard"
+    assert "x_skew" in by(neu, "scaling")["SCL-G1"].columns
     print("  PASS: per-family rule choices")
 
 

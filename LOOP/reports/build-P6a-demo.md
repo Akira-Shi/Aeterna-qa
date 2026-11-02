@@ -95,7 +95,9 @@ Per-rule ablation on the same 15 fixed folds, linear (LogisticRegression). Each 
 
 Guilty rule: SCL-S1 (Yeo-Johnson on skewed numeric columns, linear/neural). Removing it turns -0.0046 into +0.0005 (about 2.5 SE better than default). IMP-C1 helps slightly, ENC-H1 is neutral.
 
-### Dev-dataset check (non-study datasets; Adult and Marketing not used to choose anything)
+### Dev-dataset check (non-study datasets decided the change)
+
+Provenance: the Adult x linear ablation above chose which rule to examine (SCL-S1). The decision to change it rests on the two dev datasets alone.
 
 OpenML credit-g (1000 rows, positive 'bad') and bank-marketing (45,211 rows, positive class '2'), linear, same fixed-fold machinery, saved in `Capstone_devdata/` outside the repo.
 
@@ -108,7 +110,7 @@ Rationale (from dev only): on both dev sets, removing SCL-S1 is equal or better 
 
 ## Final acceptance (after SCL-S1 removal and the 2-SE fallback)
 
-Rule change chosen on dev data only (see Diagnosis). Fallback: if recommended < default by more than 2 corrected SE on neg-Brier, the default pipeline is recommended and the string "fallback: default outperformed recommendation" is recorded in the report dict (`fallback_note`, `note`) and in `format_report`. Adult and Marketing were re-run once, untuned.
+Rule change decided on dev data only; the Adult x linear ablation chose which rule to examine. Adult x linear acceptance below is therefore NOT independent evidence for the change (the other three combos were not used to choose anything). Fallback: if recommended < default by more than 2 corrected SE on neg-Brier, the default pipeline is recommended and the string "fallback: default outperformed recommendation" is recorded in the report dict (`fallback_note`, `note`) and in `format_report`. Adult and Marketing were re-run once, untuned.
 
 | dataset x family | default neg-Brier | recommended neg-Brier | diff +/- SE | F1 diff +/- SE | final recommendation |
 |---|---|---|---|---|---|
