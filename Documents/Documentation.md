@@ -511,6 +511,9 @@ External review of the CV-hardening entry below (credit: a detailed technical re
 - `stage2/compare.py`: fallback. If recommended < default by more than 2 corrected SE on neg-Brier, `final` = "default" and "fallback: default outperformed recommendation" is recorded (`fallback_note`, `note`, `format_report`). New test `test_fallback_to_default`. Report-only compare otherwise unchanged; no gate or commit rule touched.
 - Acceptance (Adult, Marketing x linear, tree_ensemble; Adult x linear is not independent, see provenance above): default never better than the final recommendation by > 2 SE; fallback did not fire (numbers in the demo report). frozen_check exit 0; evaluator_tests, ops_tests, stage2 leak and rules tests pass.
 
+### 2026-11-02 (repo hygiene; no code, frozen, gate or commit-rule change)
+- Stopped redistributing third-party papers: `Resources/*.pdf` untracked (`git rm --cached`) and git-ignored; local copies kept. Added `Resources/README.md` with full citations and URLs. Added `.gitattributes` (`* text=auto eol=lf`) and ignored `.claude/`.
+
 ## Known issues / open questions (rewritten 2026-09-30)
 
 - Evaluator v1.1 (2026-11-01): numeric NaN is median-imputed inside each fold, so fill_median/fill_mean on a continuous NaN column cannot beat the baseline (delta about 0, expected outcome "no commit"). Text columns with more than 300 distinct values are rejected by TaskSpec (one-hot blow-up); drop or ID-exclude them. The Airbnb positive label `Rating=Y` is inferred from the CleanML wording, pending Akira's confirmation.

@@ -10,3 +10,4 @@ _scratch/
 Dataset/sandbox/
 Dataset/real/
 .claude/
+Resources/*.pdf
