@@ -15,11 +15,11 @@ from modules import audit, config, explain, pipeline, planner, taskspec
 from modules.taskspec import TaskSpec
 from stage2 import build, compare, rules
 
-from . import cleaning, store
+from . import recipe as recipe_mod, store
 
 RUN_LOCK = threading.Lock()
 BANNER = "EXPLORATORY RUN - arbitrary CSV, no ground truth, not a pre-registered result, never cited"
-ARTIFACTS = ("cleaned.csv", "pipeline.joblib", "report.html", "audit.json", "preview.json")
+ARTIFACTS = ("cleaned.csv", "cleaning_recipe.json", "pipeline.joblib", "report.html", "audit.json", "preview.json")
 
 NUM_IMPUTE = ("median", "mean", "median+indicator")
 CAT_IMPUTE = ("most_frequent", "constant_missing")
@@ -66,7 +66,6 @@ def run_stage1(job_id: str) -> None:
 
 def _stage1(job_id, spec: TaskSpec, jd: Path, groq: bool, api_error: dict):
     df, prep = taskspec.load_dataset(spec)
-    train_index = cleaning.split_train_index(df, spec.target)
     meta_base = {"scenario": "exploratory", "task_spec": spec.to_dict(), "prep": prep, "api_job_id": job_id}
 
     if not spec.gate_supported:
@@ -77,7 +76,7 @@ def _stage1(job_id, spec: TaskSpec, jd: Path, groq: bool, api_error: dict):
                                            "gate": "gate not supported", "findings": findings})
         audit_doc = {**meta_base, "label": BANNER, "mode": "detection_only", "gate": "gate not supported",
                      "findings": findings, "stage2": None}
-        _finish_artifacts(jd, df, df, [], train_index, audit_doc, report_src=None)
+        _finish_artifacts(jd, df, df, [], audit_doc, report_src=None)
         store.update_job(job_id, status="done", message="gate not supported: detection only")
         return
 
@@ -96,22 +95,23 @@ def _stage1(job_id, spec: TaskSpec, jd: Path, groq: bool, api_error: dict):
     log_path = Path(res["log_path"])
     run_doc = json.loads(log_path.read_text(encoding="utf-8"))
     committed = res["committed_ops"]
-    cleaned, fitted = cleaning.clean_with_train_fit(df, committed, train_index)
+    cleaned, fitted = recipe_mod.apply_recipe(df, recipe_mod.recipe_from_ops(committed), fit=True)
     audit_doc = {**meta_base, "label": meta["label"], "mode": "gated", "committed_ops": committed,
                  "stage1_log": run_doc, "stage2": None}
-    _finish_artifacts(jd, df, cleaned, fitted, train_index, audit_doc,
+    _finish_artifacts(jd, df, cleaned, fitted, audit_doc,
                       report_src=log_path.with_name(f"report_{log_path.stem}.html"))
     _wjson(jd / "stage1_run.json", run_doc)
     store.update_job(job_id, status="done")
 
 
-def _finish_artifacts(jd: Path, before: pd.DataFrame, cleaned: pd.DataFrame, fitted: list, train_index, audit_doc, report_src):
+def _finish_artifacts(jd: Path, before: pd.DataFrame, cleaned: pd.DataFrame, fitted: list, audit_doc, report_src):
     cleaned.to_csv(jd / "cleaned.csv", index=False, lineterminator="\n")
     with open(jd / "frames.pkl", "wb") as f:                   # internal, trusted: dtypes survive for Stage 2
-        pickle.dump({"before": before, "cleaned": cleaned, "train_index": list(train_index)}, f)
-    audit_doc["cleaning"] = {"split": f"deterministic {cleaning.TRAIN_FRAC:.0%} train split, random_state={config.RANDOM_STATE}",
-                             "n_train_rows": len(train_index), "ops_fitted_on_training_rows": fitted,
+        pickle.dump({"before": before, "cleaned": cleaned}, f)
+    audit_doc["cleaning"] = {"fitted_on": recipe_mod.FITTED_ON, "note": recipe_mod.NOTE, "ops": fitted,
                              "rows_in": len(before), "rows_out": len(cleaned)}
+    audit_doc["note"] = recipe_mod.NOTE
+    _wjson(jd / "cleaning_recipe.json", {"note": recipe_mod.NOTE, "fitted_on": recipe_mod.FITTED_ON, "ops": fitted})
     _wjson(jd / "audit.json", audit_doc)
     _wjson(jd / "preview.json", preview(before, cleaned))
     if report_src is not None and Path(report_src).is_file():
@@ -248,21 +248,20 @@ def approve(job_id: str, decisions: list) -> dict:
     any_edit = any(e["user_edit"] for e in log)
     use_default = bool(s2.get("fallback")) and not any_edit
     jd = store.job_dir(job_id)
-    train = [i for i in fr["train_index"] if i in fr["cleaned"].index]
     try:
         with RUN_LOCK:
             pipe = (build.build_default(X, spec.task_type, spec.model_family) if use_default
                     else build.build_pipeline(final_steps, spec.task_type, spec.model_family))
-            build.fit_on_train(pipe, X, y, train)                 # training rows only
+            pipe.fit(X, y)                                            # full (cleaned) upload
     except Exception as e:                                         # noqa: BLE001
         raise Stage2Error(f"pipeline could not be fitted with these steps: {type(e).__name__}: {str(e)[:300]}")
     build.save_pipeline(pipe, jd / "pipeline.joblib", None if use_default else final_steps)
-    s2.update({"approved": True, "decisions": log, "n_train_rows": len(train),
+    s2.update({"approved": True, "decisions": log, "fitted_on": "full_upload",
                "pipeline_used": "default (fallback fired, no user edit)" if use_default else "approved steps"})
     store.update_job(job_id, stage2=s2)
     a = json.loads((jd / "audit.json").read_text(encoding="utf-8"))
     a["stage2"] = {"steps": log, "pipeline_used": s2["pipeline_used"], "fallback": s2.get("fallback"),
                    "fallback_note": s2.get("fallback_note"), "compare": s2.get("compare"),
-                   "model_family": spec.model_family, "fit_on": "training rows only"}
+                   "model_family": spec.model_family, "fit_on": "full cleaned upload"}
     _wjson(jd / "audit.json", a)
     return s2

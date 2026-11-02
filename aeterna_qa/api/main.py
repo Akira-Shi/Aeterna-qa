@@ -25,7 +25,7 @@ from .schemas import ApproveRequest, RerunRequest, Stage1Request          # noqa
 MAX_UPLOAD_MB = 25                                  # below taskspec.MAX_FILE_MB (50), whose runs get slow
 MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
 MEDIA = {"cleaned.csv": "text/csv", "pipeline.joblib": "application/octet-stream", "report.html": "text/html",
-         "audit.json": "application/json", "preview.json": "application/json"}
+         "audit.json": "application/json", "cleaning_recipe.json": "application/json", "preview.json": "application/json"}
 
 app = FastAPI(title="AETERNA-QA API", version="0.1",
               description="Exploratory runs only: nothing produced here is a cited result.")
@@ -161,7 +161,7 @@ def artifacts(job_id: str):
     files = [{"name": n, "available": (jd / n).is_file(), "url": f"/jobs/{job_id}/artifacts/{n}",
               "media_type": MEDIA[n]} for n in jobs.ARTIFACTS if n != "preview.json"]
     return {"files": files, "preview": json.loads((jd / "preview.json").read_text(encoding="utf-8")),
-            "note": "pipeline.joblib exists only after /stage2/approve"}
+            "note": jobs.recipe_mod.NOTE, "pipeline_note": "pipeline.joblib exists only after /stage2/approve"}
 
 
 @app.get("/jobs/{job_id}/artifacts/{name}")

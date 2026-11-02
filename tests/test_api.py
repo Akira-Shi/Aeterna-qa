@@ -23,7 +23,7 @@ os.environ["AETERNA_API_DATA"] = str(Path(_TMP.name) / "api_data")
 
 from fastapi.testclient import TestClient            # noqa: E402
 
-from api import cleaning, main as api_main, store    # noqa: E402
+from api import main as api_main, recipe, store    # noqa: E402
 from modules import config, planner                  # noqa: E402
 
 client = TestClient(api_main.app)
@@ -115,7 +115,9 @@ def test_full_flow():
     # artifacts before Stage 2: no pipeline yet
     a = client.get(f"/jobs/{job_id}/artifacts").json()
     avail = {f["name"]: f["available"] for f in a["files"]}
-    assert avail == {"cleaned.csv": True, "pipeline.joblib": False, "report.html": True, "audit.json": True}, avail
+    assert avail == {"cleaned.csv": True, "cleaning_recipe.json": True, "pipeline.joblib": False, "report.html": True,
+                     "audit.json": True}, avail
+    assert a["note"] == recipe.NOTE and aud["note"] == recipe.NOTE and aud["cleaning"]["note"] == recipe.NOTE
     assert len(a["preview"]["before"]) == len(a["preview"]["after"]) <= 20
 
     # Stage 2
@@ -155,42 +157,77 @@ def test_full_flow():
     assert "<html" in client.get(f"/jobs/{job_id}/artifacts/report.html").text.lower()
     assert client.get(f"/jobs/{job_id}/artifacts/../../x").status_code in (404, 405)
     assert client.get(f"/jobs/{job_id}/artifacts/secret.txt").status_code == 404
-    # the written CSV is exactly what the train-fitted writer gives for the committed ops
+    # the written CSV is exactly what replaying the saved recipe (no refit) gives
+    rec = json.loads(client.get(f"/jobs/{job_id}/artifacts/cleaning_recipe.json").content)
+    assert rec["note"] == recipe.NOTE and all(o["fitted_on"] == "full_upload" for o in rec["ops"])
     import api.jobs as jobs
     fr = jobs._load_frames(job_id)
-    again, _ = cleaning.clean_with_train_fit(fr["before"], aud["committed_ops"], fr["train_index"])
+    again, _ = recipe.apply_recipe(fr["before"], rec["ops"], fit=False)
     pd.testing.assert_frame_equal(pd.read_csv(io.BytesIO(csv.content)), pd.read_csv(io.StringIO(again.to_csv(index=False))))
     print("  PASS: Stage 1 -> Stage 2 (edit logged as user_override) -> artifacts on an Adult sample "
           f"(committed: {aud['committed_ops'] or 'none'})")
 
 
-def test_cleaned_csv_uses_training_fitted_values():
+def test_recipe_replay_reproduces_cleaning_exactly():
     rng = np.random.default_rng(3)
     n = 200
     x = rng.normal(size=n).round(3)
-    x[:60] = np.nan                                   # missing rows
-    df = pd.DataFrame({"x": x, "y": rng.choice(["a", "b"], n)})
-    train = list(range(100, 200))                      # training rows: no missing at all in x[:60]? (rows 100..199)
-    train_vals = df.loc[train, "x"]
-    mean_train, mean_full = train_vals.mean(), df["x"].mean()
-    assert abs(mean_train - mean_full) > 1e-6
-    cleaned, fitted = cleaning.clean_with_train_fit(df, {"x": "fill_mean"}, train)
+    x[:60] = np.nan
+    df = pd.DataFrame({"x": x, "g": rng.choice(["a", "b", "A "], n), "y": rng.choice(["a", "b"], n)})
+    df.loc[[150, 151], "x"] = np.nan
+    ops = recipe.recipe_from_ops({"g": "normalize_categories", "x": "fill_mean"})
+    cleaned, fitted = recipe.apply_recipe(df, ops, fit=True)
     filled = cleaned.loc[df["x"].isna(), "x"]
-    assert len(filled) == 60 and (filled == mean_train).all()          # equals the training-fitted value ...
-    assert not np.isclose(filled.iloc[0], mean_full)                   # ... not the full-file value
-    assert fitted[0]["params"] == float(mean_train) and fitted[0]["fitted_on"] == "training rows only"
-    csv = pd.read_csv(io.StringIO(cleaned.to_csv(index=False)))
-    assert np.isclose(csv.loc[df["x"].isna().to_numpy(), "x"].iloc[0], mean_train)
-    # the writer touches only the committed op: other columns and observed cells are unchanged
-    pd.testing.assert_series_equal(cleaned["y"], df["y"])
-    obs = df["x"].notna()
-    assert (cleaned.loc[obs, "x"] == df.loc[obs, "x"]).all()
-    # drop_rows removes TRAINING rows only
-    d2 = df.copy()
-    d2.loc[[5, 150], "x"] = np.nan
-    c2, _ = cleaning.clean_with_train_fit(d2.assign(x=d2["x"]), {"x": "drop_rows"}, train)
-    assert 5 in c2.index and 150 not in c2.index
-    print("  PASS: cleaned CSV fill value == value fitted on training rows (not the full-file value)")
+    assert (filled == df["x"].mean()).all()                       # fitted on the full upload
+    assert fitted[1]["params"] == float(df["x"].mean()) and fitted[1]["fitted_on"] == "full_upload"
+    saved = json.loads(json.dumps(fitted))                        # as written to cleaning_recipe.json
+    other = pd.DataFrame({"x": [np.nan, 1.0], "g": ["a", "b"], "y": ["a", "b"]})
+    assert recipe.apply_recipe(df, saved, fit=False)[0].equals(cleaned)       # exact reproduction, no refit
+    assert recipe.apply_recipe(other, saved, fit=False)[0]["x"].iloc[0] == df["x"].mean()   # params, not other's mean
+    # drop_rows removes all affected rows
+    c2, _ = recipe.apply_recipe(df, [{"op": "drop_rows", "column": "x"}], fit=True)
+    assert len(c2) == int(df["x"].notna().sum()) and c2["x"].notna().all()
+    print("  PASS: apply_recipe(fit=False) with saved params reproduces the fitted cleaning exactly")
+
+
+def _synthetic_sentinel_csv(n=3000, seed=11):
+    """LABELLED SYNTHETIC fixture (generated, not real): churn-like table, 12% of `satisfaction` replaced by -999."""
+    rng = np.random.default_rng(seed)
+    sat = rng.uniform(1, 5, n).round(1)
+    tenure = rng.normal(40, 12, n).round(1)
+    spend = rng.gamma(2.0, 1.0, n).round(2)
+    p = 1 / (1 + np.exp(-(1.2 * (3 - sat) + 0.02 * (30 - tenure))))
+    df = pd.DataFrame({"cust_id": np.arange(n), "tenure": tenure, "spend": spend,
+                       "region": rng.choice(["east", "west", "north"], n), "satisfaction": sat,
+                       "churn": np.where(rng.random(n) < p, "yes", "no")})
+    df.loc[rng.choice(n, int(0.12 * n), replace=False), "satisfaction"] = -999
+    return df
+
+
+def test_synthetic_sentinel_commit_flow():
+    df = _synthetic_sentinel_csv()
+    ds = upload(df.to_csv(index=False).encode(), "synthetic_sentinel.csv")
+    r = client.post("/jobs/stage1", json={"dataset_id": ds["dataset_id"], "target": "churn", "positive_label": "yes",
+                                          "id_columns": ["cust_id"], "planner": "rule"})
+    assert r.status_code == 202, r.text
+    job_id = r.json()["job_id"]
+    assert client.get(f"/jobs/{job_id}").json()["status"] == "done"
+    s1 = client.get(f"/jobs/{job_id}/stage1").json()
+    assert s1["committed_ops"] == {"satisfaction": "sentinel_to_median"}, s1["committed_ops"]
+    a = client.get(f"/jobs/{job_id}/artifacts").json()
+    assert a["note"] == recipe.NOTE and any(f["name"] == "cleaning_recipe.json" and f["available"] for f in a["files"])
+    csv = pd.read_csv(io.BytesIO(client.get(f"/jobs/{job_id}/artifacts/cleaned.csv").content))
+    rec = json.loads(client.get(f"/jobs/{job_id}/artifacts/cleaning_recipe.json").content)
+    assert rec["ops"][0]["op"] == "sentinel_to_median" and rec["ops"][0]["fitted_on"] == "full_upload"
+    sv, med = rec["ops"][0]["params"]
+    assert sv == -999 and med == float(df.loc[df["satisfaction"] != -999, "satisfaction"].median())
+    assert not (csv["satisfaction"] == -999).any() and (csv.loc[df["satisfaction"] == -999, "satisfaction"] == med).all()
+    d2 = df.drop(columns=["cust_id"])
+    again, _ = recipe.apply_recipe(d2, rec["ops"], fit=False)
+    pd.testing.assert_frame_equal(csv, pd.read_csv(io.StringIO(again.to_csv(index=False))))
+    aud = json.loads(client.get(f"/jobs/{job_id}/artifacts/audit.json").content)
+    assert aud["scenario"] == "exploratory" and aud["note"] == recipe.NOTE
+    print("  PASS: synthetic sentinel CSV: stage1 commits sentinel_to_median, cleaned CSV == recipe replay")
 
 
 def test_groq_failure_path():
